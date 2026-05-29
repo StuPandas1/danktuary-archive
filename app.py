@@ -535,17 +535,17 @@ if st.sidebar.button("Master List Clearer"):
         del st.session_state["selected_show"]
     st.rerun()
 
-# REFRESH DATABASE
-if st.sidebar.button("Refresh Database"):
+# # REFRESH DATABASE
+# if st.sidebar.button("Refresh Database"):
 
-    with st.spinner("Updating archive..."):
+#     with st.spinner("Updating archive..."):
 
-        subprocess.run(["python", "scanner.py"])
-        subprocess.run(["python", "analyze.py"])
-        subprocess.run(["python", "build_metadata.py"])
+#         subprocess.run(["python", "scanner.py"])
+#         subprocess.run(["python", "analyze.py"])
+#         subprocess.run(["python", "build_metadata.py"])
 
-    success_message = st.empty()
-    success_message.success("Database updated! Refresh the page to see new songs.")
-    time.sleep(2)
-    success_message.empty()
-    st.rerun()
+#     success_message = st.empty()
+#     success_message.success("Database updated! Refresh the page to see new songs.")
+#     time.sleep(2)
+#     success_message.empty()
+#     st.rerun()
