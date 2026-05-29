@@ -27,6 +27,9 @@ if "bustouts" not in st.session_state:
 if "most_played" not in st.session_state:
     st.session_state.most_played = None
 
+if "artist_filter" not in st.session_state:
+    st.session_state.artist_filter = []
+
 df["Date"] = pd.to_datetime(df["Date"])
 df["Year"] = df["Date"].dt.year
 
