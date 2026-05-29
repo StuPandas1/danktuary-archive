@@ -38,7 +38,7 @@ song_stats = song_stats.merge(
 
 times_played_mult=1.3
 
-st.title("Dead Weight-abase") #title
+st.title("Danktuary Archive") #title
 
 st.markdown("""
 <style>
@@ -67,15 +67,21 @@ dead_weight_only = st.sidebar.checkbox(
     "Dead Weights Only"
 )
 
-if dead_weight_only:
-    st.session_state.artist_filter = [
-        "Grateful Dead",
-        "Jerry Garcia Band",
-        "The Band"
-    ]
+dead_weight_artists = [
+    "Grateful Dead",
+    "Jerry Garcia Band",
+    "The Band"
+]
 
-if not dead_weight_only:
+if dead_weight_only:
+    current = set(st.session_state.artist_filter)
+    current.update(dead_weight_artists)
+    st.session_state.artist_filter = list(current)
+else:
     st.session_state.artist_filter = [
+        artist
+        for artist in st.session_state.artist_filter
+        if artist not in dead_weight_artists
     ]
 
 artist_filter = st.sidebar.multiselect(
