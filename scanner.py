@@ -184,7 +184,7 @@ segue_fixes = {
     "china rider": "china_ rider",
     "china cat rider": "china_ rider",
     "help slip frank": "help_slip_frank",
-    "walcott cumberland": "walcott_ cumberland",
+    "walcott cumberland": "walcott_ cumberland"
 }
 
 archive_paths = [
@@ -250,14 +250,13 @@ with open("band_archive.csv", "w", newline="", encoding="utf-8") as csvfile:
                         folder_name = os.path.basename(root)
                         date = folder_name[:10]
 
-                        if "gig" in root.lower():
+                        lower_root=root.lower()
+                        if "gig" in lower_root:
                             recording_type = "live"
                             gig_place = folder_name.split(" _ ", 1)[1]
-
-                        elif "trips" in root.lower():
+                        elif "trips" in lower_root:
                             recording_type = "trip"
                             gig_place = folder_name.split(" _ ", 1)[1]
-
                         else:
                             recording_type = "practice"
                             if date >= "2024-06-26": # date of first recording in new practice space

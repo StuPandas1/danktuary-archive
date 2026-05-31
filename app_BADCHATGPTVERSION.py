@@ -9,65 +9,132 @@ from datetime import datetime
 
 # load data
 df = pd.read_csv("band_archive.csv")
-song_stats = pd.read_csv("song_stats.csv")
+raw_song_stats = pd.read_csv("song_stats.csv")
 metadata = pd.read_csv("song_metadata.csv")
 
-#session states
+# convert dates
+df["Date"] = pd.to_datetime(df["Date"])
+df["Year"] = df["Date"].dt.year
 
+times_played_mult=1.3 #multiplier variable for overdue score calculation
+
+#session states 
 if "selected_song" not in st.session_state:
     st.session_state.selected_song = None
-
-if "random_setlist" not in st.session_state:
-    st.session_state.random_setlist = None
 
 if "selected_show" not in st.session_state:
     st.session_state.selected_show = None
 
-if "bustouts" not in st.session_state:
-    st.session_state.bustouts = None
+if "show_openers" not in st.session_state:
+    st.session_state.show_openers = False
 
-if "most_played" not in st.session_state:
-    st.session_state.most_played = None
-
-if "artist_filter" not in st.session_state:
-    st.session_state.artist_filter = []
-
-df["Date"] = pd.to_datetime(df["Date"])
-df["Year"] = df["Date"].dt.year
-
-song_stats = song_stats.merge(
-    metadata,
-    on="Title",
-    how="left"
-)
-
-times_played_mult = 1.3 # multiplier for how much weight to give times played in overdue score
-
-st.title("Danktuary Archive") #title
-st.markdown("""
-<style>
-.stTabs [data-baseweb="tab"] p {
-    font-size: 17px !important;
-    font-weight: 450 !important;
-}
-</style>
-""", unsafe_allow_html=True)
-
-tab1, tab2, tab3 = st.tabs(["Song Search", "Setlists", "Statistics"])
+if "show_closers" not in st.session_state:
+    st.session_state.show_closers = False
 
 # GLOBAL FILTERS
+st.sidebar.header("Filters")
+
+year_range = st.sidebar.slider(
+    "Year Range",
+    int(df["Year"].min()),
+    int(df["Year"].max()),
+    (int(df["Year"].min()), int(df["Year"].max()))
+)
+
+artist_filter = st.sidebar.multiselect(
+    "Artist",
+    sorted(df["Artist"].unique()),
+    default=[]
+)
+
+type_filter = st.sidebar.multiselect(
+    "Type",
+    sorted(df["Type"].unique()),
+    default=[]
+)
+
+#commands for filtering and stats
+def get_filtered_df(df, year_range, artist_filter, type_filter):
+    filtered = df.copy()
+
+    # Year filter
+    filtered = filtered[
+        (filtered["Year"] >= year_range[0]) &
+        (filtered["Year"] <= year_range[1])
+    ]
+
+    # Artist filter
+    if artist_filter:
+        filtered = filtered[filtered["Artist"].isin(artist_filter)]
+
+    # Type filter (e.g. song, jam, cover, etc.)
+    if type_filter:
+        filtered = filtered[filtered["Type"].isin(type_filter)]
+
+    return filtered
+
+def get_openers(filtered_df):
+    openers_df = filtered_df[filtered_df["Track Number"] == 1]
+    openers = (
+        openers_df["Title"]
+        .value_counts()
+        .reset_index()
+    )
+    openers.columns = ["Title", "Times Opened"]
+    return openers
+
+def get_closers(filtered_df):
+    # assumes highest track number = closer per show
+    closers_df = (
+        filtered_df
+        .sort_values("Track Number")
+        .groupby(["Date", "Location"])
+        .last()
+        .reset_index()
+    )
+    closers = (
+        closers_df["Title"]
+        .value_counts()
+        .reset_index()
+    )
+    closers.columns = ["Title", "Times Closed"]
+    return closers
+
+def get_song_stats(filtered_df, metadata):
+    stats = (
+        filtered_df.groupby("Title")
+        .agg(
+            Times_Played=("Title", "count"),
+            First_Played=("Date", "min"),
+            Last_Played=("Date", "max")
+        )
+        .reset_index()
+    )
+    return stats.merge(metadata, on="Title", how="left")
+
+def get_bustouts(filtered_df):
+    counts = filtered_df["Title"].value_counts()
+
+    return counts[counts == 1].reset_index().rename(
+        columns={"index": "Title", "Title": "Times Played"}
+    )
+
+filtered_df = get_filtered_df(df, year_range, artist_filter, type_filter)
+song_stats = get_song_stats(filtered_df, metadata)
+openers = get_openers(filtered_df)
+closers = get_closers(filtered_df)
+bustouts = get_bustouts(filtered_df)
+
+
+dead_weight_only = st.sidebar.checkbox(
+    "Dead Weights Only"
+)
 
 dead_weight_artists = [
     "Grateful Dead",
     "Jerry Garcia Band",
     "The Band"
 ]
-
-st.sidebar.markdown("### Filters")
-
-dead_weight_only = st.sidebar.checkbox(
-    "Dead Weights Only"
-)
 
 if dead_weight_only:
     current = set(st.session_state.artist_filter)
@@ -80,83 +147,29 @@ else:
         if artist not in dead_weight_artists
     ]
 
-artist_filter = st.sidebar.multiselect(
-    "By Artist:",
-    sorted(song_stats["Artist"].dropna().unique()),
-    key="artist_filter"
-)
-
-type_filter = st.sidebar.multiselect(
-    "By Type:",
-    sorted(song_stats["Type"].dropna().unique()),
-    key="type_filter"
-)
-
-min_year = int(df["Year"].min())
-max_year = int(df["Year"].max())
-
 year_range = st.sidebar.slider(
-    "By Year:",
-    min_year,
-    max_year,
-    (min_year, max_year)
+    "Year Range",
+    int(df["Year"].min()),
+    int(df["Year"].max()),
+    (int(df["Year"].min()), int(df["Year"].max()))
 )
 
-filtered_song_stats = song_stats.copy()
-
-# YEAR FILTER
-filtered_df = df.copy()
-
-filtered_df = filtered_df[
-    (filtered_df["Year"] >= year_range[0]) &
-    (filtered_df["Year"] <= year_range[1])
-]
-
-# REBUILD STATS FROM FILTERED DATA
-filtered_song_stats = filtered_df.groupby("Title").agg(
-    Times_Played=("Title", "count"),
-    First_Played=("Date", "min"),
-    Last_Played=("Date", "max")
-).reset_index()
-
-# RE-MERGE METADATA
-filtered_song_stats = filtered_song_stats.merge(
-    metadata,
-    on="Title",
-    how="left"
-)
-
-# ARTIST FILTER
-if artist_filter:
-    filtered_song_stats = filtered_song_stats[
-        filtered_song_stats["Artist"].isin(artist_filter)
-    ]
-
-# TYPE FILTER
-if type_filter:
-    filtered_song_stats = filtered_song_stats[
-        filtered_song_stats["Type"].isin(type_filter)
-    ]
-
-# FILTER MAIN DATABASE
-filtered_df = df[
-    df["Title"].isin(
-        filtered_song_stats["Title"]
-    )
-]
-
-filtered_song_stats["First_Played"] = pd.to_datetime(filtered_song_stats["First_Played"])
-filtered_song_stats["Last_Played"] = pd.to_datetime(filtered_song_stats["Last_Played"])
+song_stats = get_song_stats(filtered_df, metadata)
+openers = get_openers(filtered_df)
+closers = get_closers(filtered_df)
 
 # -------------------------
 # SONG SEARCH SECTION
 # -------------------------
+
+tab1, tab2, tab3 = st.tabs(["Song Search", "Setlists", "Statistics"])
+
 with tab1:
     st.markdown("#### Song Search")
 
     search_song = st.selectbox(
         "Get shown the light...",
-        sorted(filtered_song_stats["Title"].unique()),
+        sorted(song_stats["Title"].unique()),
         index=None,
         placeholder="Type to search..."
     )
@@ -182,8 +195,8 @@ with tab1:
 
     if selected_song:
 
-        matching_stats = filtered_song_stats[
-            filtered_song_stats["Title"] == selected_song
+        matching_stats = song_stats[
+            song_stats["Title"] == selected_song
         ]
 
         if not matching_stats.empty:
@@ -315,7 +328,7 @@ with tab2:
             used_songs = set()
 
             # TRACKS 1–11
-            for track_num in range(1, 12):
+            for track_num in range(1, 10):
 
                 possible_songs = filtered_df[
                     filtered_df["Track Number"] == track_num
@@ -371,7 +384,7 @@ with tab2:
                 used_songs.add(random_closer)
 
                 random_setlist.append({
-                    "Track": 12,
+                    "Track": 10,
                     "Title": random_closer
                 })
 
@@ -418,16 +431,16 @@ with tab3: #song stats
 
             today = pd.Timestamp.today()
 
-            filtered_song_stats["Days_Since_Played"] = (
-                today - filtered_song_stats["Last_Played"]
+            song_stats["Days_Since_Played"] = (
+                today - song_stats["Last_Played"]
             ).dt.days
 
-            filtered_song_stats["Overdue_Score"] = (
-                filtered_song_stats["Days_Since_Played"]
-                * (filtered_song_stats["Times_Played"] ** times_played_mult)
+            song_stats["Overdue_Score"] = (
+                song_stats["Days_Since_Played"]
+                * (song_stats["Times_Played"] ** times_played_mult)
             )
 
-            bustouts = filtered_song_stats.sort_values(
+            bustouts = song_stats.sort_values(
                 "Overdue_Score",
                 ascending=False
             )
@@ -445,26 +458,67 @@ with tab3: #song stats
             bustouts["Overdue_Score_Normalized"] = (
                 bustouts["Overdue_Score_Normalized"].round(1)
             )   
+        
+        if st.button("Most Common Openers"):
+            openers = filtered_df[filtered_df["Track Number"] == 1]
+            openers = (
+                openers["Title"]
+                .value_counts()
+                .reset_index()
+            )
+            openers.columns = ["Title", "Times Opened"]
 
-            st.session_state.bustouts = pd.DataFrame(bustouts)
-            
+            st.subheader("Most Common Openers")
+
+            st.dataframe(
+                st.session_state.most_common_openers,
+                width="stretch",
+                hide_index=True
+            )
+                
 
     with col2:
         if st.button("Most Played Songs"):
-            
-            most_played = filtered_song_stats.sort_values(
+            most_played = song_stats.sort_values(
                 "Times_Played",
                 ascending=False
             )
 
-            st.session_state.most_played = most_played
-            st.session_state.bustouts = None
-    
+        if st.button("Most Common Closers",
+            key="closers_button"
+        ):
+            closers = (
+                filtered_df
+                .sort_values("Track Number")
+                .groupby(["Date", "Location"])
+                .last()
+                .reset_index()
+            )
+
+            closers = (
+                closers["Title"]
+                .value_counts()
+                .reset_index()
+            )
+
+            closers.columns = [
+                "Title",
+                "Times Closed"
+            ]
+        
+        if st.session_state.most_common_closers is not None:
+
+            st.subheader("Most Common Closers")
+
+            st.dataframe(
+                st.session_state.most_common_closers,
+                width="stretch",
+                hide_index=True
+            )
+
+        
     with col3:
         if st.button("Clear Statistics"):
-
-            st.session_state.bustouts = None
-            st.session_state.most_played = None 
 
             st.rerun()
 
@@ -533,6 +587,8 @@ if st.sidebar.button("Master List Clearer"):
     st.session_state.bustouts = None
     st.session_state.random_setlist = None   
     st.session_state.most_played = None 
+    st.session_state.most_common_closers = None
+    st.session_state.most_common_openers = None
     if "selected_show" in st.session_state:
         del st.session_state["selected_show"]
     st.rerun()
