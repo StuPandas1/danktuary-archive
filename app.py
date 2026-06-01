@@ -628,6 +628,6 @@ st.markdown("")
 st.markdown("")
 st.markdown("---")
 st.markdown(
-    "<div style='text-align: center; color: grey; font-size: 13px;'>Danktuary Archive Version: 1.1 | Believe it if you need it </div>",
+    "<div style='text-align: center; color: grey; font-size: 13px;'>Danktuary Archive Version: 1.2 | Believe it if you need it </div>",
     unsafe_allow_html=True
 )
