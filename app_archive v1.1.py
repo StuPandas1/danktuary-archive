@@ -15,16 +15,15 @@ def load_data():
     df = pd.read_csv("band_archive.csv")
     song_stats = pd.read_csv("song_stats.csv")
     metadata = pd.read_csv("song_metadata.csv")
-    jam_metadata = pd.read_csv("metadata_jam.csv")
  
     df["Date"] = pd.to_datetime(df["Date"])
     df["Year"] = df["Date"].dt.year
  
     song_stats = song_stats.merge(metadata, on="Title", how="left")
  
-    return df, song_stats, metadata, jam_metadata
+    return df, song_stats, metadata
  
-df, song_stats, metadata, jam_metadata = load_data()
+df, song_stats, metadata = load_data()
 
 # -------------------------
 # SESSION STATE
@@ -59,7 +58,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-tab1, tab2, tab3, tab4 = st.tabs(["Song Search", "Setlist Search", "Statistics", "Dead Weight Setlist Randomizer"])
+tab1, tab2, tab3, tab4 = st.tabs(["Song Search", "Setlist Search", "Setlist Randomizer", "Statistics"])
 
 # -------------------------
 # SIDEBAR FILTERS
@@ -204,7 +203,7 @@ with tab1:
         )
 
 # -------------------------
-# TAB 2: SETLIST SEARCH
+# TAB 2: SETLISTS
 # -------------------------
 
 with tab2:
@@ -283,10 +282,89 @@ with tab2:
             )
 
 # -------------------------
-# TAB 3: STATISTICS
+# TAB 3: Setlist Randomizer
 # -------------------------
 
-with tab3: 
+with tab3:
+
+    st.markdown("#### Setlist Randomizer")
+
+    col1,col2 = st.columns(2)
+
+    with col1: 
+        if st.button("Setlist Randomizer (v0.2)"):
+
+            improv_titles = set(metadata[metadata["Type"] == "Improv"]["Title"])
+            allowed_artists = ["The Band", "Grateful Dead", "Jerry Garcia Band", "Little Feat"]
+            randomizer_df = df[(df["Artist"].isin(allowed_artists)) & (df["Year"] >= 2022)]
+            randomizer_df = filtered_df[~filtered_df["Title"].isin(improv_titles)]
+
+            random_setlist = []
+            used_songs = set()
+
+            for track_num in range(1, 10):
+
+                slot_songs = randomizer_df[
+                    randomizer_df["Track Number"] == track_num
+                ]["Title"]
+
+                slot_counts = slot_songs.value_counts()
+                available = [(s, c) for s, c in slot_counts.items() if s not in used_songs]
+
+                if available:
+                    songs, weights = zip(*available)
+                    total = sum(weights)
+                    chosen_song = random.choices(songs, weights=weights, k=1)[0]
+                    chosen_odds = round((weights[songs.index(chosen_song)] / total) * 100, 1)
+                    used_songs.add(chosen_song)
+                    random_setlist.append({"Track": track_num, "Title": chosen_song, "Odds": f"{chosen_odds}%"})
+
+            closers = []
+            for date in randomizer_df["Date"].unique():
+                session = randomizer_df[randomizer_df["Date"] == date]
+                if not session.empty:
+                    max_track = session["Track Number"].max()
+                    closer_row = session[session["Track Number"] == max_track]
+                    if not closer_row.empty:
+                        closers.append(closer_row.iloc[0]["Title"])
+
+            closer_counts = pd.Series(closers).value_counts()
+            available_closers = [(s, c) for s, c in closer_counts.items() if s not in used_songs and s not in improv_titles]
+
+            if available_closers:
+                songs, weights = zip(*available_closers)
+                total = sum(weights)
+                random_closer = random.choices(songs, weights=weights, k=1)[0]
+                closer_odds = round((weights[songs.index(random_closer)] / total) * 100, 1)
+                used_songs.add(random_closer)
+                random_setlist.append({"Track": 10, "Title": random_closer, "Odds": f"{closer_odds}%"})
+
+            st.session_state.random_setlist = pd.DataFrame(random_setlist)
+
+    if st.session_state.get("random_setlist") is not None: #random setlist display
+
+        st.write("They're all dark star, man...")
+
+        st.dataframe(
+            st.session_state.random_setlist,
+            hide_index=True,
+            width='stretch',
+            column_config={
+                "Track": st.column_config.NumberColumn("#", width="small"),
+                "Title": st.column_config.TextColumn("Song Title", width="large"),
+                "Odds": st.column_config.TextColumn("Odds", width="small")                
+                }
+            )
+    with col2:
+        if st.button("Clear a Setlist", key="clear_setlists2"):
+            st.session_state.random_setlist = None
+            st.rerun()
+            
+# -------------------------
+# TAB 4: STATISTICS
+# -------------------------
+
+with tab4: 
     st.markdown("#### Song Statistics")
 
     col1, col2, col3 = st.columns(3)
@@ -421,182 +499,7 @@ with tab3:
                 "Times Closed": st.column_config.NumberColumn(width="small")
             }
         )
-
-
-# -------------------------
-# TAB 4: SETLIST RANDOMIZER
-# -------------------------
-
-def weighted_pick(series, used_songs):
-    counts = series.value_counts()
-    available = [
-        (song, count)
-        for song, count in counts.items()
-        if song not in used_songs
-    ]
-    if not available:
-        return None, None
-    songs, weights = zip(*available)
-    total = sum(weights)
-    chosen = random.choices(songs, weights=weights, k=1)[0]
-    odds = round((weights[songs.index(chosen)] / total) * 100, 1)
-    return chosen, odds
-
-with tab4:
-
-    st.markdown("#### Dead Weight Setlist Randomizer v1.0")
-
-    col1,col2 = st.columns(2)
-
-    with col1: 
-        year = st.slider(
-                "Starting Year:",
-                2015,
-                2026,
-        )
-
-        if st.button("Randomize Me!"):
-
-            random_setlist = []
-            used_songs = set()
-
-            improv_titles = set(metadata[metadata["Type"] == "Improv"]["Title"])
-            allowed_artists = ["The Band", "Grateful Dead", "Jerry Garcia Band", "Little Feat"]
-
-            randomizer_df = df.merge(metadata[["Title", "Artist"]], on="Title", how="left")
-            randomizer_df = randomizer_df[
-                (randomizer_df["Artist"].isin(allowed_artists)) & 
-                (randomizer_df["Year"] >= year)
-            ]
-            randomizer_df = randomizer_df[~randomizer_df["Title"].isin(improv_titles)]
-
-            # Track 1: Opener
-            opener, opener_odds = weighted_pick(
-                randomizer_df[randomizer_df["Track Number"] == 1]["Title"],
-                used_songs
-            )
-            if opener:
-                used_songs.add(opener)
-                random_setlist.append({"Track": 1, "Kind": "Opener", "Title": opener, "Odds": f"{opener_odds}%"})
-
-            # Track 2: Jam 1
-            jam_titles = set(jam_metadata["Title"])
-            jam_pool = randomizer_df[randomizer_df["Title"].isin(jam_titles)]
-
-            jam1, jam1_odds = weighted_pick(jam_pool["Title"], used_songs)
-            if jam1:
-                used_songs.add(jam1)
-                random_setlist.append({"Track": 2, "Kind": "Jam", "Title": jam1, "Odds": f"{jam1_odds}%"})
-
-            # Tracks 3–7: pull from recent rotation of last 10 shows
-            recent_dates = (
-                randomizer_df["Date"].drop_duplicates()
-                .sort_values()
-                .tail(10)
-            )
-            recent_pool = randomizer_df[randomizer_df["Date"].isin(recent_dates)]["Title"]
-
-            for track_num in range(3, 8):
-                song, odds = weighted_pick(recent_pool, used_songs)
-                if song:
-                    used_songs.add(song)
-                    random_setlist.append({"Track": track_num, "Kind": "Recent", "Title": song, "Odds": f"{odds}%"})
-
-            random_setlist.append({"Track": None, "Kind": "Take 5", "Title": "Set Break", "Odds": "N/A"})
-
-            # Track 8: Jam 2
-            jam2, jam2_odds = weighted_pick(jam_pool["Title"], used_songs)
-            if jam2:
-                used_songs.add(jam2)
-                random_setlist.append({"Track": 8, "Kind": "Jam", "Title": jam2, "Odds": f"{jam2_odds}%"})
-             
-            # Tracks 9–10: classics (weighted by times played overall)
-            classics_pool = (
-                randomizer_df.groupby("Title")
-                .size()
-                .reset_index(name="Times_Played")
-                .sort_values("Times_Played", ascending=False)
-            )
-            for track_num in range(9, 11):
-                available = classics_pool[~classics_pool["Title"].isin(used_songs)]
-                if not available.empty:
-                    songs = available["Title"].tolist()
-                    weights = available["Times_Played"].tolist()
-                    total = sum(weights)
-                    chosen = random.choices(songs, weights=weights, k=1)[0]
-                    odds = round((weights[songs.index(chosen)] / total) * 100, 1)
-                    used_songs.add(chosen)
-                    random_setlist.append({"Track": track_num, "Kind": "Classic", "Title": chosen, "Odds": f"{odds}%"})
  
-            # Tracks 11–12: bustouts (weighted by days since last played)
-            today = pd.Timestamp.today()
-            bustout_pool = (
-                randomizer_df.groupby("Title")["Date"]
-                .max()
-                .reset_index()
-            )
-            bustout_pool["Days_Since"] = (today - pd.to_datetime(bustout_pool["Date"])).dt.days
-            for track_num in range(11, 13):
-                available = bustout_pool[~bustout_pool["Title"].isin(used_songs)]
-                if not available.empty:
-                    songs = available["Title"].tolist()
-                    weights = available["Days_Since"].tolist()
-                    total = sum(weights)
-                    chosen = random.choices(songs, weights=weights, k=1)[0]
-                    odds = round((weights[songs.index(chosen)] / total) * 100, 1)
-                    used_songs.add(chosen)
-                    random_setlist.append({"Track": track_num, "Kind": "Bustout", "Title": chosen, "Odds": f"{odds}%"})
- 
-            # Closer (track 13)
-            closers = []
-            for date in randomizer_df["Date"].unique():
-                session = randomizer_df[randomizer_df["Date"] == date]
-                if not session.empty:
-                    max_track = session["Track Number"].max()
-                    closer_row = session[session["Track Number"] == max_track]
-                    if not closer_row.empty:
-                        closers.append(closer_row.iloc[0]["Title"])
- 
-            closer, closer_odds = weighted_pick(pd.Series(closers), used_songs)
-            if closer and closer not in improv_titles:
-                used_songs.add(closer)
-                random_setlist.append({"Track": 13, "Kind": "Closer", "Title": closer, "Odds": f"{closer_odds}%"})
- 
-            st.session_state.random_setlist = pd.DataFrame(random_setlist)
-
-    with col2:
-        if st.button("Clear This List", key="clear_setlists2"):
-            st.session_state.random_setlist = None
-            st.rerun()
-
-    if st.session_state.get("random_setlist") is not None: #random setlist display
-        
-        random_messages = [
-            "They're all Dark Star, man...",
-            "Inspiration, move me brightly...",
-            "Let my inspiration flow...",
-            "Statistically improbable. Musically inevitable.",
-            "Somewhere, Phil is shaking his head.",
-            "Notes, notes, notes, so many notes!",
-            "Why haven't we learned Help/Slip/Franklin's yet?",
-            "The grass ain't greener, the wine ain't sweeter...",
-        ]
-
-        st.write(random.choice(random_messages))
-
-        st.dataframe(
-            st.session_state.random_setlist,
-            hide_index=True,
-            width='stretch',
-            height=500,
-            column_config={
-                "Track": st.column_config.NumberColumn("#", width="small"),
-                "Kind": st.column_config.TextColumn("Kind", width="small"),
-                "Title": st.column_config.TextColumn("Song Title", width="large"),
-                "Odds": st.column_config.TextColumn("Odds", width="small")                
-                }
-            )
-
 # -------------------------
 # SIDEBAR UTILITIES
 # -------------------------
