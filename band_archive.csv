@@ -195,10 +195,12 @@ Track Number,File Track,Title,Date,Location,Type,Raw Title
 1,01,Dancin In The Street,2018-04-20,The Bitter End,live,01_ Dancin In The Street
 2,02,Gravioli,2018-04-20,The Bitter End,live,02_ Gravioli
 3,03,Hard To Find,2018-04-20,The Bitter End,live,03_ Hard to Find
-4,04,Magic Bus Medley,2018-04-20,The Bitter End,live,04_ Magic Bus Medley
-5,05,Energy,2018-04-20,The Bitter End,live,05_ Energy
-6,06,Mississippi Half-step Uptown Toodeloo,2018-04-20,The Bitter End,live,06_ Mississippi Half-Step Uptown Toodeloo
-7,07,Push Comes To Shove,2018-04-20,The Bitter End,live,07_ Push Comes To Shove
+4,04,Magic Bus,2018-04-20,The Bitter End,live,04_ Magic Bus _ Crazy Rap _ Smoke Two Joints
+5,04,Crazy Rap,2018-04-20,The Bitter End,live,04_ Magic Bus _ Crazy Rap _ Smoke Two Joints
+6,04,Smoke Two Joints,2018-04-20,The Bitter End,live,04_ Magic Bus _ Crazy Rap _ Smoke Two Joints
+7,05,Energy,2018-04-20,The Bitter End,live,05_ Energy
+8,06,Mississippi Half-step Uptown Toodeloo,2018-04-20,The Bitter End,live,06_ Mississippi Half-Step Uptown Toodeloo
+9,07,Push Comes To Shove,2018-04-20,The Bitter End,live,07_ Push Comes To Shove
 1,01,Gravioli,2018-07-13,The Bitter End,live,01 Gravioli
 2,02,Speak Up!,2018-07-13,The Bitter End,live,02 Speak Up!
 3,03,Brown Eyed Women,2018-07-13,The Bitter End,live,03 Brown Eyed Women
@@ -238,12 +240,14 @@ Track Number,File Track,Title,Date,Location,Type,Raw Title
 8,06,Deal,2018-12-29,The Bitter End,live,06 Deal
 9,07,Turn On Your Lovelight,2018-12-29,The Bitter End,live,07 Lovelight _ Hard to Find
 10,07,Hard To Find,2018-12-29,The Bitter End,live,07 Lovelight _ Hard to Find
-1,01,Viola Lee Medley,2019-02-08,The Bitter End,live,01 Viola Lee Medley
-2,02,Atoms In Pursuit,2019-02-08,The Bitter End,live,02 Atoms In Pursuit
-3,03,Draggin The Line,2019-02-08,The Bitter End,live,03 Draggin The Line
-4,04,Push Comes To Shove,2019-02-08,The Bitter End,live,04 Push Comes To Shove
-5,05,The Music Never Stopped,2019-02-08,The Bitter End,live,05 The Music Never Stopped
-6,06,Cumberland Blues,2019-02-08,The Bitter End,live,06 Cumberland Blues
+1,01,Viola Lee Blues,2019-02-08,The Bitter End,live,01 Viola Lee Blues _ Speak Up _ I'm The One
+2,01,Speak Up!,2019-02-08,The Bitter End,live,01 Viola Lee Blues _ Speak Up _ I'm The One
+3,01,I'm The One,2019-02-08,The Bitter End,live,01 Viola Lee Blues _ Speak Up _ I'm The One
+4,02,Atoms In Pursuit,2019-02-08,The Bitter End,live,02 Atoms In Pursuit
+5,03,Draggin The Line,2019-02-08,The Bitter End,live,03 Draggin The Line
+6,04,Push Comes To Shove,2019-02-08,The Bitter End,live,04 Push Comes To Shove
+7,05,The Music Never Stopped,2019-02-08,The Bitter End,live,05 The Music Never Stopped
+8,06,Cumberland Blues,2019-02-08,The Bitter End,live,06 Cumberland Blues
 1,01,Let The Good Times Roll,2019-04-20,Desmond's Tavern,live,01 Let The Good Times Roll
 2,02,Atoms In Pursuit,2019-04-20,Desmond's Tavern,live,02 Atoms in Pursuit
 3,03,Deal,2019-04-20,Desmond's Tavern,live,03 Deal
@@ -1863,67 +1867,79 @@ Track Number,File Track,Title,Date,Location,Type,Raw Title
 6,03,Dancin In The Street,2018-03-13,The Music Building,practice,03 Mississippi Half-Step Uptown Toodeloo _ The Weight _ Dancin In The Streets
 7,04,Gravioli,2018-03-13,The Music Building,practice,04 Gravioli
 8,05,Deal,2018-03-13,The Music Building,practice,05 Deal
-9,06,Magic Bus Medley,2018-03-13,The Music Building,practice,06 Magic Bus Medley _ Franklin's Tower
-10,06,Franklin's Tower,2018-03-13,The Music Building,practice,06 Magic Bus Medley _ Franklin's Tower
-11,07,Cumberland Blues,2018-03-13,The Music Building,practice,07 Cumberland Blues
-12,08,Sugaree,2018-03-13,The Music Building,practice,08 Sugaree
+9,06,Magic Bus,2018-03-13,The Music Building,practice,06 Magic Bus _ Crazy Rap _ Smoke Two Joints _ Franklin's Tower
+10,06,Crazy Rap,2018-03-13,The Music Building,practice,06 Magic Bus _ Crazy Rap _ Smoke Two Joints _ Franklin's Tower
+11,06,Smoke Two Joints,2018-03-13,The Music Building,practice,06 Magic Bus _ Crazy Rap _ Smoke Two Joints _ Franklin's Tower
+12,06,Franklin's Tower,2018-03-13,The Music Building,practice,06 Magic Bus _ Crazy Rap _ Smoke Two Joints _ Franklin's Tower
+13,07,Cumberland Blues,2018-03-13,The Music Building,practice,07 Cumberland Blues
+14,08,Sugaree,2018-03-13,The Music Building,practice,08 Sugaree
 1,01,Dancin In The Street,2018-03-18,The Music Building,practice,01 Dancin In The Streets
 2,02,Gravioli,2018-03-18,The Music Building,practice,02 Dancin (2) _ Gravioli
 3,03,Shakedown Street,2018-03-18,The Music Building,practice,03 Shakedown Street
 4,04,Deal,2018-03-18,The Music Building,practice,04 Deal
 5,05,Hard To Find,2018-03-18,The Music Building,practice,05 Hard To Find
-6,06,Magic Bus Medley,2018-03-18,The Music Building,practice,06 Magic Bus Medley _ Energy
-7,06,Energy,2018-03-18,The Music Building,practice,06 Magic Bus Medley _ Energy
-8,07,Mississippi Half-step Uptown Toodeloo,2018-03-18,The Music Building,practice,07 Mississippi Half-Step
-9,08,Push Comes To Shove,2018-03-18,The Music Building,practice,08 Push Comes To Shove _ Scarlet Begonias
-10,08,Scarlet Begonias,2018-03-18,The Music Building,practice,08 Push Comes To Shove _ Scarlet Begonias
+6,06,Magic Bus,2018-03-18,The Music Building,practice,06 Magic Bus _ Crazy Rap _ Smoke Two Joints  _ Energy
+7,06,Crazy Rap,2018-03-18,The Music Building,practice,06 Magic Bus _ Crazy Rap _ Smoke Two Joints  _ Energy
+8,06,Smoke Two Joints,2018-03-18,The Music Building,practice,06 Magic Bus _ Crazy Rap _ Smoke Two Joints  _ Energy
+9,06,Energy,2018-03-18,The Music Building,practice,06 Magic Bus _ Crazy Rap _ Smoke Two Joints  _ Energy
+10,07,Mississippi Half-step Uptown Toodeloo,2018-03-18,The Music Building,practice,07 Mississippi Half-Step
+11,08,Push Comes To Shove,2018-03-18,The Music Building,practice,08 Push Comes To Shove _ Scarlet Begonias
+12,08,Scarlet Begonias,2018-03-18,The Music Building,practice,08 Push Comes To Shove _ Scarlet Begonias
 1,01,Jam,2018-03-27,The Music Building,practice,01 Jam _ Dancing in the Streets _ Gravioli
 2,01,Dancin In The Street,2018-03-27,The Music Building,practice,01 Jam _ Dancing in the Streets _ Gravioli
 3,01,Gravioli,2018-03-27,The Music Building,practice,01 Jam _ Dancing in the Streets _ Gravioli
 4,02,Hard To Find,2018-03-27,The Music Building,practice,02 Hard to Find
-5,03,Magic Bus Medley,2018-03-27,The Music Building,practice,03 Magic Bus Medley
-6,04,Energy,2018-03-27,The Music Building,practice,04 Energy
-7,05,Mississippi Half-step Uptown Toodeloo,2018-03-27,The Music Building,practice,05 Half Step _ Franklin's Tower _ Push Comes To Shove
-8,05,Franklin's Tower,2018-03-27,The Music Building,practice,05 Half Step _ Franklin's Tower _ Push Comes To Shove
-9,05,Push Comes To Shove,2018-03-27,The Music Building,practice,05 Half Step _ Franklin's Tower _ Push Comes To Shove
-10,06,Rotation,2018-03-27,The Music Building,practice,06 Rotation Jam
-11,07,Curiosity,2018-03-27,The Music Building,practice,07 Curiosity
-12,08,Speak Up!,2018-03-27,The Music Building,practice,08 Speak Up _ Cumberland
-13,08,Cumberland Blues,2018-03-27,The Music Building,practice,08 Speak Up _ Cumberland
-14,09,Deal,2018-03-27,The Music Building,practice,09 Deal
+5,03,Magic Bus,2018-03-27,The Music Building,practice,03 Magic Bus _ Crazy Rap _ Smoke Two Joints
+6,03,Crazy Rap,2018-03-27,The Music Building,practice,03 Magic Bus _ Crazy Rap _ Smoke Two Joints
+7,03,Smoke Two Joints,2018-03-27,The Music Building,practice,03 Magic Bus _ Crazy Rap _ Smoke Two Joints
+8,04,Energy,2018-03-27,The Music Building,practice,04 Energy
+9,05,Mississippi Half-step Uptown Toodeloo,2018-03-27,The Music Building,practice,05 Half Step _ Franklin's Tower _ Push Comes To Shove
+10,05,Franklin's Tower,2018-03-27,The Music Building,practice,05 Half Step _ Franklin's Tower _ Push Comes To Shove
+11,05,Push Comes To Shove,2018-03-27,The Music Building,practice,05 Half Step _ Franklin's Tower _ Push Comes To Shove
+12,06,Rotation,2018-03-27,The Music Building,practice,06 Rotation Jam
+13,07,Curiosity,2018-03-27,The Music Building,practice,07 Curiosity
+14,08,Speak Up!,2018-03-27,The Music Building,practice,08 Speak Up _ Cumberland
+15,08,Cumberland Blues,2018-03-27,The Music Building,practice,08 Speak Up _ Cumberland
+16,09,Deal,2018-03-27,The Music Building,practice,09 Deal
 1,01,Jam,2018-04-03,The Music Building,practice,01 Jam _ Dancin In The Street
 2,01,Dancin In The Street,2018-04-03,The Music Building,practice,01 Jam _ Dancin In The Street
 3,02,Gravioli,2018-04-03,The Music Building,practice,02 Gravioli
 4,03,Hard To Find,2018-04-03,The Music Building,practice,03 Hard to Find
-5,04,Magic Bus Medley,2018-04-03,The Music Building,practice,04 Magic Bus Medley
-6,05,Energy,2018-04-03,The Music Building,practice,05 Energy
-7,06,Mississippi Half-step Uptown Toodeloo,2018-04-03,The Music Building,practice,06 Mississippi Half Step _ Push Comes To Shove _ Just Dance
-8,06,Push Comes To Shove,2018-04-03,The Music Building,practice,06 Mississippi Half Step _ Push Comes To Shove _ Just Dance
-9,06,Just Dance,2018-04-03,The Music Building,practice,06 Mississippi Half Step _ Push Comes To Shove _ Just Dance
-10,07,Turn On Your Lovelight,2018-04-03,The Music Building,practice,07 Lovelight _ Cumberland Blues
-11,07,Cumberland Blues,2018-04-03,The Music Building,practice,07 Lovelight _ Cumberland Blues
-12,08,Curiosity,2018-04-03,The Music Building,practice,08 Curiosity
-13,09,Deal,2018-04-03,The Music Building,practice,09 Deal
+5,04,Magic Bus,2018-04-03,The Music Building,practice,04 Magic Bus _ Crazy Rap _ Smoke Two Joints
+6,04,Crazy Rap,2018-04-03,The Music Building,practice,04 Magic Bus _ Crazy Rap _ Smoke Two Joints
+7,04,Smoke Two Joints,2018-04-03,The Music Building,practice,04 Magic Bus _ Crazy Rap _ Smoke Two Joints
+8,05,Energy,2018-04-03,The Music Building,practice,05 Energy
+9,06,Mississippi Half-step Uptown Toodeloo,2018-04-03,The Music Building,practice,06 Mississippi Half Step _ Push Comes To Shove _ Just Dance
+10,06,Push Comes To Shove,2018-04-03,The Music Building,practice,06 Mississippi Half Step _ Push Comes To Shove _ Just Dance
+11,06,Just Dance,2018-04-03,The Music Building,practice,06 Mississippi Half Step _ Push Comes To Shove _ Just Dance
+12,07,Turn On Your Lovelight,2018-04-03,The Music Building,practice,07 Lovelight _ Cumberland Blues
+13,07,Cumberland Blues,2018-04-03,The Music Building,practice,07 Lovelight _ Cumberland Blues
+14,08,Curiosity,2018-04-03,The Music Building,practice,08 Curiosity
+15,09,Deal,2018-04-03,The Music Building,practice,09 Deal
 1,01,Dancin In The Street,2018-04-08,The Music Building,practice,01 Dancing In The Street
 2,02,Gravioli,2018-04-08,The Music Building,practice,02 Gravioli
 3,03,Hard To Find,2018-04-08,The Music Building,practice,03 Hard To Find
-4,04,Magic Bus Medley,2018-04-08,The Music Building,practice,04 Magic Bus Medley
-5,05,Energy,2018-04-08,The Music Building,practice,05 Energy
-6,06,Mississippi Half-step Uptown Toodeloo,2018-04-08,The Music Building,practice,06 Half Step _ Franklin's
-7,06,Franklin's Tower,2018-04-08,The Music Building,practice,06 Half Step _ Franklin's
-8,07,Cumberland Blues,2018-04-08,The Music Building,practice,07 Cumberland Blues
+4,04,Magic Bus,2018-04-08,The Music Building,practice,04 Magic Bus _ Crazy Rap _ Smoke Two Joints
+5,04,Crazy Rap,2018-04-08,The Music Building,practice,04 Magic Bus _ Crazy Rap _ Smoke Two Joints
+6,04,Smoke Two Joints,2018-04-08,The Music Building,practice,04 Magic Bus _ Crazy Rap _ Smoke Two Joints
+7,05,Energy,2018-04-08,The Music Building,practice,05 Energy
+8,06,Mississippi Half-step Uptown Toodeloo,2018-04-08,The Music Building,practice,06 Half Step _ Franklin's
+9,06,Franklin's Tower,2018-04-08,The Music Building,practice,06 Half Step _ Franklin's
+10,07,Cumberland Blues,2018-04-08,The Music Building,practice,07 Cumberland Blues
 1,01,Mr. Charlie,2018-04-10,The Music Building,practice,01 Mr. Charlie
 2,02,Energy,2018-04-10,The Music Building,practice,02 Energy
 3,03,Ob-la-di Ob-la-da,2018-04-10,The Music Building,practice,03 Ob-la-di ob-la-da
 4,04,Dancin In The Street,2018-04-10,The Music Building,practice,04 Dancin In The Street
-5,05,Magic Bus Medley,2018-04-10,The Music Building,practice,05 Magic Bus Medley
-6,06,Scarlet Begonias,2018-04-10,The Music Building,practice,06 Scarlet _ Fire
-7,06,Fire On The Mountain,2018-04-10,The Music Building,practice,06 Scarlet _ Fire
-8,07,Good Lovin,2018-04-10,The Music Building,practice,07 Good Lovin (1)
-9,09,Turn On Your Lovelight,2018-04-10,The Music Building,practice,09 Lovelight _ Hard To Find _ Deal
-10,09,Hard To Find,2018-04-10,The Music Building,practice,09 Lovelight _ Hard To Find _ Deal
-11,09,Deal,2018-04-10,The Music Building,practice,09 Lovelight _ Hard To Find _ Deal
-12,10,Mississippi Half-step Uptown Toodeloo,2018-04-10,The Music Building,practice,10 Half-Step
+5,05,Magic Bus,2018-04-10,The Music Building,practice,05 Magic Bus _ Crazy Rap _ Smoke Two Joints
+6,05,Crazy Rap,2018-04-10,The Music Building,practice,05 Magic Bus _ Crazy Rap _ Smoke Two Joints
+7,05,Smoke Two Joints,2018-04-10,The Music Building,practice,05 Magic Bus _ Crazy Rap _ Smoke Two Joints
+8,06,Scarlet Begonias,2018-04-10,The Music Building,practice,06 Scarlet _ Fire
+9,06,Fire On The Mountain,2018-04-10,The Music Building,practice,06 Scarlet _ Fire
+10,07,Good Lovin,2018-04-10,The Music Building,practice,07 Good Lovin (1)
+11,09,Turn On Your Lovelight,2018-04-10,The Music Building,practice,09 Lovelight _ Hard To Find _ Deal
+12,09,Hard To Find,2018-04-10,The Music Building,practice,09 Lovelight _ Hard To Find _ Deal
+13,09,Deal,2018-04-10,The Music Building,practice,09 Lovelight _ Hard To Find _ Deal
+14,10,Mississippi Half-step Uptown Toodeloo,2018-04-10,The Music Building,practice,10 Half-Step
 1,01,Dancin In The Street,2018-04-17,The Music Building,practice,01 Dancin In The Street
 2,02,Gravioli,2018-04-17,The Music Building,practice,02 Gravioli
 3,03,Hard To Find,2018-04-17,The Music Building,practice,03 Hard to Find _ Magic Bus _ Energy
@@ -2325,14 +2341,16 @@ Track Number,File Track,Title,Date,Location,Type,Raw Title
 13,08,Not Fade Away,2019-01-21,The Music Building,practice,08 Not Fade Away
 14,09,Curiosity,2019-01-21,The Music Building,practice,09 Curiosity
 15,10,Deal,2019-01-21,The Music Building,practice,10 Deal
-1,01,Viola Lee Medley,2019-01-23,The Music Building,practice,01 Viola Lee Medley
-2,02,Atoms In Pursuit,2019-01-23,The Music Building,practice,02 Atoms in Pursuit
-3,03,Draggin The Line,2019-01-23,The Music Building,practice,03 Draggin The Line
-4,04,Push Comes To Shove,2019-01-23,The Music Building,practice,04 Push Comes to Shove _ Music Never Stopped
-5,04,The Music Never Stopped,2019-01-23,The Music Building,practice,04 Push Comes to Shove _ Music Never Stopped
-6,05,Wastin' Time,2019-01-23,The Music Building,practice,05 Wastin' Time
-7,06,Brown Eyed Women,2019-01-23,The Music Building,practice,06 Brown Eyed Women _ GDTRFB
-8,06,Goin Down The Road Feelin Bad,2019-01-23,The Music Building,practice,06 Brown Eyed Women _ GDTRFB
+1,01,Viola Lee Blues,2019-01-23,The Music Building,practice,01 Viola Lee Blues _ Speak Up _ I'm The One
+2,01,Speak Up!,2019-01-23,The Music Building,practice,01 Viola Lee Blues _ Speak Up _ I'm The One
+3,01,I'm The One,2019-01-23,The Music Building,practice,01 Viola Lee Blues _ Speak Up _ I'm The One
+4,02,Atoms In Pursuit,2019-01-23,The Music Building,practice,02 Atoms in Pursuit
+5,03,Draggin The Line,2019-01-23,The Music Building,practice,03 Draggin The Line
+6,04,Push Comes To Shove,2019-01-23,The Music Building,practice,04 Push Comes to Shove _ Music Never Stopped
+7,04,The Music Never Stopped,2019-01-23,The Music Building,practice,04 Push Comes to Shove _ Music Never Stopped
+8,05,Wastin' Time,2019-01-23,The Music Building,practice,05 Wastin' Time
+9,06,Brown Eyed Women,2019-01-23,The Music Building,practice,06 Brown Eyed Women _ GDTRFB
+10,06,Goin Down The Road Feelin Bad,2019-01-23,The Music Building,practice,06 Brown Eyed Women _ GDTRFB
 1,01,Goin Down The Road Feelin Bad,2019-01-31,The Music Building,practice,01 GDTRFB _ Draggin The Line _ Push Ending
 2,01,Draggin The Line,2019-01-31,The Music Building,practice,01 GDTRFB _ Draggin The Line _ Push Ending
 3,01,Push Comes To Shove,2019-01-31,The Music Building,practice,01 GDTRFB _ Draggin The Line _ Push Ending
