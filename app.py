@@ -214,7 +214,6 @@ with tab1:
             shows_played = performances["Date"].nunique()
             pct = round((shows_played / total_shows_since_debut) * 100, 1)
             st.write(f"Since its debut in this window, **\"{selected_song}\"** has been played in **{pct}%** of setlists.")
-            st.write(total_shows_since_debut)
  
         with st.expander("Graph By Year (All-Time)", expanded=False):
             yearly_counts = (
