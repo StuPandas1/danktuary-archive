@@ -213,7 +213,7 @@ with tab1:
             total_shows_since_debut = df[df["Date"] >= stats["First_Played"]]["Date"].nunique()
             shows_played = performances["Date"].nunique()
             pct = round((shows_played / total_shows_since_debut) * 100, 1)
-            st.write(f"Since its debut (in this window), **\"{selected_song}\"** has been played in **{pct}%** of setlists.")
+            st.write(f"Since its debut in this window, **\"{selected_song}\"** has been played in **{pct}%** of setlists.")
  
         with st.expander("Graph By Year (All-Time)", expanded=False):
             yearly_counts = (
@@ -278,7 +278,7 @@ with tab1:
 # -------------------------
 # TAB 2: SETLIST LOOKUP
 # -------------------------
- 
+
 with tab2:
     st.markdown("#### Setlist Lookup")
  
@@ -332,39 +332,13 @@ with tab2:
         key="selected_show_widget"
     )
  
-    col1, col2, col3 = st.columns(3)
- 
-    with col1:
-        if st.button("Random Show"):
-            surprise = random.choice(unique_shows)
-            st.session_state.selected_show = surprise
-            if "selected_show_widget" in st.session_state:
-                del st.session_state["selected_show_widget"]
-            st.rerun()
- 
-    with col2:
-        today_md = pd.Timestamp.today().strftime("%m/%d")
-        on_this_day = [s for s in unique_shows if s.startswith(today_md)]
-        if st.button("Random On This Day"):
-            if on_this_day:
-                st.session_state.selected_show = random.choice(on_this_day)
-                if "selected_show_widget" in st.session_state:
-                    del st.session_state["selected_show_widget"]
-                st.rerun()
-            else:
-                st.toast("No shows found on this date in past years.")
- 
-    with col3:
-        if st.button("Clear Setlist", key="clear_setlists1"):
-            st.session_state.selected_show = None
-            if "selected_show_widget" in st.session_state:
-                del st.session_state["selected_show_widget"]
-            st.rerun()
+    if st.button("Clear a Setlist", key="clear_setlists1"):
+        st.session_state.selected_show = None
+        st.rerun()
  
     if selected_show:
         st.session_state.selected_show = selected_show
  
-    if st.session_state.selected_show:
         selected_label = st.session_state.selected_show
  
         historical_setlist = performances[
@@ -379,14 +353,14 @@ with tab2:
         most_common_count = venue_counts.max()
         tied_songs = venue_counts[venue_counts == most_common_count]
  
-        st.write(f"**{selected_location} - {selected_date_str}**")
-        st.write(f"There {'is' if venue_shows == 1 else 'are'} **{venue_shows}** {'set' if venue_shows == 1 else 'sets'} at {selected_location}.")
+        st.markdown(f"##### You selected the {selected_location} setlist on {selected_date_str}.")
+        st.write(f"You've played **{venue_shows}** {'set' if venue_shows == 1 else 'sets'} at {selected_location}") 
  
         if len(tied_songs) > 1:
-            st.write(f"There are **{len(tied_songs)}** songs tied for most commonly played at {selected_location}, each played **{most_common_count}** {'time.' if most_common_count == 1 else 'times.'}")
+            st.write(f"There are **{len(tied_songs)}** songs tied for most common at {selected_location}, each played **{most_common_count}** {'time' if most_common_count == 1 else 'times'}")
         else:
             most_common_at_venue = tied_songs.idxmax()
-            st.write(f"The most commonly played song at {selected_location} is **\"{most_common_at_venue}\"**, played **{most_common_count}** {'time.' if most_common_count == 1 else 'times.'}")
+            st.write(f"**\"{most_common_at_venue}\"** is the most common at {selected_location} (**{most_common_count}** {'time' if most_common_count == 1 else 'times'} played)")
  
         st.dataframe(
             historical_setlist[["Track Number", "Title"]].rename(
@@ -399,7 +373,7 @@ with tab2:
                 "Title": st.column_config.TextColumn(width="large")
             }
         )
-
+ 
 # -------------------------
 # TAB 3: STATISTICS
 # -------------------------
@@ -436,7 +410,7 @@ with tab3:
             if st.button("Longest Historical Gap"):
                 st.session_state.active_stat = "longest_gap"
         with col3:
-            if st.button("Active Streaks"):
+            if st.button("Most Consecutive Shows"):
                 st.session_state.active_stat = "consecutive"
  
     with st.expander("Setlist Stats", expanded=False):
@@ -468,13 +442,15 @@ with tab3:
         bustouts["Overdue_Score_Normalized"] = (
             (bustouts["Overdue_Score"] / max_score) * 100
         ).round(1)
+        bustouts.insert(0, "Rank", range(1, len(bustouts) + 1))
+
  
         st.subheader("Most Overdue Songs")
         st.dataframe(
             bustouts.assign(
                 Last_Played=lambda x: x["Last_Played"].dt.strftime("%m/%d/%Y")
             )[[
-                "Title", "Days_Since_Played", "Times_Played", "Overdue_Score_Normalized"
+                "Rank", "Title", "Days_Since_Played", "Times_Played", "Overdue_Score_Normalized"
             ]].rename(columns={
                 "Days_Since_Played": "Days Since Played",
                 "Times_Played": "Times Played",
@@ -578,8 +554,8 @@ with tab3:
                 hide_index=True,
                 column_config={
                     "Rank": st.column_config.NumberColumn(width="small"),
-                    "Title": st.column_config.TextColumn(width="large"),
-                    "Longest Gap (Sets)": st.column_config.NumberColumn(width="small"),
+                    "Title": st.column_config.TextColumn(width="medium"),
+                    "Longest Gap (Sets)": st.column_config.NumberColumn(width="medium"),
                     "From": st.column_config.TextColumn(width="small"),
                     "To": st.column_config.TextColumn(width="small"),
                 }
@@ -608,7 +584,7 @@ with tab3:
             )
             consec_df.insert(0, "Rank", range(1, len(consec_df) + 1))
  
-            st.subheader("Active Setlist Streaks")
+            st.subheader("Active Consecutive Show Streaks")
             st.dataframe(
                 consec_df,
                 width="stretch",
@@ -645,12 +621,8 @@ with tab3:
  
     elif active == "closers":
  
-        year_filtered_df = df[
-            (df["Year"] >= t3_year[0]) &
-            (df["Year"] <= t3_year[1])
-        ]
         allowed_titles = set(t3_df["Title"].unique())
-        closers = find_closers(year_filtered_df, allowed_titles)
+        closers = find_closers(df, allowed_titles)
  
         closer_counts = (
             pd.Series(closers)
@@ -861,7 +833,7 @@ st.markdown("")
 st.markdown("")
 st.markdown("---")
 st.markdown(
-    "<div style='text-align: center; color: grey; font-size: 13px;'>Danktuary Archive Version: 1.3.1 | Believe it if you need it</div>",
+    "<div style='text-align: center; color: grey; font-size: 13px;'>Danktuary Archive Version: 1.3 | Believe it if you need it</div>",
     unsafe_allow_html=True
 )
 st.markdown("")
@@ -875,20 +847,17 @@ with col_f1:
         st.session_state.random_setlist = None
         if "selected_show" in st.session_state:
             del st.session_state["selected_show"]
-        st.session_state.selected_show = None
-        if "selected_show_widget" in st.session_state:
-            del st.session_state["selected_show_widget"]
         st.rerun()
 
-with col_f2:
-    if st.button("Refresh Database"):
-        with st.spinner("Updating archive..."):
-            subprocess.run(["python", "scanner.py"])
-            subprocess.run(["python", "analyze.py"])
-            subprocess.run(["python", "build_metadata.py"])
-        st.cache_data.clear()
-        success_message = st.empty()
-        success_message.success("Database updated!")
-        time.sleep(2)
-        success_message.empty()
-        st.rerun()
+# with col_f2:
+#     if st.button("Refresh Database"):
+#         with st.spinner("Updating archive..."):
+#             subprocess.run(["python", "scanner.py"])
+#             subprocess.run(["python", "analyze.py"])
+#             subprocess.run(["python", "build_metadata.py"])
+#         st.cache_data.clear()
+#         success_message = st.empty()
+#         success_message.success("Database updated! Refresh the page to see new songs.")
+#         time.sleep(2)
+#         success_message.empty()
+#         st.rerun()
