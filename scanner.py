@@ -2,6 +2,7 @@ import re
 import os
 import csv
 import string
+from mutagen import File as MutagenFile
 print("CORRECT SCANNER RUNNING")
 manual_fixes = {
     "alma's phat mama": "alma's fat mama",
@@ -193,10 +194,30 @@ archive_paths = [
     r"C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-",
     r"C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Trips"
 ]
+
+def get_duration(filepath):
+    try:
+        audio = MutagenFile(filepath)
+        if audio is not None and audio.info is not None:
+            seconds = int(audio.info.length)
+            # if mutagen returned milliseconds instead of seconds
+            if seconds > 10000:
+                seconds = seconds // 1000
+            minutes = seconds // 60
+            secs = seconds % 60
+            if minutes >= 60:
+                hours = minutes // 60
+                minutes = minutes % 60
+                return f"{hours}:{minutes:02d}:{secs:02d}"
+            return f"{minutes}:{secs:02d}"
+    except Exception:
+        pass
+    return "N/A"
+
 with open("band_archive.csv", "w", newline="", encoding="utf-8") as csvfile:
     writer = csv.writer(csvfile)
     # column headers
-    writer.writerow(["Track Number", "File Track", "Title", "Date", "Location", "Type", "Raw Title"])
+    writer.writerow(["Track Number", "File Track", "Title", "Date", "Location", "Type", "Duration", "Raw Title", "File Path"])
 
     for archive_path in archive_paths:
 
@@ -261,9 +282,14 @@ with open("band_archive.csv", "w", newline="", encoding="utf-8") as csvfile:
                             recording_type = "practice"
                             if date >= "2024-06-26": # date of first recording in new practice space
                                 gig_place = "Danktuary Studios"
+                            elif date >= "2020-03-10":
+                                gig_place = "Studio Chill"
                             else:
                                 gig_place = "The Music Building"
                         
+                        filepath = os.path.join(root, file)
+                        duration = get_duration(filepath)
+
                         if title not in seen_songs: # only write first instance of each song in database
                             writer.writerow([
                                 logical_track_number,
@@ -272,7 +298,9 @@ with open("band_archive.csv", "w", newline="", encoding="utf-8") as csvfile:
                                 date,
                                 gig_place,
                                 recording_type,
-                                raw_name
+                                duration,
+                                raw_name,
+                                filepath
                             ])
                             seen_songs.add(title)
                             logical_track_number += 1
