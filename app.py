@@ -4,9 +4,9 @@ st.set_page_config(page_title="DankApp", layout="wide", initial_sidebar_state="c
 
 pg = st.navigation(
     [
-        st.Page("Pages/landing.py", title="Dashboard", icon="💀", default=True),
-        st.Page("Pages/tools.py", title="Useful Tools", icon="🛠️"),
-        st.Page("Pages/explore.py", title="Explore the Archive", icon="🔍"),
+        st.Page("pages/landing.py", title="Dashboard", icon="💀", default=True),
+        st.Page("pages/tools.py", title="Useful Tools", icon="🛠️"),
+        st.Page("pages/explore.py", title="Explore the Archive", icon="🔍"),
     ],
     position="hidden"
 )

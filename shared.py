@@ -67,11 +67,11 @@ def dank_header(subtitle="The Dankest App In Town", anchor_id="dankapp-top"):
 def page_menu():
     with st.popover("☰ Menu"):
         if st.button("Dashboard", width="stretch"):
-            st.switch_page("Pages/landing.py")
+            st.switch_page("pages/landing.py")
         if st.button("Useful Tools", width="stretch"):
-            st.switch_page("Pages/tools.py")
+            st.switch_page("pages/tools.py")
         if st.button("Explore the Archive", width="stretch"):
-            st.switch_page("Pages/explore.py")
+            st.switch_page("pages/explore.py")
 
 
 # -------------------------
