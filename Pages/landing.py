@@ -25,7 +25,7 @@ if st.button(last_show_label, key="most_recent_setlist_btn", width="stretch"):
     if "selected_show_widget" in st.session_state:
         del st.session_state["selected_show_widget"]
     st.session_state.active_tab = "Setlist Lookup"
-    st.switch_page("pages/explore.py")
+    st.switch_page("Pages/explore.py")
 
 # -------------------------
 # ON THIS DAY
@@ -54,7 +54,7 @@ if on_this_day_dates:
                 if "selected_show_widget" in st.session_state:
                     del st.session_state["selected_show_widget"]
                 st.session_state.active_tab = "Setlist Lookup"
-                st.switch_page("pages/explore.py")
+                st.switch_page("Pages/explore.py")
 else:
     st.markdown("<div style='text-align: center;'><strong>On This Day</strong></div>", unsafe_allow_html=True)
     st.write(f"**{today_md}: No recordings found**")
