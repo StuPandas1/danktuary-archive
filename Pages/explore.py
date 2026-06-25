@@ -1,8 +1,12 @@
 import streamlit as st  # type: ignore
 import pandas as pd  # type: ignore
 import altair as alt  # type: ignore
+import os
 import streamlit.components.v1 as components  # type: ignore
-from shared import load_data, build_filtered, find_closers, parse_duration, make_dead_weight_callback, page_menu # type: ignore
+from shared import ( #type: ignore
+    load_data, build_filtered, find_closers, parse_duration,
+    make_dead_weight_callback, page_menu, local_path_to_onedrive_url, dank_header
+)
 
 df, song_stats, metadata, jam_metadata = load_data()
 
@@ -30,24 +34,36 @@ if "t1_year" not in st.session_state:
 if "t3_year" not in st.session_state:
     st.session_state.t3_year = (min_year, max_year)
 
-st.subheader("Explore the Archive")
+if "active_tab" not in st.session_state:
+    st.session_state.active_tab = "Song Search"
+
+dank_header(subtitle="Explore the Archive")
 
 st.markdown("""
 <style>
-.stTabs [data-baseweb="tab"] p {
+div[data-testid="stHorizontalBlock"] button {
     font-size: 17px !important;
     font-weight: 450 !important;
 }
 </style>
 """, unsafe_allow_html=True)
 
-tab1, tab2, tab3 = st.tabs(["Song Search", "Setlist Lookup", "Statistics"])
+tab_names = ["Song Search", "Setlist Lookup", "Statistics"]
+tab_cols = st.columns(len(tab_names))
+for i, name in enumerate(tab_names):
+    with tab_cols[i]:
+        button_type = "primary" if st.session_state.active_tab == name else "secondary"
+        if st.button(name, key=f"tabbtn_{name}", width="stretch", type=button_type):
+            st.session_state.active_tab = name
+            st.rerun()
+
+st.divider()
 
 # -------------------------
 # TAB 1: SONG SEARCH
 # -------------------------
 
-with tab1:
+if st.session_state.active_tab == "Song Search":
     st.markdown("#### Song Search")
 
     with st.expander("Filters", expanded=False):
@@ -255,12 +271,6 @@ with tab1:
 
             st.dataframe(
                 df_display,
-                column_config={
-                    "Show": st.column_config.TextColumn("Show", width="medium"),
-                    "Duration": st.column_config.TextColumn("Duration", width="small"),
-                    "Segue": st.column_config.TextColumn("Segue", width="large"),
-                    "Gap Since Previous": st.column_config.NumberColumn("Gap Since Previous", width="small")
-                },
                 width="stretch",
                 hide_index=True,
             )
@@ -269,7 +279,7 @@ with tab1:
 # TAB 2: SETLIST LOOKUP
 # -------------------------
 
-with tab2:
+elif st.session_state.active_tab == "Setlist Lookup":
     st.markdown("#### Setlist Lookup")
 
     performances = df.copy()
@@ -408,23 +418,31 @@ with tab2:
         for i in segue_indices:
             display_setlist.at[i, "Duration"] = "--"
 
+        if "File Path" in historical_setlist.columns:
+            sample_filepath = (
+                historical_setlist["File Path"].dropna().iloc[0]
+                if not historical_setlist["File Path"].dropna().empty
+                else None
+            )
+            if sample_filepath:
+                folder_path = os.path.dirname(sample_filepath)
+                onedrive_url = local_path_to_onedrive_url(folder_path)
+                if onedrive_url:
+                    st.markdown(f"[Listen in OneDrive ↗]({onedrive_url})")
+
         st.dataframe(
             display_setlist,
             hide_index=True,
             width='stretch',
             height=len(display_setlist) * 35 + 38,
-            column_config={
-                "Number": st.column_config.NumberColumn(width="small"),
-                "Title": st.column_config.TextColumn(width="large"),
-                "Duration": st.column_config.TextColumn(width="small")
-            }
         )
+
 
 # -------------------------
 # TAB 3: STATISTICS (general / archive-wide)
 # -------------------------
 
-with tab3:
+elif st.session_state.active_tab == "Statistics":
     st.markdown("#### Song Statistics")
 
     with st.expander("Filters", expanded=False):
@@ -543,13 +561,6 @@ with tab3:
                 gap_df,
                 width="stretch",
                 hide_index=True,
-                column_config={
-                    "Rank": st.column_config.NumberColumn(width="small"),
-                    "Title": st.column_config.TextColumn(width="large"),
-                    "Longest Gap (Sets)": st.column_config.NumberColumn(width="small"),
-                    "From": st.column_config.TextColumn(width="small"),
-                    "To": st.column_config.TextColumn(width="small"),
-                }
             )
 
     elif active == "openers":
@@ -568,11 +579,6 @@ with tab3:
             opener_counts,
             width="stretch",
             hide_index=True,
-            column_config={
-                "Rank": st.column_config.NumberColumn(width="small"),
-                "Title": st.column_config.TextColumn(width="large"),
-                "Times Opened": st.column_config.NumberColumn(width="small")
-            }
         )
 
     elif active == "closers":
@@ -597,11 +603,6 @@ with tab3:
             closer_counts,
             width="stretch",
             hide_index=True,
-            column_config={
-                "Rank": st.column_config.NumberColumn(width="small"),
-                "Title": st.column_config.TextColumn(width="large"),
-                "Times Closed": st.column_config.NumberColumn(width="small")
-            }
         )
 
     elif active == "segues":
@@ -629,11 +630,6 @@ with tab3:
                 segue_counts,
                 width="stretch",
                 hide_index=True,
-                column_config={
-                    "Rank": st.column_config.NumberColumn(width="small"),
-                    "Segue": st.column_config.TextColumn(width="large"),
-                    "Times Played": st.column_config.NumberColumn(width="small")
-                }
             )
 
     elif active == "longest_jams":
@@ -677,12 +673,6 @@ with tab3:
                 jams_df,
                 width="stretch",
                 hide_index=True,
-                column_config={
-                    "Rank": st.column_config.NumberColumn(width="small"),
-                    "Date": st.column_config.TextColumn(width="small"),
-                    "Song(s)": st.column_config.TextColumn(width="large"),
-                    "Duration": st.column_config.TextColumn(width="small")
-                }
             )
 
     elif active == "most_common_gig":
@@ -702,20 +692,14 @@ with tab3:
         gig_counts["Last_Played"] = pd.to_datetime(gig_counts["Last_Played"]).dt.strftime("%m/%d/%Y")
         gig_counts.insert(0, "Rank", range(1, len(gig_counts) + 1))
 
-        st.subheader("Most Common Songs at Gigs")
+        st.subheader("Most Common at Gigs")
         st.dataframe(
             gig_counts.rename(columns={
-                "Times_Played": "Times Played at Gigs",
-                "Last_Played": "Last Played at Gig"
+                "Times_Played": "#",
+                "Last_Played": "Last Played"
             }),
             width="stretch",
             hide_index=True,
-            column_config={
-                "Rank": st.column_config.NumberColumn(width="small"),
-                "Title": st.column_config.TextColumn(width="large"),
-                "Times Played at Gigs": st.column_config.NumberColumn(width="small"),
-                "Last Played at Gig": st.column_config.TextColumn(width="small")
-            }
         )
 
     elif active == "heatmap":
@@ -749,7 +733,7 @@ with tab3:
             ]
         ).properties(
             height=250,
-            title=alt.TitleParams("Shows by Month", anchor="middle")
+            title=alt.TitleParams("Sets by Month", anchor="middle")
         ).configure_axis(
             grid=False,
             labelColor="#888",
@@ -760,7 +744,12 @@ with tab3:
 
         st.subheader("Activity Heatmap")
         st.altair_chart(heatmap_chart, width='stretch')
-
+else:
+    st.write("Select a tab to view its content.")
+# -------------------------
+# FOOTER 
+# -------------------------
+st.divider()
 if st.button("⬆ Back to top"):
     components.html("""
         <script>
@@ -783,8 +772,8 @@ if st.button("⬆ Back to top"):
         </script>
     """, height=0)
 
-st.markdown("")
 st.divider()
+
 st.markdown(
     "<div style='text-align: center; color: grey; font-size: 13px;'>Danktuary Archive Version: 1.5.0 | Believe it if you need it</div>",
     unsafe_allow_html=True

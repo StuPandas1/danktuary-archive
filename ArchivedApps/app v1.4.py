@@ -736,7 +736,7 @@ with tab2:
         sample_filepath = historical_setlist["File Path"].dropna().iloc[0] if not historical_setlist["File Path"].dropna().empty else None
 
         if sample_filepath:
-            folder_path = os.path.dirname(sample_filepath)
+            folder_path = sample_filepath.rsplit("\\", 1)[0]  # works regardless of host OS
             onedrive_url = local_path_to_onedrive_url(folder_path)
             if onedrive_url:
                 st.markdown(f"[Listen in OneDrive ↗]({onedrive_url})")
@@ -1357,15 +1357,15 @@ with col_f1:
             del st.session_state["selected_show_widget"]
         st.rerun()
 
-with col_f2:
-    if st.button("Refresh Database"):
-        with st.spinner("Updating archive..."):
-            subprocess.run(["python", "scanner.py"])
-            subprocess.run(["python", "analyze.py"])
-            subprocess.run(["python", "build_metadata.py"])
-        st.cache_data.clear()
-        success_message = st.empty()
-        success_message.success("Database updated!")
-        time.sleep(2)
-        success_message.empty()
-        st.rerun()
+# with col_f2:
+#     if st.button("Refresh Database"):
+#         with st.spinner("Updating archive..."):
+#             subprocess.run(["python", "scanner.py"])
+#             subprocess.run(["python", "analyze.py"])
+#             subprocess.run(["python", "build_metadata.py"])
+#         st.cache_data.clear()
+#         success_message = st.empty()
+#         success_message.success("Database updated!")
+#         time.sleep(2)
+#         success_message.empty()
+#         st.rerun()
