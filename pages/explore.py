@@ -423,9 +423,12 @@ elif st.session_state.active_tab == "Setlist Lookup":
             if "OneDrive URL" in historical_setlist.columns and not historical_setlist["OneDrive URL"].dropna().empty
             else None
         )
+        sample_filepath = historical_setlist["File Path"].dropna().iloc[0]
+        folder_path = "\\".join(sample_filepath.split("\\")[:-1])
+        onedrive_url = local_path_to_onedrive_url(folder_path)
         if onedrive_url:
             st.markdown(f"[Listen in OneDrive ↗]({onedrive_url})")
-
+            
         st.dataframe(
             display_setlist,
             hide_index=True,
