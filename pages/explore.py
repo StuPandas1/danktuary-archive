@@ -15,6 +15,19 @@ page_menu()
 min_year = int(df["Year"].min())
 max_year = int(df["Year"].max())
 
+st.markdown("""
+<style>
+div[data-testid="stHorizontalBlock"] {
+    flex-wrap: nowrap !important;
+    gap: 8px !important;
+}
+div[data-testid="stHorizontalBlock"] > div {
+    min-width: 0 !important;
+    flex: 1 1 0 !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
 # -------------------------
 # SESSION STATE
 # -------------------------
@@ -37,6 +50,7 @@ if "t3_year" not in st.session_state:
 if "active_tab" not in st.session_state:
     st.session_state.active_tab = "Song Search"
 
+
 dank_header(subtitle="Explore the Archive")
 
 st.markdown("""
@@ -58,6 +72,7 @@ for i, name in enumerate(tab_names):
             st.rerun()
 
 st.divider()
+st.markdown('<div id="content-anchor"></div>', unsafe_allow_html=True)
 
 # -------------------------
 # TAB 1: SONG SEARCH
@@ -354,7 +369,7 @@ elif st.session_state.active_tab == "Setlist Lookup":
     with col2:
         today_md = pd.Timestamp.today().strftime("%m/%d")
         on_this_day = [s for s in unique_shows if s.startswith(today_md)]
-        if st.button("Random On This Day"):
+        if st.button("On This Day"):
             if on_this_day:
                 import random
                 st.session_state.selected_show = random.choice(on_this_day)
@@ -428,7 +443,7 @@ elif st.session_state.active_tab == "Setlist Lookup":
         onedrive_url = local_path_to_onedrive_url(folder_path)
         if onedrive_url:
             st.markdown(f"[Listen in OneDrive ↗]({onedrive_url})")
-            
+
         st.dataframe(
             display_setlist,
             hide_index=True,
