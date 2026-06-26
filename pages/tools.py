@@ -10,6 +10,25 @@ from shared import ( #type: ignore
     dead_weight_artists, dead_weight_year
 )
 
+st.markdown("""
+<style>
+div[data-testid="stHorizontalBlock"] {
+    flex-wrap: nowrap !important;
+    gap: 8px !important;
+}
+div[data-testid="stHorizontalBlock"] > div {
+    min-width: 60px !important;
+    flex: 1 1 0 !important;
+}
+div[data-testid="stHorizontalBlock"] button {
+    font-size: 13px !important;
+    padding: 4px 6px !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
 df, song_stats, metadata, jam_metadata = load_data()
 
 page_menu()
@@ -25,7 +44,7 @@ if "active_tab" not in st.session_state:
 
 dank_header(subtitle="Useful Tools for the Dank")
 
-tab_names = ["Recently Played", "Bustout Info", "Active Streaks", "Setlist Randomizer"]
+tab_names = ["Recent Tracks", "Bust-outs", "Song Streak", "Rando Sets"]
 tab_cols = st.columns(len(tab_names))
 for i, name in enumerate(tab_names):
     with tab_cols[i]:
@@ -54,11 +73,11 @@ def ranked_table(display_df, sort_col=None, ascending=False, rename=None, column
 # TAB: RECENT SETLIST STATS
 # -------------------------
 
-if active_tab in ("Recently Played", "Bustout Info", "Active Streaks"):
+if active_tab in ("Recent Tracks", "Bust-outs", "Song Streak"):
     full_df, full_stats = build_filtered(df, metadata, [], (min_year, max_year))
  
-if active_tab == "Recently Played":
-    st.subheader("Most Recently Played")
+if active_tab == "Recent Tracks":
+    st.subheader("Most Recent Tracks")
 
     recent_display = ranked_table(
         full_stats.sort_values("Last_Played", ascending=False).assign(
@@ -70,7 +89,7 @@ if active_tab == "Recently Played":
     )
     st.dataframe(recent_display, hide_index=True)
     
-elif active_tab == "Bustout Info":
+elif active_tab == "Bust-outs":
     st.subheader("Most Overdue Songs")
     dead_weight_only = st.checkbox("Dead Weight Only", key="bustout_dead_weight")
 
@@ -98,7 +117,7 @@ elif active_tab == "Bustout Info":
         hide_index=True
     )
 
-elif active_tab == "Active Streaks":
+elif active_tab == "Song Streak":
 
     all_dates = sorted(df["Date"].dt.normalize().unique())
     records = []
@@ -115,13 +134,13 @@ elif active_tab == "Active Streaks":
         consec_df = ranked_table(pd.DataFrame(records), sort_col="Active Streak")
         st.dataframe(consec_df, width="stretch", hide_index=True)
     else:
-        st.write("No active streaks.")
+        st.write("No Song Streak.")
 
 # -------------------------
-#  DEAD WEIGHT SETLIST RANDOMIZER
+#  DEAD WEIGHT Rando Sets
 # -------------------------
 
-elif active_tab == "Setlist Randomizer":
+elif active_tab == "Rando Sets":
 
     st.markdown("#### Dead Weight Setlist Randomizer v1.0")
 
@@ -274,15 +293,16 @@ st.markdown("")
 #             del st.session_state["selected_show_widget"]
 #         st.rerun()
 
-# with col_f2:
-#     if st.button("Refresh Database"):
-#         with st.spinner("Updating archive..."):
-#             subprocess.run(["python", "scanner.py"])
-#             subprocess.run(["python", "analyze.py"])
-#             subprocess.run(["python", "build_metadata.py"])
-#         st.cache_data.clear()
-#         success_message = st.empty()
-#         success_message.success("Database updated!")
-#         time.sleep(2)
-#         success_message.empty()
-#         st.rerun()
+
+if st.button("Refresh Database"):
+    with st.spinner("Updating archive..."):
+        subprocess.run(["python", "scanner.py"])
+        subprocess.run(["python", "analyze.py"])
+        subprocess.run(["python", "build_metadata.py"])
+        subprocess.run(["python", "generate_onedrive_urls.py"])
+    st.cache_data.clear()
+    success_message = st.empty()
+    success_message.success("Database updated!")
+    time.sleep(2)
+    success_message.empty()
+    st.rerun()

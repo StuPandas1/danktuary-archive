@@ -7,6 +7,24 @@ from shared import load_data, parse_duration, page_menu, dank_header #type: igno
 df, song_stats, metadata, jam_metadata = load_data()
 
 page_menu()
+st.markdown("""
+<style>
+div[data-testid="stHorizontalBlock"] {
+    flex-wrap: nowrap !important;
+    gap: 8px !important;
+}
+div[data-testid="stHorizontalBlock"] > div {
+    min-width: 60px !important;
+    flex: 1 1 0 !important;
+}
+div[data-testid="stHorizontalBlock"] button {
+    font-size: 13px !important;
+    padding: 4px 6px !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+}
+</style>
+""", unsafe_allow_html=True)
 
 dank_header(subtitle="The Dankest App In Town")
 
@@ -25,6 +43,7 @@ if st.button(last_show_label, key="most_recent_setlist_btn", width="stretch"):
     if "selected_show_widget" in st.session_state:
         del st.session_state["selected_show_widget"]
     st.session_state.active_tab = "Setlist Lookup"
+    st.session_state.scroll_to_content = True
     st.switch_page("pages/explore.py")
 
 # -------------------------
@@ -54,6 +73,7 @@ if on_this_day_dates:
                 if "selected_show_widget" in st.session_state:
                     del st.session_state["selected_show_widget"]
                 st.session_state.active_tab = "Setlist Lookup"
+                st.query_params["scroll"] = "1"
                 st.switch_page("pages/explore.py")
 else:
     st.markdown("<div style='text-align: center;'><strong>On This Day</strong></div>", unsafe_allow_html=True)
