@@ -13,10 +13,10 @@ GMAIL_APP_PASSWORD = os.environ.get("DANKAPP_GMAIL_APP_PASSWORD")
 
 BAND_EMAILS = [
     "davidericmelamed@gmail.com",
-    "mmargolis52@gmail.com",
-    "abrizel07@gmail.com",
-    "mr.chrisciao@gmail.com",
-    "camoser19@gmail.com"
+    # "mmargolis52@gmail.com",
+    # "abrizel07@gmail.com",
+    # "mr.chrisciao@gmail.com",
+    # "camoser19@gmail.com"
 ]
 
 SNAPSHOT_PATH = "last_known_shows.csv"
