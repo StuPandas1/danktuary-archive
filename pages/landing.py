@@ -2,6 +2,8 @@ import streamlit as st  # type: ignore
 import pandas as pd  # type: ignore
 import streamlit.components.v1 as components
 import random
+from zoneinfo import ZoneInfo
+today_md = pd.Timestamp.now(tz=ZoneInfo("America/New_York")).strftime("%m/%d")
 from shared import load_data, parse_duration, page_menu, dank_header #type: ignore
 
 df, song_stats, metadata, jam_metadata = load_data()
@@ -50,8 +52,7 @@ if st.button(last_show_label, key="most_recent_setlist_btn", width="stretch"):
 # ON THIS DAY
 # -------------------------
 
-today_md = pd.Timestamp.today().strftime("%m/%d")
-day_name = pd.Timestamp.today().strftime("%A")
+day_name = pd.Timestamp.now(tz=ZoneInfo("America/New_York")).strftime("%A")
 on_this_day_df = df[df["Date"].dt.strftime("%m/%d") == today_md].copy()
 on_this_day_dates = sorted(on_this_day_df["Date"].unique())
 
@@ -161,7 +162,7 @@ st.markdown("#### **Stats Dashboard**")
 total_shows = df["Date"].nunique()
 total_songs_played = len(df)
 total_unique_songs = df["Title"].nunique()
-days_since_last_show = (pd.Timestamp.today() - df["Date"].max()).days
+days_since_last_show = (pd.Timestamp.now() - df["Date"].max()).days
 last_show_date = df["Date"].max().strftime("%m/%d/%y")
 
 total_secs_all = df["Duration"].apply(parse_duration).sum()

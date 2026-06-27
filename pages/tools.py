@@ -4,6 +4,8 @@ import random
 import subprocess
 import time
 import streamlit.components.v1 as components  # type: ignore
+from zoneinfo import ZoneInfo
+today_md = pd.Timestamp.now(tz=ZoneInfo("America/New_York")).strftime("%m/%d")
 from shared import ( #type: ignore
     load_data, build_filtered, weighted_pick, find_closers,
     times_played_mult, page_menu, dank_header, build_randomizer_pools, apply_segue_boost, pick_by_kind, generate_setlist,
@@ -98,9 +100,8 @@ elif active_tab == "Bust-outs":
     else:
         bustout_df, bustout_stats = full_df, full_stats
 
-    today = pd.Timestamp.today()
     bustouts = bustout_stats.copy()
-    bustouts["Days_Since_Played"] = (today - bustouts["Last_Played"]).dt.days
+    bustouts["Days_Since_Played"] = (today_md - bustouts["Last_Played"]).dt.days
     bustouts["Overdue_Score"] = bustouts["Days_Since_Played"] * (bustouts["Times_Played"] ** times_played_mult)
     max_score = bustouts["Overdue_Score"].max()
     bustouts["Overdue_Score_Normalized"] = ((bustouts["Overdue_Score"] / max_score) * 100).round(1)
@@ -146,7 +147,6 @@ elif active_tab == "Rando Sets":
 
     improv_titles = set(metadata[metadata["Type"] == "Improv"]["Title"])
     jam_titles = set(jam_metadata["Title"])
-    today = pd.Timestamp.today()
 
     randomizer_df = df.merge(metadata[["Title", "Artist"]], on="Title", how="left")
     randomizer_df = randomizer_df[
@@ -178,7 +178,7 @@ elif active_tab == "Rando Sets":
         st.markdown("&nbsp;", unsafe_allow_html=True)
         if st.button("Create New Setlist", width='stretch'):
             st.session_state.random_setlist = generate_setlist(
-                num_songs, randomizer_df, jam_titles, improv_titles, today
+                num_songs, randomizer_df, jam_titles, improv_titles, today_md
             )
             st.session_state.setlist_version = st.session_state.get("setlist_version", 0) + 1
             st.session_state.random_message = random.choice(random_messages)
@@ -191,7 +191,7 @@ elif active_tab == "Rando Sets":
             if st.button("Re-Roll Those Laughing Bones", width='stretch'):
                 current = st.session_state.random_setlist.copy()
                 locked_songs = set(current[current["Locked"] == True]["Title"].tolist())
-                new = generate_setlist(num_songs, randomizer_df, jam_titles, improv_titles, today)
+                new = generate_setlist(num_songs, randomizer_df, jam_titles, improv_titles, today_md)
 
                 merged = []
                 locked_rows = current[current["Locked"] == True].set_index("#")
