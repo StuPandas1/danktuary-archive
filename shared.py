@@ -6,13 +6,13 @@ import msal # type: ignore
 import requests # type: ignore
 from urllib.parse import quote
 
-CLIENT_ID = st.secrets["CLIENT_ID"]
-TENANT_ID = st.secrets["TENANT_ID"]
-CLIENT_SECRET = st.secrets["CLIENT_SECRET"]
-REDIRECT_URI = st.secrets["REDIRECT_URI"]
+# CLIENT_ID = st.secrets["CLIENT_ID"]
+# TENANT_ID = st.secrets["TENANT_ID"]
+# CLIENT_SECRET = st.secrets["CLIENT_SECRET"]
+# REDIRECT_URI = st.secrets["REDIRECT_URI"]
 
-AUTHORITY = f"https://login.microsoftonline.com/{TENANT_ID}"
-SCOPE = ["User.Read", "Files.Read"]
+# AUTHORITY = f"https://login.microsoftonline.com/{TENANT_ID}"
+# SCOPE = ["User.Read", "Files.Read"]
 
 times_played_mult = 1.3  # multiplier for how much weight to give times played in overdue score
 
@@ -23,61 +23,61 @@ dead_weight_year = 2022
 # AZURE INTEGRATION?
 # -------------------------
 
-def build_msal_app():
-    return msal.ConfidentialClientApplication(
-        CLIENT_ID,
-        authority=AUTHORITY,
-        client_credential=CLIENT_SECRET
-    )
+# def build_msal_app():
+#     return msal.ConfidentialClientApplication(
+#         CLIENT_ID,
+#         authority=AUTHORITY,
+#         client_credential=CLIENT_SECRET
+#     )
 
-def get_auth_url():
-    app = build_msal_app()
-    return app.get_authorization_request_url(
-        SCOPE,
-        redirect_uri=REDIRECT_URI
-    )
+# def get_auth_url():
+#     app = build_msal_app()
+#     return app.get_authorization_request_url(
+#         SCOPE,
+#         redirect_uri=REDIRECT_URI
+#     )
 
-def authenticate_user():
-    query_params = st.query_params
+# def authenticate_user():
+#     query_params = st.query_params
 
-    if "code" not in query_params:
-        st.write("Sign in with Microsoft to continue")
-        st.link_button("Sign in", get_auth_url())
-        st.stop()
+#     if "code" not in query_params:
+#         st.write("Sign in with Microsoft to continue")
+#         st.link_button("Sign in", get_auth_url())
+#         st.stop()
 
-    token = build_msal_app().acquire_token_by_authorization_code(
-        query_params["code"],
-        scopes=SCOPE,
-        redirect_uri=REDIRECT_URI
-    )
+#     token = build_msal_app().acquire_token_by_authorization_code(
+#         query_params["code"],
+#         scopes=SCOPE,
+#         redirect_uri=REDIRECT_URI
+#     )
 
-    st.session_state["access_token"] = token["access_token"]
-    return token["access_token"]
+#     st.session_state["access_token"] = token["access_token"]
+#     return token["access_token"]
 
-def convert_local_path_to_drive_relative(local_path: str) -> str | None:
-    """
-    Convert a Windows OneDrive-synced path like:
-    C:\\Users\\David\\OneDrive\\LoveDeep\\Shows\\2024-06-01\\01 - Intro.flac
+# def convert_local_path_to_drive_relative(local_path: str) -> str | None:
+#     """
+#     Convert a Windows OneDrive-synced path like:
+#     C:\\Users\\David\\OneDrive\\LoveDeep\\Shows\\2024-06-01\\01 - Intro.flac
 
-    Into a OneDrive-relative path:
-    LoveDeep/Shows/2024-06-01/01 - Intro.flac
-    """
-    marker = "OneDrive\\"
-    idx = local_path.find(marker)
-    if idx == -1:
-        return None
+#     Into a OneDrive-relative path:
+#     LoveDeep/Shows/2024-06-01/01 - Intro.flac
+#     """
+#     marker = "OneDrive\\"
+#     idx = local_path.find(marker)
+#     if idx == -1:
+#         return None
 
-    relative = local_path[idx + len(marker):]
-    return relative.replace("\\", "/")
+#     relative = local_path[idx + len(marker):]
+#     return relative.replace("\\", "/")
 
-def get_streamable_url_from_relative(relative_path: str, token: str) -> str | None:
-    endpoint = f"https://graph.microsoft.com/v1.0/me/drive/root:/{relative_path}:/content"
-    r = requests.get(
-        endpoint,
-        headers={"Authorization": f"Bearer {token}"},
-        allow_redirects=False,
-    )
-    return r.headers.get("Location")
+# def get_streamable_url_from_relative(relative_path: str, token: str) -> str | None:
+#     endpoint = f"https://graph.microsoft.com/v1.0/me/drive/root:/{relative_path}:/content"
+#     r = requests.get(
+#         endpoint,
+#         headers={"Authorization": f"Bearer {token}"},
+#         allow_redirects=False,
+#     )
+#     return r.headers.get("Location")
 
 # -------------------------
 # ONEDRIVE LINK CONVERTER
