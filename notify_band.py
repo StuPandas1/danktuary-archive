@@ -12,7 +12,7 @@ GMAIL_ADDRESS = os.environ.get("DANKAPP_GMAIL_ADDRESS")
 GMAIL_APP_PASSWORD = os.environ.get("DANKAPP_GMAIL_APP_PASSWORD")
 
 BAND_EMAILS = [
-    "davidericmelamed@gmail.com",
+    # "davidericmelamed@gmail.com",
     # "mmargolis52@gmail.com",
     # "abrizel07@gmail.com",
     # "mr.chrisciao@gmail.com",

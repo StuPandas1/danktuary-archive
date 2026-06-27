@@ -1,10 +1,7 @@
 import streamlit as st  # type: ignore
-from shared import authenticate_user
 
 st.set_page_config(page_title="DankApp", layout="wide", initial_sidebar_state="collapsed")
 
-# Process Azure AD redirect BEFORE loading any pages
-authenticate_user()
 
 pg = st.navigation(
     [
