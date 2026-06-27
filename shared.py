@@ -2,13 +2,82 @@ import streamlit as st  # type: ignore
 import pandas as pd  # type: ignore
 import random
 import os
+import msal # type: ignore
+import requests # type: ignore
 from urllib.parse import quote
+
+CLIENT_ID = st.secrets["CLIENT_ID"]
+TENANT_ID = st.secrets["TENANT_ID"]
+CLIENT_SECRET = st.secrets["CLIENT_SECRET"]
+REDIRECT_URI = st.secrets["REDIRECT_URI"]
+
+AUTHORITY = f"https://login.microsoftonline.com/{TENANT_ID}"
+SCOPE = ["User.Read", "Files.Read"]
 
 times_played_mult = 1.3  # multiplier for how much weight to give times played in overdue score
 
-dead_weight_artists = ["Grateful Dead", "Jerry Garcia Band", "The Band", "Little Feat"]
+dead_weight_artists = ["Grateful Dead", "Jerry Garcia Band", "The Band", "Little Feat", "Phish", "Sam Cooke", "The Rolling Stones", "The Allman Brothers Band", "The Who"]
 dead_weight_year = 2022
 
+# -------------------------
+# AZURE INTEGRATION?
+# -------------------------
+
+def build_msal_app():
+    return msal.ConfidentialClientApplication(
+        CLIENT_ID,
+        authority=AUTHORITY,
+        client_credential=CLIENT_SECRET
+    )
+
+def get_auth_url():
+    app = build_msal_app()
+    return app.get_authorization_request_url(
+        SCOPE,
+        redirect_uri=REDIRECT_URI
+    )
+
+def authenticate_user():
+    query_params = st.query_params
+
+    if "code" not in query_params:
+        st.write("Sign in with Microsoft to continue")
+        st.link_button("Sign in", get_auth_url())
+        st.stop()
+
+    token = build_msal_app().acquire_token_by_authorization_code(
+        query_params["code"],
+        scopes=SCOPE,
+        redirect_uri=REDIRECT_URI
+    )
+
+    st.session_state["access_token"] = token["access_token"]
+    return token["access_token"]
+
+def convert_local_path_to_drive_relative(local_path: str) -> str | None:
+    """
+    Convert a Windows OneDrive-synced path like:
+    C:\\Users\\David\\OneDrive\\LoveDeep\\Shows\\2024-06-01\\01 - Intro.flac
+
+    Into a OneDrive-relative path:
+    LoveDeep/Shows/2024-06-01/01 - Intro.flac
+    """
+    marker = "OneDrive\\"
+    idx = local_path.find(marker)
+    if idx == -1:
+        return None
+
+    relative = local_path[idx + len(marker):]
+    return relative.replace("\\", "/")
+
+def get_streamable_url_from_relative(relative_path: str, token: str) -> str | None:
+    endpoint = f"https://graph.microsoft.com/v1.0/me/drive/root:/{relative_path}:/content"
+    r = requests.get(
+        endpoint,
+        headers={"Authorization": f"Bearer {token}"},
+        allow_redirects=False,
+    )
+    return r.headers.get("Location")
 
 # -------------------------
 # ONEDRIVE LINK CONVERTER
@@ -65,6 +134,52 @@ def dank_header(subtitle="The Danktuary Archive Explorer", anchor_id="dankapp-to
 
 
 # -------------------------
+# AUDIO PLAYER
+# -------------------------
+ 
+def dank_audio_player(title, subtitle, audio_url):
+    st.markdown(f"""
+    <style>
+    .dank-player-card {{
+        background-color: #1c1b1a;
+        border-radius: 14px;
+        border-bottom: 3px solid #d4a24c;
+        padding: 20px 20px 18px 20px;
+        margin-bottom: 16px;
+    }}
+    .dank-player-title {{
+        color: #ece7de;
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+        margin-bottom: 2px;
+    }}
+    .dank-player-subtitle {{
+        color: #7a8b6f;
+        font-size: 12px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        margin-bottom: 14px;
+    }}
+    .dank-player-card audio {{
+        width: 100%;
+        border-radius: 8px;
+        outline: none;
+    }}
+    </style>
+    <div class="dank-player-card">
+        <div class="dank-player-title">{title}</div>
+        <div class="dank-player-subtitle">{subtitle}</div>
+        <audio controls preload="none">
+            <source src="{audio_url}">
+            Your browser does not support the audio element.
+        </audio>
+    </div>
+    """, unsafe_allow_html=True)
+ 
+
+# -------------------------
 # PAGE MENU (dropdown)
 # -------------------------
 
@@ -72,10 +187,12 @@ def page_menu():
     with st.popover("☰ Menu"):
         if st.button("Dashboard", width="stretch"):
             st.switch_page("pages/landing.py")
-        if st.button("Explore the Archive", width="stretch"):
-            st.switch_page("pages/explore.py")
         if st.button("Useful Tools", width="stretch"):
             st.switch_page("pages/tools.py")
+        if st.button("Explore the Archive", width="stretch"):
+            st.switch_page("pages/explore.py")
+        if st.button("Listen", width="stretch"):
+            st.switch_page("pages/listen.py")
 
 
 # -------------------------
