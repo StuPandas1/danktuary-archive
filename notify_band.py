@@ -37,10 +37,14 @@ def main():
 
     current_shows = get_current_shows(df)
 
-    if os.path.exists(SNAPSHOT_PATH):
-        previous_shows = pd.read_csv(SNAPSHOT_PATH)
-    else:
-        previous_shows = pd.DataFrame(columns=["Date", "Location"])
+    if not os.path.exists(SNAPSHOT_PATH):
+        # first run ever: seed the snapshot with everything that already
+        # exists so we don't email about the entire back-catalog at once
+        print("No snapshot found. Seeding baseline with existing shows (no emails sent this run).")
+        current_shows.to_csv(SNAPSHOT_PATH, index=False)
+        return
+
+    previous_shows = pd.read_csv(SNAPSHOT_PATH)
 
     new_shows = current_shows[
         ~current_shows["Date"].isin(previous_shows["Date"])

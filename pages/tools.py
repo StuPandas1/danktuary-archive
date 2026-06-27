@@ -294,15 +294,15 @@ st.markdown("")
 #         st.rerun()
 
 
-if st.button("Refresh Database"):
-    with st.spinner("Updating archive..."):
-        subprocess.run(["python", "scanner.py"])
-        subprocess.run(["python", "analyze.py"])
-        subprocess.run(["python", "build_metadata.py"])
-        subprocess.run(["python", "generate_onedrive_urls.py"])
-    st.cache_data.clear()
-    success_message = st.empty()
-    success_message.success("Database updated!")
-    time.sleep(2)
-    success_message.empty()
-    st.rerun()
+# if st.button("Refresh Database"):
+#     with st.spinner("Updating archive..."):
+#         subprocess.run(["python", "scanner.py"])
+#         subprocess.run(["python", "analyze.py"])
+#         subprocess.run(["python", "build_metadata.py"])
+#         subprocess.run(["python", "generate_onedrive_urls.py"])
+#     st.cache_data.clear()
+#     success_message = st.empty()
+#     success_message.success("Database updated!")
+#     time.sleep(2)
+#     success_message.empty()
+#     st.rerun()
