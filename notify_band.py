@@ -83,8 +83,9 @@ def send_show_email(df, date_str, location):
     for _, row in setlist.iterrows():
         lines.append(f"  {int(row['Track Number'])}. {row['Title']}")
 
-    lines.append("\nYou can access the recording and related files here:")
-    lines.append("https://drive.google.com/drive/folders/1sUzVbzE8lQ8SV9vzGtCHztzlLa-fDaz6?usp=drive_link")
+    lines.append("\nListen here: https://drive.google.com/drive/folders/1sUzVbzE8lQ8SV9vzGtCHztzlLa-fDaz6?usp=drive_link")
+    lines.append("\nJust gotta poke around: http://danktuary-archive.streamlit.app/")
+    lines.append("\nBut Moe, the dank! The dank!")
 
     body = "\n".join(lines)
 
