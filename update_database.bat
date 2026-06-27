@@ -8,7 +8,7 @@ echo.
 
 cd /d "%~dp0"
 
-echo [1/6] Scanning audio files...
+echo [1/7] Scanning audio files...
 python scanner.py
 if errorlevel 1 (
     echo.
@@ -18,7 +18,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo [2/6] Analyzing data...
+echo [2/7] Analyzing data...
 python analyze.py
 if errorlevel 1 (
     echo.
@@ -28,7 +28,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo [3/6] Building metadata...
+echo [3/7] Building metadata...
 python build_metadata.py
 if errorlevel 1 (
     echo.
