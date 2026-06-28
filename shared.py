@@ -233,6 +233,156 @@ def find_closers(source_df, allowed_titles=None):
 
 
 # -------------------------
+# SETLIST RANDOMIZER
+# -------------------------
+
+SEGUE_BOOST = 8.0  # multiplier for songs with historical segue from previous song
+
+
+def build_randomizer_pools(randomizer_df, jam_titles, today):
+    jam_pool = randomizer_df[randomizer_df["Title"].isin(jam_titles)]["Title"].unique().tolist()
+
+    recent_dates = (
+        randomizer_df["Date"].drop_duplicates()
+        .sort_values()
+        .tail(10)
+    )
+    recent_pool = randomizer_df[randomizer_df["Date"].isin(recent_dates)]["Title"].unique().tolist()
+
+    classics_pool = (
+        randomizer_df.groupby("Title")
+        .size()
+        .reset_index(name="Times_Played")
+    )
+
+    bustout_pool = (
+        randomizer_df.groupby("Title")["Date"]
+        .max()
+        .reset_index()
+    )
+    bustout_pool["Days_Since"] = (today - pd.to_datetime(bustout_pool["Date"])).dt.days
+
+    opener_pool = randomizer_df[randomizer_df["Track Number"] == 1]["Title"].tolist()
+
+    allowed_titles = set(randomizer_df["Title"].unique())
+    closers = find_closers(randomizer_df, allowed_titles)
+
+    segue_map = {}
+    for date in randomizer_df["Date"].unique():
+        session = randomizer_df[randomizer_df["Date"] == date].sort_values("Track Number")
+        titles = session["Title"].tolist()
+        for i in range(len(titles) - 1):
+            a, b = titles[i], titles[i + 1]
+            if a not in segue_map:
+                segue_map[a] = {}
+            segue_map[a][b] = segue_map[a].get(b, 0) + 1
+
+    return jam_pool, recent_pool, classics_pool, bustout_pool, opener_pool, closers, segue_map
+
+
+def apply_segue_boost(songs, weights, prev_song, segue_map):
+    if prev_song is None or prev_song not in segue_map:
+        return weights
+    segues = segue_map[prev_song]
+    return [
+        w * SEGUE_BOOST if songs[i] in segues else w
+        for i, w in enumerate(weights)
+    ]
+
+
+def pick_by_kind(kind, pools, used_songs, improv_titles, prev_song=None):
+    jam_pool, recent_pool, classics_pool, bustout_pool, opener_pool, closer_pool, segue_map = pools
+
+    if kind == "Opener":
+        song, odds = weighted_pick(pd.Series(opener_pool), used_songs)
+    elif kind == "Jam":
+        available = [s for s in jam_pool if s not in used_songs]
+        if not available:
+            return None, None
+        weights = [1.0] * len(available)
+        weights = apply_segue_boost(available, weights, prev_song, segue_map)
+        total = sum(weights)
+        song = random.choices(available, weights=weights, k=1)[0]
+        odds = round((weights[available.index(song)] / total) * 100, 1)
+    elif kind == "Recent":
+        available = [s for s in recent_pool if s not in used_songs]
+        if not available:
+            return None, None
+        weights = [1.0] * len(available)
+        weights = apply_segue_boost(available, weights, prev_song, segue_map)
+        total = sum(weights)
+        song = random.choices(available, weights=weights, k=1)[0]
+        odds = round((weights[available.index(song)] / total) * 100, 1)
+    elif kind == "Classic":
+        available = classics_pool[~classics_pool["Title"].isin(used_songs)]
+        if available.empty:
+            return None, None
+        songs = available["Title"].tolist()
+        weights = available["Times_Played"].tolist()
+        weights = apply_segue_boost(songs, weights, prev_song, segue_map)
+        total = sum(weights)
+        song = random.choices(songs, weights=weights, k=1)[0]
+        odds = round((weights[songs.index(song)] / total) * 100, 1)
+    elif kind == "Bustout":
+        available = bustout_pool[~bustout_pool["Title"].isin(used_songs)]
+        if available.empty:
+            return None, None
+        songs = available["Title"].tolist()
+        weights = available["Days_Since"].tolist()
+        weights = apply_segue_boost(songs, weights, prev_song, segue_map)
+        total = sum(weights)
+        song = random.choices(songs, weights=weights, k=1)[0]
+        odds = round((weights[songs.index(song)] / total) * 100, 1)
+    elif kind == "Closer":
+        available = [s for s in closer_pool if s not in used_songs and s not in improv_titles]
+        if not available:
+            return None, None
+        weights = [1.0] * len(available)
+        weights = apply_segue_boost(available, weights, prev_song, segue_map)
+        total = sum(weights)
+        song = random.choices(available, weights=weights, k=1)[0]
+        odds = round((weights[available.index(song)] / total) * 100, 1)
+    else:
+        return None, None
+
+    return song, odds
+
+
+def generate_setlist(num_songs, randomizer_df, jam_titles, improv_titles, today):
+    pools = build_randomizer_pools(randomizer_df, jam_titles, today)
+    used_songs = set()
+    setlist = []
+
+    middle_count = num_songs - 2
+    middle_kinds = []
+
+    middle_kinds.append("Jam")
+    if middle_count >= 3:
+        middle_kinds.append("Jam")
+    kind_pool = ["Recent"] * 4 + ["Classic"] * 2 + ["Bustout"] * 2
+    while len(middle_kinds) < middle_count:
+        middle_kinds.append(random.choice(kind_pool))
+    random.shuffle(middle_kinds)
+
+    kinds = ["Opener"] + middle_kinds + ["Closer"]
+
+    prev_song = None
+    for i, kind in enumerate(kinds):
+        song, odds = pick_by_kind(kind, pools, used_songs, improv_titles, prev_song)
+        if song:
+            used_songs.add(song)
+            setlist.append({
+                "#": i + 1,
+                "Title": song,
+                "Odds": f"{odds}%" if odds else "N/A",
+                "Locked": False
+            })
+            prev_song = song
+
+    return pd.DataFrame(setlist)
+
+
+# -------------------------
 # DEAD WEIGHT CHECKBOX CALLBACKS
 # -------------------------
 
