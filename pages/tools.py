@@ -5,7 +5,11 @@ import subprocess
 import time
 import streamlit.components.v1 as components  # type: ignore
 from zoneinfo import ZoneInfo
-today_md = pd.Timestamp.now(tz=ZoneInfo("America/New_York")).strftime("%m/%d")
+
+today = pd.Timestamp.now(tz=ZoneInfo("America/New_York"))
+today_md = today.strftime("%m/%d")
+today_naive = today.tz_localize(None)
+
 from shared import ( #type: ignore
     load_data, build_filtered, weighted_pick, find_closers,
     times_played_mult, page_menu, dank_header, build_randomizer_pools, apply_segue_boost, pick_by_kind, generate_setlist,
@@ -77,7 +81,7 @@ def ranked_table(display_df, sort_col=None, ascending=False, rename=None, column
 
 if active_tab in ("Recent Tracks", "Bust-outs", "Song Streak"):
     full_df, full_stats = build_filtered(df, metadata, [], (min_year, max_year))
- 
+
 if active_tab == "Recent Tracks":
     st.subheader("Most Recent Tracks")
 
@@ -90,7 +94,7 @@ if active_tab == "Recent Tracks":
         columns=["Title", "Last Played", "Total Plays"]
     )
     st.dataframe(recent_display, hide_index=True)
-    
+
 elif active_tab == "Bust-outs":
     st.subheader("Most Overdue Songs")
     dead_weight_only = st.checkbox("Dead Weight Only", key="bustout_dead_weight")
@@ -101,7 +105,7 @@ elif active_tab == "Bust-outs":
         bustout_df, bustout_stats = full_df, full_stats
 
     bustouts = bustout_stats.copy()
-    bustouts["Days_Since_Played"] = (today_md - bustouts["Last_Played"]).dt.days
+    bustouts["Days_Since_Played"] = (today_naive - bustouts["Last_Played"]).dt.days
     bustouts["Overdue_Score"] = bustouts["Days_Since_Played"] * (bustouts["Times_Played"] ** times_played_mult)
     max_score = bustouts["Overdue_Score"].max()
     bustouts["Overdue_Score_Normalized"] = ((bustouts["Overdue_Score"] / max_score) * 100).round(1)
@@ -178,7 +182,7 @@ elif active_tab == "Rando Sets":
         st.markdown("&nbsp;", unsafe_allow_html=True)
         if st.button("Create New Setlist", width='stretch'):
             st.session_state.random_setlist = generate_setlist(
-                num_songs, randomizer_df, jam_titles, improv_titles, today_md
+                num_songs, randomizer_df, jam_titles, improv_titles, today_naive
             )
             st.session_state.setlist_version = st.session_state.get("setlist_version", 0) + 1
             st.session_state.random_message = random.choice(random_messages)
@@ -191,7 +195,7 @@ elif active_tab == "Rando Sets":
             if st.button("Re-Roll Those Laughing Bones", width='stretch'):
                 current = st.session_state.random_setlist.copy()
                 locked_songs = set(current[current["Locked"] == True]["Title"].tolist())
-                new = generate_setlist(num_songs, randomizer_df, jam_titles, improv_titles, today_md)
+                new = generate_setlist(num_songs, randomizer_df, jam_titles, improv_titles, today_naive)
 
                 merged = []
                 locked_rows = current[current["Locked"] == True].set_index("#")
@@ -249,7 +253,7 @@ else:
     st.write("Select a tab to view its content.")
 
 # -------------------------
-# FOOTER 
+# FOOTER
 # -------------------------
 if st.button("⬆ Back to top"):
     components.html("""
