@@ -68,51 +68,156 @@ def dank_header(subtitle="The Danktuary Archive Explorer", anchor_id="dankapp-to
 # AUDIO PLAYER
 # -------------------------
 
-def dank_audio_player(title, subtitle, audio_url):
+def dank_playlist_player(show_label, tracks):
+    """Render a single playlist player with auto-advance.
+
+    tracks: list of dicts, each with keys: label, subtitle, url
+    """
     import streamlit.components.v1 as components
+    import json
+
+    tracks_json = json.dumps(tracks)
+    height = 90 + len(tracks) * 46 + 40
+
     components.html(f"""
     <style>
     body {{
         margin: 0;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }}
-    .dank-player-card {{
+    .dank-playlist-card {{
         background-color: #1c1b1a;
         border-radius: 14px;
         border-bottom: 3px solid #d4a24c;
-        padding: 20px 20px 18px 20px;
+        padding: 20px 20px 14px 20px;
         box-sizing: border-box;
     }}
-    .dank-player-title {{
+    .dank-playlist-title {{
         color: #ece7de;
-        font-size: 18px;
+        font-size: 16px;
         font-weight: 700;
         letter-spacing: -0.01em;
-        margin-bottom: 2px;
+        margin-bottom: 12px;
     }}
-    .dank-player-subtitle {{
-        color: #7a8b6f;
-        font-size: 12px;
-        font-weight: 500;
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
-        margin-bottom: 14px;
-    }}
-    .dank-player-card audio {{
+    .dank-playlist-card audio {{
         width: 100%;
         border-radius: 8px;
         outline: none;
+        margin-bottom: 14px;
+    }}
+    .dank-track-list {{
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }}
+    .dank-track {{
+        display: flex;
+        align-items: baseline;
+        gap: 10px;
+        padding: 10px 10px;
+        border-radius: 6px;
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        transition: background-color 0.15s ease;
+    }}
+    .dank-track:hover {{
+        background-color: #2a2826;
+    }}
+    .dank-track.active {{
+        border-bottom: 2px solid #d4a24c;
+        background-color: #2a2826;
+    }}
+    .dank-track-num {{
+        color: #7a8b6f;
+        font-size: 12px;
+        font-weight: 600;
+        min-width: 18px;
+    }}
+    .dank-track-title {{
+        color: #ece7de;
+        font-size: 14px;
+        font-weight: 500;
+        flex: 1;
+    }}
+    .dank-track.active .dank-track-title {{
+        color: #d4a24c;
+        font-weight: 700;
+    }}
+    .dank-track-duration {{
+        color: #8a857c;
+        font-size: 12px;
     }}
     </style>
-    <div class="dank-player-card">
-        <div class="dank-player-title">{title}</div>
-        <div class="dank-player-subtitle">{subtitle}</div>
-        <audio controls preload="none">
-            <source src="{audio_url}">
-            Your browser does not support the audio element.
-        </audio>
+    <div class="dank-playlist-card">
+        <div class="dank-playlist-title">{show_label}</div>
+        <audio id="dank-player" controls preload="none"></audio>
+        <div class="dank-track-list" id="dank-track-list"></div>
     </div>
-    """, height=130)
+    <script>
+    const tracks = {tracks_json};
+    const player = document.getElementById('dank-player');
+    const listEl = document.getElementById('dank-track-list');
+    let currentIndex = 0;
+
+    function renderList() {{
+        listEl.innerHTML = '';
+        tracks.forEach((track, i) => {{
+            const row = document.createElement('div');
+            row.className = 'dank-track' + (i === currentIndex ? ' active' : '');
+            row.innerHTML = `
+                <div class="dank-track-num">${{i + 1}}</div>
+                <div class="dank-track-title">${{track.label}}</div>
+                <div class="dank-track-duration">${{track.duration || ''}}</div>
+            `;
+            row.addEventListener('click', () => loadTrack(i, true));
+            listEl.appendChild(row);
+        }});
+    }}
+
+    function loadTrack(index, autoplay) {{
+        if (index < 0 || index >= tracks.length) return;
+        currentIndex = index;
+        player.src = tracks[index].url;
+        if (autoplay) {{
+            player.play().catch(() => {{}});
+        }}
+        renderList();
+    }}
+
+    player.addEventListener('ended', () => {{
+        if (currentIndex + 1 < tracks.length) {{
+            loadTrack(currentIndex + 1, true);
+        }}
+    }});
+
+    loadTrack(0, false);
+    </script>
+    """, height=height)
+
+
+# -------------------------
+# MOBILE KEYBOARD SUPPRESSION FOR SELECTBOX
+# -------------------------
+
+def suppress_selectbox_keyboard():
+    """Stops the mobile virtual keyboard from popping up when tapping
+    a st.selectbox, while keeping tap-to-open-dropdown behavior intact."""
+    st.markdown("""
+    <script>
+    function suppressKeyboard() {
+        const inputs = window.parent.document.querySelectorAll(
+            'div[data-baseweb="select"] input'
+        );
+        inputs.forEach((input) => {
+            input.setAttribute('inputmode', 'none');
+            input.setAttribute('readonly', 'readonly');
+        });
+    }
+    suppressKeyboard();
+    const observer = new MutationObserver(suppressKeyboard);
+    observer.observe(window.parent.document.body, {childList: true, subtree: true});
+    </script>
+    """, unsafe_allow_html=True)
 
 
 # -------------------------
