@@ -24,6 +24,17 @@ performances["Show_Label"] = (
 # only shows with at least one playable track show up in the picker
 playable_shows = performances[performances["IA URL"].notna()]
 
+type_filter = st.radio(
+    "Show type:",
+    ["All", "Gigs", "Practices"],
+    horizontal=True
+)
+
+if type_filter == "Gigs":
+    playable_shows = playable_shows[playable_shows["Type"] == "live"]
+elif type_filter == "Practices":
+    playable_shows = playable_shows[playable_shows["Type"] == "practice"]
+
 unique_shows = (
     playable_shows.drop_duplicates(subset="Show_Label")
     .sort_values("Date", ascending=False)["Show_Label"]
@@ -31,7 +42,7 @@ unique_shows = (
 )
 
 if not unique_shows:
-    st.write("No shows have been uploaded yet. Run upload_to_archive.py first.")
+    st.write("No shows match this filter.")
     st.stop()
 
 selected_show = st.selectbox(
