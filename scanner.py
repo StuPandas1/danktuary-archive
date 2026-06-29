@@ -3,7 +3,7 @@ import os
 import csv
 import string
 from mutagen import File as MutagenFile
-print("CORRECT SCANNER RUNNING")
+print("Let's a-gooooo!")
 manual_fixes = {
     "alma's phat mama": "alma's fat mama",
     "alma": "alma's fat mama",
