@@ -12,7 +12,7 @@ GMAIL_ADDRESS = os.environ.get("DANKAPP_GMAIL_ADDRESS")
 GMAIL_APP_PASSWORD = os.environ.get("DANKAPP_GMAIL_APP_PASSWORD")
 
 BAND_EMAILS = [
-    # "davidericmelamed@gmail.com",
+    "davidericmelamed@gmail.com",
     # "mmargolis52@gmail.com",
     # "abrizel07@gmail.com",
     # "mr.chrisciao@gmail.com",
@@ -83,8 +83,7 @@ def send_show_email(df, date_str, location):
     for _, row in setlist.iterrows():
         lines.append(f"  {int(row['Track Number'])}. {row['Title']}")
 
-    lines.append("\nListen here: https://drive.google.com/drive/folders/1sUzVbzE8lQ8SV9vzGtCHztzlLa-fDaz6?usp=drive_link")
-    lines.append("\nJust gotta poke around: http://danktuary-archive.streamlit.app/")
+    lines.append("\nListen on the app: https://danktuary.streamlit.app/listen")
     lines.append("\nBut Moe, the dank! The dank!")
 
     body = "\n".join(lines)
