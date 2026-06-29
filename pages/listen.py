@@ -1,12 +1,14 @@
 import streamlit as st  # type: ignore
 import pandas as pd  # type: ignore
-from shared import load_data, page_menu, dank_header, dank_audio_player
+from shared import load_data, page_menu, dank_header, dank_playlist_player, suppress_selectbox_keyboard
 
 df, song_stats, metadata, jam_metadata = load_data()
 
 page_menu()
 
 dank_header(subtitle="Listen")
+
+suppress_selectbox_keyboard()
 
 if "IA URL" not in df.columns:
     st.write("No streaming links found yet — run upload_to_archive.py to generate them.")
@@ -42,14 +44,9 @@ selected_show = st.selectbox(
 if selected_show:
     show_tracks = performances[
         performances["Show_Label"] == selected_show
-    ].sort_values("Track Number")
+    ].sort_values("Track Number").reset_index(drop=True)
 
-    st.write(f"**{selected_show}**")
-    st.divider()
-
-    show_tracks = show_tracks.reset_index(drop=True)
-
-    any_playable = False
+    playlist = []
     i = 0
     while i < len(show_tracks):
         current = show_tracks.iloc[i]
@@ -66,12 +63,14 @@ if selected_show:
             group_titles.append(show_tracks.iloc[j]["Title"])
             j += 1
 
-        any_playable = True
-        track_label = f"{int(current['Track Number'])}. {' -> '.join(group_titles)}"
-        subtitle = f"{current['Duration']} — {selected_show}"
-
-        dank_audio_player(track_label, subtitle, audio_url)
+        playlist.append({
+            "label": " -> ".join(group_titles),
+            "duration": current["Duration"],
+            "url": audio_url,
+        })
         i = j
 
-    if not any_playable:
+    if playlist:
+        dank_playlist_player(selected_show, playlist)
+    else:
         st.write("No playable tracks found for this show.")
