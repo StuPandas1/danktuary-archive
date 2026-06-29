@@ -50,7 +50,7 @@ if "active_tab" not in st.session_state:
 
 dank_header(subtitle="Useful Tools for the Dank")
 
-tab_names = ["Recent Tracks", "Bust-outs", "Song Streak", "Rando Sets"]
+tab_names = ["Recent Tracks", "Bustout Info", "Song Streak", "Setlist Randomizer"]
 tab_cols = st.columns(len(tab_names))
 for i, name in enumerate(tab_names):
     with tab_cols[i]:
@@ -79,7 +79,7 @@ def ranked_table(display_df, sort_col=None, ascending=False, rename=None, column
 # TAB: RECENT SETLIST STATS
 # -------------------------
 
-if active_tab in ("Recent Tracks", "Bust-outs", "Song Streak"):
+if active_tab in ("Recent Tracks", "Bustout Info", "Song Streak"):
     full_df, full_stats = build_filtered(df, metadata, [], (min_year, max_year))
 
 if active_tab == "Recent Tracks":
@@ -95,7 +95,7 @@ if active_tab == "Recent Tracks":
     )
     st.dataframe(recent_display, hide_index=True)
 
-elif active_tab == "Bust-outs":
+elif active_tab == "Bustout Info":
     st.subheader("Most Overdue Songs")
     dead_weight_only = st.checkbox("Dead Weight Only", key="bustout_dead_weight")
 
@@ -142,10 +142,10 @@ elif active_tab == "Song Streak":
         st.write("No Song Streak.")
 
 # -------------------------
-#  DEAD WEIGHT Rando Sets
+#  DEAD WEIGHT SL RANDOMIZER
 # -------------------------
 
-elif active_tab == "Rando Sets":
+elif active_tab == "Setlist Randomizer":
 
     st.markdown("#### Dead Weight Setlist Randomizer v1.0")
 

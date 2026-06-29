@@ -5,7 +5,8 @@ import os
 import streamlit.components.v1 as components  # type: ignore
 from shared import ( #type: ignore
     load_data, build_filtered, find_closers, parse_duration,
-    make_dead_weight_callback, page_menu, local_path_to_onedrive_url, dank_header
+    make_dead_weight_callback, page_menu, local_path_to_onedrive_url, dank_header,
+    dead_weight_artists, dead_weight_year
 )
 
 df, song_stats, metadata, jam_metadata = load_data()
