@@ -69,14 +69,19 @@ def dank_header(subtitle="The Danktuary Archive Explorer", anchor_id="dankapp-to
 # -------------------------
 
 def dank_audio_player(title, subtitle, audio_url):
-    st.markdown(f"""
+    import streamlit.components.v1 as components
+    components.html(f"""
     <style>
+    body {{
+        margin: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }}
     .dank-player-card {{
         background-color: #1c1b1a;
         border-radius: 14px;
         border-bottom: 3px solid #d4a24c;
         padding: 20px 20px 18px 20px;
-        margin-bottom: 16px;
+        box-sizing: border-box;
     }}
     .dank-player-title {{
         color: #ece7de;
@@ -107,7 +112,7 @@ def dank_audio_player(title, subtitle, audio_url):
             Your browser does not support the audio element.
         </audio>
     </div>
-    """, unsafe_allow_html=True)
+    """, height=130)
 
 
 # -------------------------
@@ -118,12 +123,12 @@ def page_menu():
     with st.popover("☰ Menu"):
         if st.button("Dashboard", width="stretch"):
             st.switch_page("pages/landing.py")
-        if st.button("Explore the Archive", width="stretch"):
-            st.switch_page("pages/explore.py")
-        if st.button("Useful Tools", width="stretch"):
-            st.switch_page("pages/tools.py")
         if st.button("Listen", width="stretch"):
             st.switch_page("pages/listen.py")
+        if st.button("Useful Tools", width="stretch"):
+            st.switch_page("pages/tools.py")
+        if st.button("Explore the Archive", width="stretch"):
+            st.switch_page("pages/explore.py")
 
 
 # -------------------------
