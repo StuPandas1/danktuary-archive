@@ -202,7 +202,8 @@ def dank_playlist_player(show_label, tracks):
 def suppress_selectbox_keyboard():
     """Stops the mobile virtual keyboard from popping up when tapping
     a st.selectbox, while keeping tap-to-open-dropdown behavior intact."""
-    st.markdown("""
+    import streamlit.components.v1 as components
+    components.html("""
     <script>
     function suppressKeyboard() {
         const inputs = window.parent.document.querySelectorAll(
@@ -217,7 +218,7 @@ def suppress_selectbox_keyboard():
     const observer = new MutationObserver(suppressKeyboard);
     observer.observe(window.parent.document.body, {childList: true, subtree: true});
     </script>
-    """, unsafe_allow_html=True)
+    """, height=0)
 
 
 # -------------------------
