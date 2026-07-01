@@ -9,6 +9,13 @@ times_played_mult = 1.3  # multiplier for how much weight to give times played i
 dead_weight_artists = ["Grateful Dead", "Jerry Garcia Band", "The Band", "Little Feat"]
 dead_weight_year = 2022
 
+@st.cache_data
+def load_all_recordings(_mtimes):
+    """Load band_archive.csv including all takes, for the Listen page."""
+    df = pd.read_csv("band_archive.csv")
+    df["Date"] = pd.to_datetime(df["Date"])
+    df["Year"] = df["Date"].dt.year
+    return df
 
 # -------------------------
 # ONEDRIVE LINK CONVERTER
@@ -251,7 +258,7 @@ def _data_file_mtimes():
 
 @st.cache_data
 def _load_data_cached(_mtimes):
-    df = pd.read_csv("band_archive.csv")
+    df = pd.read_csv("band_archive.csv", dtype={"Duration": str})
     song_stats = pd.read_csv("song_stats.csv")
     metadata = pd.read_csv("song_metadata.csv")
     jam_metadata = pd.read_csv("metadata_jam.csv")
@@ -262,6 +269,7 @@ def _load_data_cached(_mtimes):
     song_stats = song_stats.merge(metadata, on="Title", how="left")
 
     return df, song_stats, metadata, jam_metadata
+
 
 
 def load_data():

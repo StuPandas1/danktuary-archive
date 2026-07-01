@@ -36,6 +36,7 @@ div[data-testid="stHorizontalBlock"] button {
 """, unsafe_allow_html=True)
 
 df, song_stats, metadata, jam_metadata = load_data()
+df = df[df["Take"] == 1]
 
 page_menu()
 
