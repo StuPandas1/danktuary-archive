@@ -2,7 +2,8 @@ import streamlit as st  # type: ignore
 import pandas as pd  # type: ignore
 from shared import load_data, page_menu, dank_header, dank_playlist_player, suppress_selectbox_keyboard
 
-df, song_stats, metadata, jam_metadata = load_data()
+from shared import load_all_recordings, _data_file_mtimes
+df = load_all_recordings(_data_file_mtimes())
 
 page_menu()
 

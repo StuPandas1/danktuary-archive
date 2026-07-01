@@ -7,6 +7,7 @@ today_md = pd.Timestamp.now(tz=ZoneInfo("America/New_York")).strftime("%m/%d")
 from shared import load_data, parse_duration, page_menu, dank_header #type: ignore
 
 df, song_stats, metadata, jam_metadata = load_data()
+df = df[df["Take"] == 1]
 
 page_menu()
 st.markdown("""

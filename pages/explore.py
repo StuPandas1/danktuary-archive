@@ -10,6 +10,7 @@ from shared import ( #type: ignore
 )
 
 df, song_stats, metadata, jam_metadata = load_data()
+df = df[df["Take"] == 1]
 
 page_menu()
 

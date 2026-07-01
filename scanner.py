@@ -200,9 +200,14 @@ def get_duration(filepath):
         audio = MutagenFile(filepath)
         if audio is not None and audio.info is not None:
             seconds = int(audio.info.length)
+
             # if mutagen returned milliseconds instead of seconds
             if seconds > 10000:
                 seconds = seconds // 1000
+
+            if seconds > 3600:
+                seconds = seconds // 60
+
             minutes = seconds // 60
             secs = seconds % 60
             if minutes >= 60:
@@ -217,13 +222,13 @@ def get_duration(filepath):
 with open("band_archive.csv", "w", newline="", encoding="utf-8") as csvfile:
     writer = csv.writer(csvfile)
     # column headers
-    writer.writerow(["Track Number", "File Track", "Title", "Date", "Location", "Type", "Duration", "Raw Title", "File Path"])
+    writer.writerow(["Track Number", "File Track", "Title", "Date", "Location", "Type", "Duration", "Raw Title", "File Path", "Take"])
 
     for archive_path in archive_paths:
 
         for root, dirs, files in os.walk(archive_path):
             logical_track_number = 1
-            seen_songs = set()
+            seen_songs = {}
             for file in sorted(files):
                 if file.lower().endswith((".mp3", ".m4a", ".wav", ".wma", ".aac", ".bmp")):
                     
@@ -290,19 +295,26 @@ with open("band_archive.csv", "w", newline="", encoding="utf-8") as csvfile:
                         filepath = os.path.join(root, file)
                         duration = get_duration(filepath)
 
-                        if title not in seen_songs: # only write first instance of each song in database
-                            writer.writerow([
-                                logical_track_number,
-                                track_number,
-                                title,
-                                date,
-                                gig_place,
-                                recording_type,
-                                duration,
-                                raw_name,
-                                filepath
-                            ])
-                            seen_songs.add(title)
-                            logical_track_number += 1
+                        if title not in seen_songs:
+                            take = 1
+                            display_title = title
+                        else:
+                            take = seen_songs[title] + 1
+                            display_title = f"{title} ({take})"
+
+                        writer.writerow([
+                            logical_track_number,
+                            track_number,
+                            display_title,
+                            date,
+                            gig_place,
+                            recording_type,
+                            duration,
+                            raw_name,
+                            filepath,
+                            take
+                        ])
+                        seen_songs[title] = take
+                        logical_track_number += 1
 
 print("CSV created successfully!")
