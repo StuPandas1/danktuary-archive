@@ -7,7 +7,7 @@ df = load_all_recordings(_data_file_mtimes())
 
 page_menu()
 
-dank_header(subtitle="Listen")
+dank_header(subtitle="If you get confused...")
 
 suppress_selectbox_keyboard()
 
@@ -86,3 +86,11 @@ if selected_show:
         dank_playlist_player(selected_show, playlist)
     else:
         st.write("No playable tracks found for this show.")
+
+st.divider()
+
+st.markdown(
+    "<div style='text-align: center; color: grey; font-size: 13px;'>Danktuary Archive Version: 2.0 | Believe it if you need it</div>",
+    unsafe_allow_html=True
+)
+st.markdown("")

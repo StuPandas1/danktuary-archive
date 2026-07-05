@@ -2,6 +2,8 @@ import streamlit as st  # type: ignore
 import pandas as pd  # type: ignore
 import random
 import os
+import re
+import string
 from urllib.parse import quote
 
 times_played_mult = 1.3  # multiplier for how much weight to give times played in overdue score
@@ -18,6 +20,202 @@ def load_all_recordings(_mtimes):
     return df
 
 # -------------------------
+# SCANNER INFO
+# -------------------------
+
+manual_fixes = {
+    "alma's phat mama": "alma's fat mama",
+    "alma": "alma's fat mama",
+    "alma's": "alma's fat mama",
+
+    "goodnight": "and we bid you goodnight",
+    "we bid you goodnight": "and we bid you goodnight",
+    "wbygn": "and we bid you goodnight",
+
+    "atoms": "atoms in pursuit",
+
+    "biodtl": "beat it on down the line",
+
+    "bott": "back on the train",
+
+    "brokedown": "brokedown palace",
+
+    "dialogue": "chatter",
+    "post jam recap": "chatter",
+    "post-jam recap": "chatter",
+    "pjr": "chatter",
+    "the last word": "chatter",
+    "the post jam": "chatter",
+    "the post": "chatter",
+
+    "china cat": "china cat sunflower",
+    "china": "china cat sunflower",
+
+    "cold rain snow": "cold rain and snow",
+
+    "cripple creek": "up on cripple creek",
+
+    "cumberland": "cumberland blues",
+
+    "dancin": "dancin in the street",
+    "dancing": "dancin in the street",
+    "dancing in the street": "dancin in the street",
+    "dancing in the streets": "dancin in the street",
+    "dancin in the streets": "dancin in the street",
+    "dits": "dancin in the street",
+
+    "dark star jam": "dark star",
+
+    "dear mr fantasy": "dear mr. fantasy",
+
+    "dixie down": "the night they drove old dixie down",
+
+    "eyes": "eyes of the world",
+
+    "fire": "fire on the mountain",
+    "fotm": "fire on the mountain",
+
+    "flas": "feel like a stranger",
+    "feels like a stranger": "feel like a stranger",
+    "stranger": "feel like a stranger",
+
+    "fotd": "friend of the devil",
+
+    "franklin": "franklin's tower",
+    "franklins": "franklin's tower",
+    "franklin's": "franklin's tower",
+
+    "gdtrfb": "goin down the road feelin bad",
+    "goin down the road feeling bad": "goin down the road feelin bad",
+    "going down the road feeling bad": "goin down the road feelin bad",
+
+    "schoolgirl": "good morning little schoolgirl",
+
+    "how sweet it is (to be loved by you)": "how sweet it is",
+
+    "rider": "i know you rider",
+
+    "opening jam": "jam",
+    "opening jam in a": "jam",
+    "opening noodles": "jam",
+
+    "johnny b goode": "johnny b. goode",
+
+    "knockin lost john": "knockin' lost john",
+
+    "good times": "let the good times roll",
+    "good times roll": "let the good times roll",
+
+    "cleveland": "look out cleveland",
+
+    "muncle": "me and my uncle",
+    "me & my uncle": "me and my uncle",
+
+    "half step": "mississippi half-step uptown toodeloo",
+    "half-step": "mississippi half-step uptown toodeloo",
+    "mississippi": "mississippi half-step uptown toodeloo",
+    "mississippi half step uptown toodeloo": "mississippi half-step uptown toodeloo",
+    "mississippi half-step": "mississippi half-step uptown toodeloo",
+    "mississippi half step": "mississippi half-step uptown toodeloo",
+
+    "new minglewood": "new minglewood blues",
+
+    "new speedway": "new speedway boogie",
+
+    "nfa": "not fade away",
+
+    "osop": "other side of paradise",
+
+    "playin": "playin in the band",
+    "pitb": "playin in the band",
+    "playing in the band": "playin in the band",
+
+    "push": "push comes to shove",
+
+    "samson": "samson and delilah",
+
+    "scarlet": "scarlet begonias",
+
+    "shakedown": "shakedown street",
+
+    "sitting in limbo": "sitting here in limbo",
+
+    "speak up": "speak up!",
+
+    "tangled": "tangled up in blue",
+    "tangled up": "tangled up in blue",
+
+    "jed": "tennessee jed",
+
+    "terrapin": "terrapin station",
+
+    "music": "the music never stopped",
+    "music never stopped": "the music never stopped",
+    "tmns": "the music never stopped",
+
+    "other one": "the other one",
+
+    "weight": "the weight",
+
+    "tleo": "they love each other",
+
+    "lovelight": "turn on your lovelight",
+
+    "viola": "viola lee blues",
+    "viola lee": "viola lee blues",
+
+    "way back": "way back home",
+
+    "west la": "west l.a. fadeaway",
+    "west la fadeaway": "west l.a. fadeaway",
+
+    "wolfman": "wolfman's brother",
+    "wolfman's": "wolfman's brother",
+
+    "walcott": "w.s. walcott medicine show",
+    "ws walcott": "w.s. walcott medicine show",
+    "ws walcott medicine show": "w.s. walcott medicine show",
+}
+
+junk_terms = [
+    " take 2",
+    " take 3",
+    " demo",
+    "(voice lesson)",
+    " (ending)",
+    " (opening)",
+    " ending",
+    " intro",
+    " - master",
+    "(soundcheck)",
+    " (2)", " (3)", " (4)", " (5)", " (1)",
+    " (6)", " (7)", " (8)", " (9)",
+    "(instrumental)",
+    "(dave guitar)",
+    "(dave vox)",
+    "(chris vox)",
+    "(matt guitar)"
+]
+
+segue_fixes = {
+    "scarlet fire": "scarlet_ fire",
+    "china rider": "china_ rider",
+    "china cat rider": "china_ rider",
+    "help slip frank": "help_slip_frank",
+    "walcott cumberland": "walcott_ cumberland"
+}
+
+def clean_title(raw):
+    if not isinstance(raw, str):
+        return ""
+    title = raw.strip().lower()
+    title = title.replace("  ", " ")
+    title = re.sub(r"\s+jam$", "", title)
+    if title in manual_fixes:
+        title = manual_fixes[title]
+    return string.capwords(title)
+
+# -------------------------
 # ONEDRIVE LINK CONVERTER
 # -------------------------
 
@@ -32,7 +230,6 @@ def local_path_to_onedrive_url(local_path):
     encoded_path = quote(onedrive_path, safe="")
     viewid = "5df66b5e-e8a6-4d4e-a4a3-babd050c831a"
     return f"https://onedrive.live.com/?id={encoded_path}&viewid={viewid}&view=0"
-
 
 # -------------------------
 # DANK HEADER (shared banner)
@@ -69,7 +266,6 @@ def dank_header(subtitle="The Danktuary Archive Explorer", anchor_id="dankapp-to
         <div class="dank-header-subtitle">{subtitle}</div>
     </div>
     """, unsafe_allow_html=True)
-
 
 # -------------------------
 # AUDIO PLAYER
@@ -201,7 +397,6 @@ def dank_playlist_player(show_label, tracks):
     </script>
     """, height=height)
 
-
 # -------------------------
 # MOBILE KEYBOARD SUPPRESSION FOR SELECTBOX
 # -------------------------
@@ -227,7 +422,6 @@ def suppress_selectbox_keyboard():
     </script>
     """, height=0)
 
-
 # -------------------------
 # PAGE MENU (dropdown)
 # -------------------------
@@ -243,7 +437,6 @@ def page_menu():
         if st.button("Explore the Archive", width="stretch"):
             st.switch_page("pages/explore.py")
 
-
 # -------------------------
 # DATA LOADING (CACHED)
 # -------------------------
@@ -254,7 +447,6 @@ def _data_file_mtimes():
     invalidates whenever any of the underlying CSVs change."""
     files = ["band_archive.csv", "song_stats.csv", "song_metadata.csv", "metadata_jam.csv"]
     return tuple(os.path.getmtime(f) for f in files)
-
 
 @st.cache_data
 def _load_data_cached(_mtimes):
@@ -269,8 +461,6 @@ def _load_data_cached(_mtimes):
     song_stats = song_stats.merge(metadata, on="Title", how="left")
 
     return df, song_stats, metadata, jam_metadata
-
-
 
 def load_data():
     return _load_data_cached(_data_file_mtimes())
@@ -350,6 +540,17 @@ def find_closers(source_df, allowed_titles=None):
                     closers.append(title)
     return closers
 
+def ranked_table(display_df, sort_col=None, ascending=False, rename=None, columns=None, presorted=False):
+    """Sort (unless presorted), rename, add rank, and return a dataframe ready for st.dataframe."""
+    out = display_df if presorted else display_df.sort_values(sort_col, ascending=ascending)
+    out = out.copy()
+    if rename:
+        out = out.rename(columns=rename)
+    if columns:
+        out = out[columns]
+    out = out.reset_index(drop=True)
+    out.insert(0, "Rank", range(1, len(out) + 1))
+    return out
 
 # -------------------------
 # SETLIST RANDOMIZER

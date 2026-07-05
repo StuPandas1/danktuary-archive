@@ -8,7 +8,7 @@ echo.
 
 cd /d "%~dp0"
 
-echo [1/8] Scanning audio files...
+echo [1/9] Scanning audio files...
 python scanner.py
 if errorlevel 1 (
     echo.
@@ -18,7 +18,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo [2/8] Analyzing data...
+echo [2/9] Analyzing data...
 python analyze.py
 if errorlevel 1 (
     echo.
@@ -28,7 +28,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo [3/8] Building metadata...
+echo [3/9] Building metadata...
 python build_metadata.py
 if errorlevel 1 (
     echo.
@@ -38,7 +38,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo [4/8] Generating OneDrive links...
+echo [4/9] Generating OneDrive links...
 python generate_onedrive_urls.py
 if errorlevel 1 (
     echo.
@@ -48,7 +48,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo [5/8] Uploading new recordings to the Internet Archive...
+echo [5/9] Uploading new recordings to the Internet Archive...
 python upload_to_archive.py
 if errorlevel 1 (
     echo.
@@ -59,16 +59,16 @@ if errorlevel 1 (
 )
 
 echo.
-echo [6/8] Checking for new shows and emailing the band...
-python notify_band.py
+echo [6/9] Uploading extra takes to the Internet Archive...
+python upload_extra_takes.py
 if errorlevel 1 (
     echo.
-    echo WARNING: notify_band.py failed. Continuing anyway.
+    echo WARNING: upload_extra_takes.py failed. Continuing anyway.
 )
 
 echo.
-echo [7/8] Checking for changes...
-git add band_archive.csv song_stats.csv song_metadata.csv metadata_jam.csv
+echo [8/9] Checking for changes...
+git add band_archive.csv song_stats.csv song_metadata.csv metadata_jam.csv uploaded_shows_cache.json last_known_shows.csv
 
 git diff --cached --quiet
 if errorlevel 1 (
@@ -84,7 +84,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo [8/8] Committing and pushing to GitHub...
+echo [9/9] Committing and pushing to GitHub...
 set TIMESTAMP=%date% %time%
 git commit -m "Update archive data - %TIMESTAMP%"
 if errorlevel 1 (

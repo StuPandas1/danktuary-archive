@@ -1,6 +1,7 @@
 import streamlit as st  # type: ignore
 import pandas as pd  # type: ignore
 import random
+import re
 import subprocess
 import time
 import streamlit.components.v1 as components  # type: ignore
@@ -12,8 +13,9 @@ today_naive = today.tz_localize(None)
 
 from shared import ( #type: ignore
     load_data, build_filtered, weighted_pick, find_closers,
-    times_played_mult, page_menu, dank_header, build_randomizer_pools, apply_segue_boost, pick_by_kind, generate_setlist,
-    dead_weight_artists, dead_weight_year
+    times_played_mult, page_menu, dank_header, build_randomizer_pools, apply_segue_boost, pick_by_kind, generate_setlist, ranked_table,
+    dead_weight_artists, dead_weight_year,
+    clean_title, manual_fixes
 )
 
 st.markdown("""
@@ -51,7 +53,7 @@ if "active_tab" not in st.session_state:
 
 dank_header(subtitle="Useful Tools for the Dank")
 
-tab_names = ["Recent Tracks", "Bustout Info", "Song Streak", "Setlist Randomizer"]
+tab_names = ["Recently Played", "Bustout Info", "Setlist Randomizer", "Unplayed Songs"]
 tab_cols = st.columns(len(tab_names))
 for i, name in enumerate(tab_names):
     with tab_cols[i]:
@@ -64,41 +66,44 @@ st.divider()
 
 active_tab = st.session_state.active_tab
 
-def ranked_table(display_df, sort_col=None, ascending=False, rename=None, columns=None, presorted=False):
-    """Sort (unless presorted), rename, add rank, and return a dataframe ready for st.dataframe."""
-    out = display_df if presorted else display_df.sort_values(sort_col, ascending=ascending)
-    out = out.copy()
-    if rename:
-        out = out.rename(columns=rename)
-    if columns:
-        out = out[columns]
-    out = out.reset_index(drop=True)
-    out.insert(0, "Rank", range(1, len(out) + 1))
-    return out
-
 # -------------------------
 # TAB: RECENT SETLIST STATS
 # -------------------------
 
-if active_tab in ("Recent Tracks", "Bustout Info", "Song Streak"):
+if active_tab in ("Recently Played", "Bustout Info", "Song Streak"):
     full_df, full_stats = build_filtered(df, metadata, [], (min_year, max_year))
 
-if active_tab == "Recent Tracks":
-    st.subheader("Most Recent Tracks")
+if active_tab == "Recently Played":
+    st.subheader("Most Recently Played")
 
-    recent_display = ranked_table(
-        full_stats.sort_values("Last_Played", ascending=False).assign(
-            Last_Played=lambda x: x["Last_Played"].dt.strftime("%m/%d/%Y")
-        ),
-        presorted=True,
-        rename={"Last_Played": "Last Played", "Times_Played": "Total Plays"},
-        columns=["Title", "Last Played", "Total Plays"]
+    # get track number from each song's most recent appearance
+    most_recent_rows = (
+        full_df.sort_values(["Date", "Track Number"])
+        .groupby("Title")
+        .last()
+        .reset_index()[["Title", "Date", "Track Number"]]
     )
+
+    recent_display = full_stats.merge(most_recent_rows, on="Title", how="left")
+    recent_display = (
+        recent_display
+        .sort_values(["Last_Played", "Track Number"], ascending=[False, True])
+        .assign(Last_Played=lambda x: x["Last_Played"].dt.strftime("%m/%d/%Y"))
+        .rename(columns={"Last_Played": "Last Played", "Times_Played": "Total Plays"})
+        [["Title", "Last Played", "Total Plays"]]
+        .reset_index(drop=True)
+    )
+    recent_display.insert(0, "Rank", range(1, len(recent_display) + 1))
+
     st.dataframe(recent_display, hide_index=True)
+
+# -------------------------
+# TAB: BUSTOUT INFO
+# -------------------------
 
 elif active_tab == "Bustout Info":
     st.subheader("Most Overdue Songs")
-    dead_weight_only = st.checkbox("Dead Weight Only", key="bustout_dead_weight")
+    dead_weight_only = st.checkbox("Dead Weight Only", value=True, key="bustout_dead_weight")
 
     if dead_weight_only:
         bustout_df, bustout_stats = build_filtered(df, metadata, dead_weight_artists, (dead_weight_year, max_year))
@@ -123,32 +128,13 @@ elif active_tab == "Bustout Info":
         hide_index=True
     )
 
-elif active_tab == "Song Streak":
-
-    all_dates = sorted(df["Date"].dt.normalize().unique())
-    records = []
-    for title in full_df["Title"].unique():
-        song_dates = set(full_df[full_df["Title"] == title]["Date"].dt.normalize().unique())
-        streak = 0
-        for date in all_dates:
-            streak = streak + 1 if date in song_dates else 0
-        if streak > 1:
-            records.append({"Title": title, "Active Streak": streak})
-
-    st.subheader("Active Setlist Streaks")
-    if records:
-        consec_df = ranked_table(pd.DataFrame(records), sort_col="Active Streak")
-        st.dataframe(consec_df, width="stretch", hide_index=True)
-    else:
-        st.write("No Song Streak.")
-
 # -------------------------
-#  DEAD WEIGHT SL RANDOMIZER
+# TAB: DEAD WEIGHT SL RANDOMIZER
 # -------------------------
 
 elif active_tab == "Setlist Randomizer":
 
-    st.markdown("#### Dead Weight Setlist Randomizer v1.0")
+    st.markdown("#### Dead Weight Setlist Randomizer")
 
     improv_titles = set(metadata[metadata["Type"] == "Improv"]["Title"])
     jam_titles = set(jam_metadata["Title"])
@@ -250,8 +236,35 @@ elif active_tab == "Setlist Randomizer":
             key=editor_key
         )
 
-else:
-    st.write("Select a tab to view its content.")
+# -------------------------
+# TAB: UNPLAYED SONGS
+# -------------------------
+
+elif active_tab == "Unplayed Songs":
+    st.subheader("Songs We Haven't Played")
+
+    try:
+        total_songs = pd.read_csv("total_songs.csv").dropna(subset=["Title"])
+        total_songs["Title"] = total_songs["Title"].apply(clean_title)
+    except FileNotFoundError:
+        st.write("total_songs.csv not found.")
+        st.stop()
+
+    played_titles = set(df["Title"].unique())
+    unplayed = (
+        total_songs[~total_songs["Title"].isin(played_titles)]
+        .sort_values(["Title", "Artist"])
+        .reset_index(drop=True)
+    )
+
+    st.write(f"**{len(unplayed)}** {'song' if len(unplayed) == 1 else 'songs'} to learn...")
+    st.dataframe(
+        unplayed[["Title", "Artist"]].rename(columns={"Title": "Song Title", "Artist": "Artist"}),
+        hide_index=True,
+        width="stretch"
+    )
+
+else: st.write("Select a tab to view its content.")
 
 # -------------------------
 # FOOTER
