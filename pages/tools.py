@@ -294,7 +294,7 @@ if st.button("⬆ Back to top"):
 st.divider()
 
 st.markdown(
-    "<div style='text-align: center; color: grey; font-size: 13px;'>Danktuary Archive Version: 1.5.0 | Believe it if you need it</div>",
+    "<div style='text-align: center; color: grey; font-size: 13px;'>Danktuary Archive Version: 2.0 | Believe it if you need it</div>",
     unsafe_allow_html=True
 )
 st.markdown("")
