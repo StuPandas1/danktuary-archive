@@ -12,14 +12,14 @@ GMAIL_ADDRESS = os.environ.get("DANKAPP_GMAIL_ADDRESS")
 GMAIL_APP_PASSWORD = os.environ.get("DANKAPP_GMAIL_APP_PASSWORD")
 
 BAND_EMAILS = [
-    "davidericmelamed@gmail.com",
-    # "mmargolis52@gmail.com",
-    # "abrizel07@gmail.com",
-    # "mr.chrisciao@gmail.com",
-    # "camoser19@gmail.com"
+    # add band member email addresses here
+    "bandmate1@example.com",
+    "bandmate2@example.com",
 ]
 
 SNAPSHOT_PATH = "last_known_shows.csv"
+MAX_EMAILS_PER_RUN = 3  # safety cap — if more than this many new shows detected,
+                         # something is probably wrong with the snapshot; abort instead
 
 # -------------------------
 # DETECT NEW SHOWS
@@ -59,6 +59,15 @@ def main():
         current_shows.to_csv(SNAPSHOT_PATH, index=False)
         return
 
+    if len(new_shows) > MAX_EMAILS_PER_RUN:
+        print(f"SAFETY CAP: {len(new_shows)} new shows detected, which exceeds the "
+              f"limit of {MAX_EMAILS_PER_RUN}.")
+        print("This likely means the snapshot is missing or stale. Reseeding baseline "
+              "without sending any emails.")
+        print("Re-run update_database.bat to send notifications for genuinely new shows.")
+        current_shows.to_csv(SNAPSHOT_PATH, index=False)
+        return
+
     for _, show in new_shows.iterrows():
         send_show_email(df, show["Date"], show["Location"])
 
@@ -82,9 +91,6 @@ def send_show_email(df, date_str, location):
 
     for _, row in setlist.iterrows():
         lines.append(f"  {int(row['Track Number'])}. {row['Title']}")
-
-    lines.append("\nListen on the app: https://danktuary.streamlit.app/listen")
-    lines.append("\nBut Moe, the dank! The dank!")
 
     body = "\n".join(lines)
 
