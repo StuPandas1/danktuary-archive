@@ -5,3 +5,4 @@ msal
 requests
 supabase
 bcrypt
+streamlit_authenticator
