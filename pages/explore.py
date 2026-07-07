@@ -144,8 +144,6 @@ if st.session_state.active_tab == "Song Search":
             true_debut = df[df["Title"] == selected_song]["Date"].min()
             total_shows_since_debut = df[df["Date"] >= true_debut]["Date"].nunique()
             shows_played = df[(df["Title"] == selected_song) & (df["Date"] >= true_debut)]["Date"].nunique()
-            pct = round((shows_played / total_shows_since_debut) * 100, 1)
-            st.write(f"Since its debut, **\"{selected_song}\"** has been played in **{pct}%** of setlists.")
 
         with st.expander("Graph By Year", expanded=False):
             yearly_counts = (
