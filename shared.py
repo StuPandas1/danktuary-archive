@@ -5,10 +5,12 @@ import os
 import re
 import string
 from urllib.parse import quote
+from supabase import create_client, Client
+import bcrypt
 
 times_played_mult = 1.3  # multiplier for how much weight to give times played in overdue score
 
-dead_weight_artists = ["Grateful Dead", "Jerry Garcia Band", "The Band", "Little Feat"]
+dead_weight_artists = ["Grateful Dead", "Jerry Garcia Band", "The Band", "Little Feat", "Phish", "The Rolling Stones", "Sam Cooke", "The Four Tops", "The Allman Brothers Band"]
 dead_weight_year = 2022
 
 @st.cache_data
@@ -18,6 +20,129 @@ def load_all_recordings(_mtimes):
     df["Date"] = pd.to_datetime(df["Date"])
     df["Year"] = df["Date"].dt.year
     return df
+
+@st.cache_data
+def get_show_list(_mtimes, type_filter):
+    """Cached: only recomputes when the underlying CSVs change or the filter changes,
+    instead of on every widget click."""
+    df = load_all_recordings(_mtimes)
+    performances = df.copy()
+    performances["Show_Label"] = (
+        performances["Date"].dt.strftime("%m/%d/%Y") + " — " + performances["Location"]
+    )
+    playable_shows = performances[performances["IA URL"].notna()]
+
+    if type_filter == "Gigs":
+        playable_shows = playable_shows[playable_shows["Type"] == "live"]
+    elif type_filter == "Practices":
+        playable_shows = playable_shows[playable_shows["Type"] == "practice"]
+
+    unique_shows = (
+        playable_shows.drop_duplicates(subset="Show_Label")
+        .sort_values("Date", ascending=False)["Show_Label"]
+        .tolist()
+    )
+    return performances, unique_shows
+
+
+@st.cache_data
+def get_playlist_for_show(_mtimes, show_label):
+    """Cached per show — grouping only runs once per show, not once per rerun."""
+    performances, _ = get_show_list(_mtimes, "All")
+    show_tracks = performances[
+        performances["Show_Label"] == show_label
+    ].sort_values("Track Number").reset_index(drop=True)
+    return group_tracks(show_tracks)
+
+# -------------------------
+# LOGIN INFO
+# -------------------------
+
+def get_supabase_client() -> Client:
+    return create_client(st.secrets["supabase"]["url"], st.secrets["supabase"]["key"])
+
+def load_users_from_supabase():
+    supabase = get_supabase_client()
+    response = supabase.table("users").select("username, name, password_hash").execute()
+    usernames = {
+        row["username"]: {"name": row["name"], "password": row["password_hash"]}
+        for row in response.data
+    }
+    return {"usernames": usernames}
+
+def create_user_in_supabase(username, name, password):
+    supabase = get_supabase_client()
+    existing = supabase.table("users").select("username").eq("username", username).execute()
+    if existing.data:
+        return False, "That username is already taken."
+    password_hash = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
+    supabase.table("users").insert({
+        "username": username, "name": name, "password_hash": password_hash
+    }).execute()
+    return True, "Account created! Switch to the Log In tab."
+
+# ------------------------
+# PLAYLIST GENERATOR
+# ------------------------
+
+def group_tracks(show_tracks):
+    """Groups consecutive tracks with identical duration (segues) into single entries.
+    show_tracks must be sorted by Track Number, with Title/Duration/IA URL columns."""
+    playlist = []
+    i = 0
+    while i < len(show_tracks):
+        current = show_tracks.iloc[i]
+        audio_url = current.get("IA URL")
+
+        if pd.isna(audio_url):
+            i += 1
+            continue
+
+        group_titles = [current["Title"]]
+        j = i + 1
+        while j < len(show_tracks) and show_tracks.iloc[j]["Duration"] == current["Duration"]:
+            group_titles.append(show_tracks.iloc[j]["Title"])
+            j += 1
+
+        playlist.append({
+            "label": " -> ".join(group_titles),
+            "duration": current["Duration"],
+            "url": audio_url,
+        })
+        i = j
+    return playlist
+
+def save_playlist_to_supabase(owner_username, playlist_name, tracks):
+    supabase = get_supabase_client()
+    existing = (
+        supabase.table("playlists")
+        .select("id")
+        .eq("owner_username", owner_username)
+        .eq("playlist_name", playlist_name)
+        .execute()
+    )
+    if existing.data:
+        return False, "You already have a playlist with that name."
+    supabase.table("playlists").insert({
+        "owner_username": owner_username,
+        "playlist_name": playlist_name,
+        "tracks": tracks,
+    }).execute()
+    return True, "Playlist saved!"
+
+def load_playlists_from_supabase(owner_username):
+    supabase = get_supabase_client()
+    response = (
+        supabase.table("playlists")
+        .select("id, playlist_name, tracks")
+        .eq("owner_username", owner_username)
+        .execute()
+    )
+    return response.data
+
+def delete_playlist_from_supabase(playlist_id):
+    supabase = get_supabase_client()
+    supabase.table("playlists").delete().eq("id", playlist_id).execute()
 
 # -------------------------
 # SCANNER INFO
@@ -436,6 +561,63 @@ def page_menu():
             st.switch_page("pages/tools.py")
         if st.button("Explore the Archive", width="stretch"):
             st.switch_page("pages/explore.py")
+
+# -------------------------
+# FORCE HORIZ ROW/PLAYLIST FORMATTING
+# -------------------------
+
+def force_columns_horizontal():
+    """Injects CSS once per page load so st.columns() rows never stack
+    vertically on mobile, regardless of viewport width."""
+    st.markdown("""
+    <style>
+    div[data-testid="stHorizontalBlock"] {
+        flex-wrap: nowrap !important;
+        gap: 0.4rem !important;
+    }
+    div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"] {
+        width: auto !important;
+        min-width: 0 !important;
+        flex: initial !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+def style_playlist_draft_rows():
+    """Scoped CSS for the playlist draft rows — keeps buttons fixed-width and
+    pinned to the right, while letting long track titles wrap onto multiple
+    lines instead of being cut off."""
+    st.markdown("""
+    <style>
+    .st-key-playlist_draft_rows div[data-testid="stHorizontalBlock"] {
+        flex-wrap: nowrap !important;
+        align-items: flex-start !important;
+        gap: 0.3rem !important;
+    }
+    .st-key-playlist_draft_rows div[data-testid="stColumn"] {
+        min-width: 0 !important;
+    }
+    .st-key-playlist_draft_rows div[data-testid="stColumn"]:first-child {
+        flex: 1 1 auto !important;
+    }
+    .st-key-playlist_draft_rows div[data-testid="stColumn"]:not(:first-child) {
+        flex: 0 0 auto !important;
+        width: 38px !important;
+    }
+    .st-key-playlist_draft_rows button {
+        padding: 0.25rem 0.4rem !important;
+        min-width: 0 !important;
+        width: 100% !important;
+    }
+    .dank-track-label {
+        white-space: normal;
+        word-break: break-word;
+        font-size: 14px;
+        padding-top: 0.35rem;
+        line-height: 1.3;
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
 # -------------------------
 # DATA LOADING (CACHED)

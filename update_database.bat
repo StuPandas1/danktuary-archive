@@ -18,27 +18,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo [2/9] Analyzing data...
-python analyze.py
-if errorlevel 1 (
-    echo.
-    echo ERROR: analyze.py failed. Stopping.
-    pause
-    exit /b 1
-)
-
-echo.
-echo [3/9] Building metadata...
-python build_metadata.py
-if errorlevel 1 (
-    echo.
-    echo ERROR: build_metadata.py failed. Stopping.
-    pause
-    exit /b 1
-)
-
-echo.
-echo [4/9] Generating OneDrive links...
+echo [2/9] Generating OneDrive links...
 python generate_onedrive_urls.py
 if errorlevel 1 (
     echo.
@@ -48,7 +28,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo [5/9] Uploading new recordings to the Internet Archive...
+echo [3/9] Uploading new recordings to the Internet Archive...
 python upload_to_archive.py
 if errorlevel 1 (
     echo.
@@ -59,15 +39,37 @@ if errorlevel 1 (
 )
 
 echo.
-echo [6/9] Uploading extra takes to the Internet Archive...
+echo [4/9] Uploading extra takes to the Internet Archive...
 python upload_extra_takes.py
 if errorlevel 1 (
     echo.
-    echo WARNING: upload_extra_takes.py failed. Continuing anyway.
+    echo ERROR: upload_extra_takes.py failed. Stopping.
+    pause
+    exit /b 1
 )
 
 echo.
-echo [8/9] Checking for changes...
+echo [5/9] Analyzing data...
+python analyze.py
+if errorlevel 1 (
+    echo.
+    echo ERROR: analyze.py failed. Stopping.
+    pause
+    exit /b 1
+)
+
+echo.
+echo [6/9] Building metadata...
+python build_metadata.py
+if errorlevel 1 (
+    echo.
+    echo ERROR: build_metadata.py failed. Stopping.
+    pause
+    exit /b 1
+)
+
+echo.
+echo [7/9] Checking for changes...
 git add band_archive.csv song_stats.csv song_metadata.csv metadata_jam.csv uploaded_shows_cache.json last_known_shows.csv
 
 git diff --cached --quiet
@@ -84,7 +86,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo [9/9] Committing and pushing to GitHub...
+echo [8/9] Committing to GitHub...
 set TIMESTAMP=%date% %time%
 git commit -m "Update archive data - %TIMESTAMP%"
 if errorlevel 1 (
@@ -94,6 +96,8 @@ if errorlevel 1 (
     exit /b 1
 )
 
+echo.
+echo [9/9] Pushing to GitHub...
 git push
 if errorlevel 1 (
     echo.

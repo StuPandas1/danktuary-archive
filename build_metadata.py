@@ -15,8 +15,8 @@ metadata = pd.DataFrame({
 
 # save
 metadata.to_csv(
-    "song_metadata2.csv",
+    "song_metadata.csv",
     index=False
 )
 
-print("song_metadata2.csv created!")
+print("song_metadata.csv created!")
