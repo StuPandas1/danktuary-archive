@@ -127,13 +127,26 @@ if not unique_shows:
 # TABS
 # -------------------------
 
-listen_tab, playlists_tab = st.tabs(["🎧 Listen", "🎶 Playlists"])
+if "active_section" not in st.session_state:
+    st.session_state["active_section"] = "Listen"
+
+col1, col2 = st.columns(2)
+with col1:
+    if st.button("🎧 Listen", width="stretch", type="primary" if st.session_state["active_section"] == "Listen" else "secondary"):
+        st.session_state["active_section"] = "Listen"
+        st.rerun()
+with col2:
+    if st.button("🎶 Playlists", width="stretch", type="primary" if st.session_state["active_section"] == "Playlists" else "secondary"):
+        st.session_state["active_section"] = "Playlists"
+        st.rerun()
+
+st.markdown("---")
 
 # -------------------------
 # LISTEN TAB (fully functional even if Supabase is down)
 # -------------------------
 
-with listen_tab:
+if st.session_state["active_section"] == "Listen":
     selected_show = st.selectbox(
         "Pick a show to listen to",
         unique_shows,
@@ -193,7 +206,7 @@ with listen_tab:
 # PLAYLISTS TAB (requires Supabase — shows a clear message if it's down)
 # -------------------------
 
-with playlists_tab:
+if st.session_state["active_section"] == "Playlists":
     if not supabase_up:
         st.info("🎶 Playlists need the account database, which is temporarily unreachable. Try again shortly.")
     elif not auth_status:
