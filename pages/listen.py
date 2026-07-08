@@ -64,12 +64,6 @@ else:
 
             with login_tab:
                 authenticator.login(location="main")
-                st.write("Authentication:", st.session_state.get("authentication_status"))
-                st.write("Name:", st.session_state.get("name"))
-                st.write("Username:", st.session_state.get("username"))
-
-                cookie_keys = [k for k in st.session_state.keys() if "cookie" in k.lower()]
-                st.write("Cookie-related session keys:", cookie_keys)
                 auth_status = st.session_state.get("authentication_status")
                 name = st.session_state.get("name")
                 username = st.session_state.get("username")
