@@ -23,17 +23,6 @@ suppress_selectbox_keyboard()
 # AUTH (degrades gracefully if Supabase is unreachable)
 # -------------------------
 
-authenticator = st.session_state["authenticator"]
-
-try:
-    authenticator.login(location="unrendered")
-except Exception:
-    pass
-
-auth_status = st.session_state.get("authentication_status")
-name = st.session_state.get("name")
-username = st.session_state.get("username")
-supabase_up = True
 
 try:
     credentials = load_users_from_supabase()
@@ -69,6 +58,18 @@ else:
         )
         st.session_state["_authenticator_credentials"] = credentials
 
+    authenticator = st.session_state["authenticator"]
+
+    try:
+        authenticator.login(location="unrendered")
+    except Exception:
+        pass
+
+    auth_status = st.session_state.get("authentication_status")
+    name = st.session_state.get("name")
+    username = st.session_state.get("username")
+    supabase_up = True
+    
     if not auth_status:
         with st.expander("🔐 Band Login", expanded=False):
             login_tab, signup_tab = st.tabs(["Log In", "Create Account"])
