@@ -19,9 +19,6 @@ page_menu()
 dank_header(subtitle="If you get confused...")
 suppress_selectbox_keyboard()
 
-st.write("Streamlit", st.__version__)
-st.write("Authenticator", stauth.__version__)
-
 # -------------------------
 # AUTH (degrades gracefully if Supabase is unreachable)
 # -------------------------
