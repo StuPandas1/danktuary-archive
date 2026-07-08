@@ -19,6 +19,9 @@ page_menu()
 dank_header(subtitle="If you get confused...")
 suppress_selectbox_keyboard()
 
+st.write("Streamlit", st.__version__)
+st.write("Authenticator", stauth.__version__)
+
 # -------------------------
 # AUTH (degrades gracefully if Supabase is unreachable)
 # -------------------------
@@ -47,19 +50,12 @@ else:
     # interfere with the cookie manager component's internal state.
     # We only rebuild it if the credentials actually changed (e.g. a new
     # signup happened in this session).
-    if (
-        "authenticator" not in st.session_state
-        or st.session_state.get("_authenticator_credentials") != credentials
-    ):
-        st.session_state["authenticator"] = stauth.Authenticate(
-            credentials,
-            st.secrets["cookie"]["name"],
-            st.secrets["cookie"]["key"],
-            st.secrets["cookie"]["expiry_days"]
-        )
-        st.session_state["_authenticator_credentials"] = credentials
-
-    authenticator = st.session_state["authenticator"]
+    authenticator = stauth.Authenticate(
+        credentials,
+        st.secrets["cookie"]["name"],
+        st.secrets["cookie"]["key"],
+        st.secrets["cookie"]["expiry_days"],
+    )
 
     auth_status = st.session_state.get("authentication_status")
     name = st.session_state.get("name")
