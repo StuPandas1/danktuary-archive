@@ -19,11 +19,6 @@ page_menu()
 dank_header(subtitle="If you get confused...")
 suppress_selectbox_keyboard()
 
-try:
-    stauth.authenticator.login(location="unrendered")
-except Exception as e:
-    st.write("DEBUG cookie login error:", e)
-    
 # -------------------------
 # AUTH (degrades gracefully if Supabase is unreachable)
 # -------------------------
@@ -49,52 +44,6 @@ if not supabase_up:
         "come back once the connection is restored."
     )
 else:
-    # Cache the Authenticate object itself so the cookie component keeps a
-    # stable identity across reruns (recreating it each run can break cookie
-    # read-back on hard refresh).
-    if "authenticator" not in st.session_state:
-        st.session_state["authenticator"] = stauth.Authenticate(
-            credentials,
-            st.secrets["cookie"]["name"],
-            st.secrets["cookie"]["key"],
-            st.secrets["cookie"]["expiry_days"]
-        )
-    authenticator = st.session_state["authenticator"]
-
-    # Unconditionally re-check the cookie on every run, before any layout,
-    # without rendering a form. This is what actually restores auth_status
-    # on a hard refresh.
-    try:
-        authenticator.login(location="unrendered")
-    except Exception:
-        pass
-
-    auth_status = st.session_state.get("authentication_status")
-    name = st.session_state.get("name")
-    username = st.session_state.get("username")
-
-    if not auth_status:
-        with st.expander("🔐 Band Login", expanded=False):
-            login_tab, signup_tab = st.tabs(["Log In", "Create Account"])
-
-            with login_tab:
-                authenticator.login(location="main")
-                auth_status = st.session_state.get("authentication_status")
-                name = st.session_state.get("name")
-                username = st.session_state.get("username")
-                if auth_status is False:
-                    st.error("Incorrect username or password.")
-
-            with signup_tab:
-                # ...unchanged...
-                pass
-    else:
-        col1, col2 = st.columns([5, 1])
-        with col1:
-            st.success(f"Logged in as {name}")
-        with col2:
-            authenticator.logout("Log out", location="main")
-            
     authenticator = stauth.Authenticate(
         credentials,
         st.secrets["cookie"]["name"],
