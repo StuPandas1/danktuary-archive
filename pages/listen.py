@@ -23,6 +23,13 @@ suppress_selectbox_keyboard()
 # AUTH (degrades gracefully if Supabase is unreachable)
 # -------------------------
 
+authenticator = st.session_state["authenticator"]
+
+try:
+    authenticator.login(location="unrendered")
+except Exception:
+    pass
+
 auth_status = st.session_state.get("authentication_status")
 name = st.session_state.get("name")
 username = st.session_state.get("username")
@@ -61,8 +68,6 @@ else:
             st.secrets["cookie"]["expiry_days"]
         )
         st.session_state["_authenticator_credentials"] = credentials
-
-    authenticator = st.session_state["authenticator"]
 
     if not auth_status:
         with st.expander("🔐 Band Login", expanded=False):
