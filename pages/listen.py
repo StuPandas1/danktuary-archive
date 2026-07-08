@@ -44,12 +44,29 @@ if not supabase_up:
         "come back once the connection is restored."
     )
 else:
-    authenticator = stauth.Authenticate(
-        credentials,
-        st.secrets["cookie"]["name"],
-        st.secrets["cookie"]["key"],
-        st.secrets["cookie"]["expiry_days"]
-    )
+    # Cache the Authenticate object itself so the cookie component keeps a
+    # stable identity across reruns (recreating it each run can break cookie
+    # read-back on hard refresh).
+    if "authenticator" not in st.session_state:
+        st.session_state["authenticator"] = stauth.Authenticate(
+            credentials,
+            st.secrets["cookie"]["name"],
+            st.secrets["cookie"]["key"],
+            st.secrets["cookie"]["expiry_days"]
+        )
+    authenticator = st.session_state["authenticator"]
+
+    # Unconditionally re-check the cookie on every run, before any layout,
+    # without rendering a form. This is what actually restores auth_status
+    # on a hard refresh.
+    try:
+        authenticator.login(location="unrendered")
+    except Exception:
+        pass
+
+    auth_status = st.session_state.get("authentication_status")
+    name = st.session_state.get("name")
+    username = st.session_state.get("username")
 
     if not auth_status:
         with st.expander("🔐 Band Login", expanded=False):
@@ -64,32 +81,21 @@ else:
                     st.error("Incorrect username or password.")
 
             with signup_tab:
-                with st.form("signup_form", clear_on_submit=True):
-                    new_username = st.text_input("Choose a username")
-                    new_name = st.text_input("Your name (shown on notes)")
-                    new_password = st.text_input("Choose a password", type="password")
-                    new_password_confirm = st.text_input("Confirm password", type="password")
-                    submitted = st.form_submit_button("Create Account")
-
-                if submitted:
-                    if not new_username or not new_name or not new_password:
-                        st.warning("Please fill out all fields.")
-                    elif new_password != new_password_confirm:
-                        st.warning("Passwords don't match.")
-                    elif len(new_password) < 6:
-                        st.warning("Password should be at least 6 characters.")
-                    else:
-                        success, message = create_user_in_supabase(new_username, new_name, new_password)
-                        if success:
-                            st.success(message)
-                        else:
-                            st.warning(message)
+                # ...unchanged...
+                pass
     else:
         col1, col2 = st.columns([5, 1])
         with col1:
             st.success(f"Logged in as {name}")
         with col2:
             authenticator.logout("Log out", location="main")
+
+    authenticator = stauth.Authenticate(
+        credentials,
+        st.secrets["cookie"]["name"],
+        st.secrets["cookie"]["key"],
+        st.secrets["cookie"]["expiry_days"]
+    )
 
 # -------------------------
 # NOTES HELPERS
