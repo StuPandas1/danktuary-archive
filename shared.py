@@ -144,6 +144,31 @@ def delete_playlist_from_supabase(playlist_id):
     supabase = get_supabase_client()
     supabase.table("playlists").delete().eq("id", playlist_id).execute()
 
+def update_playlist_in_supabase(playlist_id, playlist_name, tracks):
+    """Overwrites an existing playlist's name and track list."""
+    supabase = get_supabase_client()
+    supabase.table("playlists").update({
+        "playlist_name": playlist_name,
+        "tracks": tracks,
+    }).eq("id", playlist_id).execute()
+    return True, "Playlist updated!"
+
+
+def add_tracks_to_playlist(playlist_id, new_tracks):
+    """Appends new_tracks (deduped) onto an existing playlist without
+    touching the draft/save flow — used for the 'add from this show
+    straight into a playlist' feature."""
+    supabase = get_supabase_client()
+    existing = supabase.table("playlists").select("tracks").eq("id", playlist_id).execute()
+    if not existing.data:
+        raise ValueError("Playlist not found.")
+    current_tracks = existing.data[0]["tracks"]
+    for track in new_tracks:
+        if track not in current_tracks:
+            current_tracks.append(track)
+    supabase.table("playlists").update({"tracks": current_tracks}).eq("id", playlist_id).execute()
+    return True, "Tracks added!"
+
 # -------------------------
 # SCANNER INFO
 # -------------------------
