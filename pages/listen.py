@@ -63,7 +63,7 @@ else:
             login_tab, signup_tab = st.tabs(["Log In", "Create Account"])
 
             with login_tab:
-                name, auth_status, username = authenticator.login("Login", "main")
+                authenticator.login(location="main")
                 st.write("Authentication:", st.session_state.get("authentication_status"))
                 st.write("Name:", st.session_state.get("name"))
                 st.write("Username:", st.session_state.get("username"))
