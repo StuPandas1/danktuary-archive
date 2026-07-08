@@ -23,6 +23,7 @@ suppress_selectbox_keyboard()
 # AUTH (degrades gracefully if Supabase is unreachable)
 # -------------------------
 
+supabase_up = True
 
 try:
     credentials = load_users_from_supabase()
@@ -60,6 +61,9 @@ else:
 
     authenticator = st.session_state["authenticator"]
 
+    # Force an early, unconditional cookie check on every rerun — gives the
+    # cookie-manager component's async round-trip the best chance to land
+    # before we check authentication_status.
     try:
         authenticator.login(location="unrendered")
     except Exception:
@@ -68,8 +72,7 @@ else:
     auth_status = st.session_state.get("authentication_status")
     name = st.session_state.get("name")
     username = st.session_state.get("username")
-    supabase_up = True
-    
+
     if not auth_status:
         with st.expander("🔐 Band Login", expanded=False):
             login_tab, signup_tab = st.tabs(["Log In", "Create Account"])
@@ -109,7 +112,7 @@ else:
             st.success(f"Logged in as {name}")
         with col2:
             authenticator.logout("Log out", location="main")
-
+            
 # -------------------------
 # NOTES HELPERS
 # -------------------------
