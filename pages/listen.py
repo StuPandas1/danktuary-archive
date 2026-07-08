@@ -44,12 +44,25 @@ if not supabase_up:
         "come back once the connection is restored."
     )
 else:
-    authenticator = stauth.Authenticate(
-        credentials,
-        st.secrets["cookie"]["name"],
-        st.secrets["cookie"]["key"],
-        st.secrets["cookie"]["expiry_days"]
-    )
+    # Reuse one Authenticate instance across reruns instead of recreating it
+    # every script run — recreating it repeatedly is a known contributor to
+    # the "cookie exists but doesn't re-log-you-in" issue, since it can
+    # interfere with the cookie manager component's internal state.
+    # We only rebuild it if the credentials actually changed (e.g. a new
+    # signup happened in this session).
+    if (
+        "authenticator" not in st.session_state
+        or st.session_state.get("_authenticator_credentials") != credentials
+    ):
+        st.session_state["authenticator"] = stauth.Authenticate(
+            credentials,
+            st.secrets["cookie"]["name"],
+            st.secrets["cookie"]["key"],
+            st.secrets["cookie"]["expiry_days"]
+        )
+        st.session_state["_authenticator_credentials"] = credentials
+
+    authenticator = st.session_state["authenticator"]
 
     if not auth_status:
         with st.expander("🔐 Band Login", expanded=False):
@@ -110,6 +123,9 @@ def save_notes(notes):
 # -------------------------
 # TOP-LEVEL NAVIGATION
 # -------------------------
+# Session-state-driven, not st.tabs() — st.tabs() has caused content-bleed
+# issues in this app before (especially with the iframe-based audio player),
+# so only the active section's Python runs at all.
 
 if "active_section" not in st.session_state:
     st.session_state["active_section"] = "Listen to Music"
@@ -135,7 +151,6 @@ with nav_col2:
         st.session_state["playlist_draft"] = []
         st.session_state["new_playlist_name"] = ""
         st.session_state["editor_load_select"] = None
-        st.session_state["playlist_edit_mode"] = "new"
         st.rerun()
 
 st.markdown("---")
@@ -202,15 +217,6 @@ def on_load_playlist_change():
         st.session_state["editing_playlist_id"] = match["id"]
         st.session_state["editing_playlist_name"] = match["playlist_name"]
         st.session_state["new_playlist_name"] = match["playlist_name"]
-
-
-def reset_playlist_draft():
-    """Clears the draft/editing state, e.g. when switching create/edit modes."""
-    st.session_state["playlist_draft"] = []
-    st.session_state.pop("editing_playlist_id", None)
-    st.session_state.pop("editing_playlist_name", None)
-    st.session_state["editor_load_select"] = None
-    st.session_state["new_playlist_name"] = ""
 
 
 # =========================================================
@@ -369,7 +375,6 @@ if st.session_state["active_section"] == "Listen to Music":
                 st.session_state["editing_playlist_id"] = chosen_playlist["id"]
                 st.session_state["editing_playlist_name"] = chosen_playlist_name
                 st.session_state["active_section"] = "Create a Playlist"
-                st.session_state["playlist_edit_mode"] = "edit"
                 st.rerun()
         with col_delete:
             if st.button("🗑️ Delete this playlist", width="stretch"):
@@ -390,6 +395,9 @@ if st.session_state["active_section"] == "Create a Playlist":
 
     st.markdown("#### 🎶 Create/Edit a Playlist")
 
+    editing_id = st.session_state.get("editing_playlist_id")
+    editing_name = st.session_state.get("editing_playlist_name")
+
     if not supabase_up:
         st.info("Playlists are unavailable right now — the account database is unreachable.")
     elif not auth_status:
@@ -398,63 +406,35 @@ if st.session_state["active_section"] == "Create a Playlist":
         if "playlist_draft" not in st.session_state:
             st.session_state["playlist_draft"] = []
 
-        if "playlist_edit_mode" not in st.session_state:
-            st.session_state["playlist_edit_mode"] = (
-                "edit" if st.session_state.get("editing_playlist_id") else "new"
-            )
-
         try:
             existing_playlists = load_playlists_from_supabase(username)
         except Exception:
             existing_playlists = None
             st.error("Couldn't load your playlists right now.")
 
-        # ---- Mode toggle: Create New vs. Edit Existing ----
-        mode_col1, mode_col2 = st.columns(2)
-        with mode_col1:
-            if st.button(
-                "🆕 Create New Playlist",
-                width="stretch",
-                type="primary" if st.session_state["playlist_edit_mode"] == "new" else "secondary",
-            ):
-                if st.session_state["playlist_edit_mode"] != "new":
-                    st.session_state["playlist_edit_mode"] = "new"
-                    reset_playlist_draft()
-                    st.rerun()
-        with mode_col2:
-            if st.button(
-                "✏️ Edit Existing Playlist",
-                width="stretch",
-                type="primary" if st.session_state["playlist_edit_mode"] == "edit" else "secondary",
-                disabled=not existing_playlists,
-            ):
-                if st.session_state["playlist_edit_mode"] != "edit":
-                    st.session_state["playlist_edit_mode"] = "edit"
-                    reset_playlist_draft()
-                    st.rerun()
-
-        st.markdown("---")
-
-        # ---- Mode-specific bar ----
-        if st.session_state["playlist_edit_mode"] == "edit":
-            if not existing_playlists:
-                st.caption("No saved playlists yet — create one first.")
-            else:
+        if existing_playlists:
+            load_col, new_col = st.columns([3, 1])
+            with load_col:
                 st.selectbox(
-                    "Choose a playlist to edit",
+                    "Load an existing playlist to edit",
                     [p["playlist_name"] for p in existing_playlists],
                     index=None,
                     placeholder="Choose a playlist...",
                     key="editor_load_select",
                     on_change=on_load_playlist_change,
                 )
-                editing_name = st.session_state.get("editing_playlist_name")
-                if editing_name:
-                    st.caption(f"✏️ Currently editing: **{editing_name}**")
-            editing_id = st.session_state.get("editing_playlist_id")
-        else:
-            st.caption("🆕 Building a new playlist from scratch.")
-            editing_id = None
+            with new_col:
+                st.markdown("&nbsp;")
+                if st.button("+ Start New", width="stretch"):
+                    st.session_state["playlist_draft"] = []
+                    st.session_state.pop("editing_playlist_id", None)
+                    st.session_state.pop("editing_playlist_name", None)
+                    st.session_state["editor_load_select"] = None
+                    st.session_state["new_playlist_name"] = ""
+                    st.rerun()
+
+        if editing_id:
+            st.caption(f"✏️ Currently editing: **{editing_name}**")
 
         st.markdown("---")
 
@@ -514,7 +494,7 @@ if st.session_state["active_section"] == "Create a Playlist":
                             st.rerun()
 
             if "new_playlist_name" not in st.session_state:
-                st.session_state["new_playlist_name"] = st.session_state.get("editing_playlist_name") or ""
+                st.session_state["new_playlist_name"] = editing_name if editing_name else ""
 
             playlist_name = st.text_input("Playlist name", key="new_playlist_name")
 
