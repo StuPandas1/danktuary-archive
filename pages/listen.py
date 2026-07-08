@@ -61,14 +61,6 @@ else:
 
     authenticator = st.session_state["authenticator"]
 
-    # Force an early, unconditional cookie check on every rerun — gives the
-    # cookie-manager component's async round-trip the best chance to land
-    # before we check authentication_status.
-    try:
-        authenticator.login(location="unrendered")
-    except Exception:
-        pass
-
     auth_status = st.session_state.get("authentication_status")
     name = st.session_state.get("name")
     username = st.session_state.get("username")
@@ -79,6 +71,12 @@ else:
 
             with login_tab:
                 authenticator.login(location="main")
+                st.write("Authentication:", st.session_state.get("authentication_status"))
+                st.write("Name:", st.session_state.get("name"))
+                st.write("Username:", st.session_state.get("username"))
+
+                cookie_keys = [k for k in st.session_state.keys() if "cookie" in k.lower()]
+                st.write("Cookie-related session keys:", cookie_keys)
                 auth_status = st.session_state.get("authentication_status")
                 name = st.session_state.get("name")
                 username = st.session_state.get("username")
@@ -112,7 +110,7 @@ else:
             st.success(f"Logged in as {name}")
         with col2:
             authenticator.logout("Log out", location="main")
-            
+
 # -------------------------
 # NOTES HELPERS
 # -------------------------
