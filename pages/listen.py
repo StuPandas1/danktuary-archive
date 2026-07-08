@@ -19,6 +19,11 @@ page_menu()
 dank_header(subtitle="If you get confused...")
 suppress_selectbox_keyboard()
 
+try:
+    stauth.authenticator.login(location="unrendered")
+except Exception as e:
+    st.write("DEBUG cookie login error:", e)
+    
 # -------------------------
 # AUTH (degrades gracefully if Supabase is unreachable)
 # -------------------------
@@ -89,13 +94,53 @@ else:
             st.success(f"Logged in as {name}")
         with col2:
             authenticator.logout("Log out", location="main")
-
+            
     authenticator = stauth.Authenticate(
         credentials,
         st.secrets["cookie"]["name"],
         st.secrets["cookie"]["key"],
         st.secrets["cookie"]["expiry_days"]
     )
+
+    if not auth_status:
+        with st.expander("🔐 Band Login", expanded=False):
+            login_tab, signup_tab = st.tabs(["Log In", "Create Account"])
+
+            with login_tab:
+                authenticator.login(location="main")
+                auth_status = st.session_state.get("authentication_status")
+                name = st.session_state.get("name")
+                username = st.session_state.get("username")
+                if auth_status is False:
+                    st.error("Incorrect username or password.")
+
+            with signup_tab:
+                with st.form("signup_form", clear_on_submit=True):
+                    new_username = st.text_input("Choose a username")
+                    new_name = st.text_input("Your name (shown on notes)")
+                    new_password = st.text_input("Choose a password", type="password")
+                    new_password_confirm = st.text_input("Confirm password", type="password")
+                    submitted = st.form_submit_button("Create Account")
+
+                if submitted:
+                    if not new_username or not new_name or not new_password:
+                        st.warning("Please fill out all fields.")
+                    elif new_password != new_password_confirm:
+                        st.warning("Passwords don't match.")
+                    elif len(new_password) < 6:
+                        st.warning("Password should be at least 6 characters.")
+                    else:
+                        success, message = create_user_in_supabase(new_username, new_name, new_password)
+                        if success:
+                            st.success(message)
+                        else:
+                            st.warning(message)
+    else:
+        col1, col2 = st.columns([5, 1])
+        with col1:
+            st.success(f"Logged in as {name}")
+        with col2:
+            authenticator.logout("Log out", location="main")
 
 # -------------------------
 # NOTES HELPERS
