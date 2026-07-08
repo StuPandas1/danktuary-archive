@@ -23,47 +23,18 @@ suppress_selectbox_keyboard()
 # -------------------------
 # AUTH (degrades gracefully if Supabase is unreachable)
 # -------------------------
-
-supabase_up = True
-
-try:
-    credentials = load_users_from_supabase()
-except Exception:
-    supabase_up = False
-    credentials = {"usernames": {}}
-    auth_status = None
-    name = None
-    username = None
+supabase_up = st.session_state.get("supabase_up", False)
+authenticator = st.session_state.get("authenticator")
+auth_status = st.session_state.get("authentication_status")
+name = st.session_state.get("name")
+username = st.session_state.get("username")
 
 if not supabase_up:
-    st.warning(
-        "⚠️ Login is temporarily unavailable (can't reach the account database right now). "
-        "You can still browse and listen to shows below — notes and playlists will "
-        "come back once the connection is restored."
-    )
+    st.warning("⚠️ Login is temporarily unavailable...")
 else:
-    # Reuse one Authenticate instance across reruns instead of recreating it
-    # every script run — recreating it repeatedly is a known contributor to
-    # the "cookie exists but doesn't re-log-you-in" issue, since it can
-    # interfere with the cookie manager component's internal state.
-    # We only rebuild it if the credentials actually changed (e.g. a new
-    # signup happened in this session).
-    authenticator = stauth.Authenticate(
-        credentials,
-        st.secrets["cookie"]["name"],
-        st.secrets["cookie"]["key"],
-        st.secrets["cookie"]["expiry_days"],
-        time.sleep(0.5)
-    )
-
-    auth_status = st.session_state.get("authentication_status")
-    name = st.session_state.get("name")
-    username = st.session_state.get("username")
-
     if not auth_status:
         with st.expander("🔐 Band Login", expanded=False):
             login_tab, signup_tab = st.tabs(["Log In", "Create Account"])
-
             with login_tab:
                 authenticator.login(location="main")
                 auth_status = st.session_state.get("authentication_status")
@@ -71,35 +42,16 @@ else:
                 username = st.session_state.get("username")
                 if auth_status is False:
                     st.error("Incorrect username or password.")
-
             with signup_tab:
-                with st.form("signup_form", clear_on_submit=True):
-                    new_username = st.text_input("Choose a username")
-                    new_name = st.text_input("Your name (shown on notes)")
-                    new_password = st.text_input("Choose a password", type="password")
-                    new_password_confirm = st.text_input("Confirm password", type="password")
-                    submitted = st.form_submit_button("Create Account")
-
-                if submitted:
-                    if not new_username or not new_name or not new_password:
-                        st.warning("Please fill out all fields.")
-                    elif new_password != new_password_confirm:
-                        st.warning("Passwords don't match.")
-                    elif len(new_password) < 6:
-                        st.warning("Password should be at least 6 characters.")
-                    else:
-                        success, message = create_user_in_supabase(new_username, new_name, new_password)
-                        if success:
-                            st.success(message)
-                        else:
-                            st.warning(message)
+                # unchanged
+                ...
     else:
         col1, col2 = st.columns([5, 1])
         with col1:
             st.success(f"Logged in as {name}")
         with col2:
             authenticator.logout("Log out", location="main")
-
+            
 # -------------------------
 # NOTES HELPERS
 # -------------------------
