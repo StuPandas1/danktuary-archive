@@ -89,7 +89,7 @@ with nav_col1:
         st.rerun()
 with nav_col2:
     if st.button(
-        "🎶 Create/Edit a Playlist",
+        "🎶 Playlist Creator",
         width="stretch",
         type="primary" if st.session_state["active_section"] == "Create a Playlist" else "secondary",
     ):
@@ -111,13 +111,7 @@ if "IA URL" not in df.columns:
     st.write("No streaming links found yet — run upload_to_archive.py to generate them.")
     st.stop()
 
-type_filter = st.radio(
-    "Show type:",
-    ["All", "Gigs", "Practices"],
-    horizontal=True
-)
-
-performances, unique_shows = get_show_list(_data_file_mtimes(), type_filter)
+performances, unique_shows = get_show_list(_data_file_mtimes(), "All")
 
 if not unique_shows:
     st.write("No shows match this filter.")
@@ -354,47 +348,54 @@ if st.session_state["active_section"] == "Create a Playlist":
         if "playlist_draft" not in st.session_state:
             st.session_state["playlist_draft"] = []
 
+        if "playlist_edit_mode" not in st.session_state:
+            st.session_state["playlist_edit_mode"] = "edit" if editing_id else "new"
+
         try:
             existing_playlists = load_playlists_from_supabase(username)
         except Exception:
             existing_playlists = None
             st.error("Couldn't load your playlists right now.")
 
-        col_build, col_load = st.columns(2)
-
-        with col_build:
-            st.markdown("#### 🎧 Add Tracks from a Show")
-            builder_show = st.selectbox(
-                "Pick a show to grab tracks from",
-                unique_shows,
-                index=None,
-                placeholder="Type to search...",
-                key="playlist_builder_show",
-            )
-
-            if builder_show:
-                builder_grouped = get_playlist_for_show(_data_file_mtimes(), builder_show)
-
-                st.write("Select tracks to add:")
-                checked_tracks = []
-                for i, track in enumerate(builder_grouped):
-                    label = f"{track['label']}  ·  {track['duration']}"
-                    is_checked = st.checkbox(label, key=f"track_check_{builder_show}_{i}")
-                    if is_checked:
-                        checked_tracks.append(track)
-
-                if st.button("➕ Add selected to playlist"):
-                    for track in checked_tracks:
-                        track_with_show = {**track, "show": builder_show}
-                        if track_with_show not in st.session_state["playlist_draft"]:
-                            st.session_state["playlist_draft"].append(track_with_show)
-                    for i in range(len(builder_grouped)):
-                        st.session_state.pop(f"track_check_{builder_show}_{i}", None)
+        # ---- Mode toggle: only one panel shows at a time ----
+        mode_col1, mode_col2 = st.columns(2)
+        with mode_col1:
+            if st.button(
+                "🆕 Start a New Playlist",
+                width="stretch",
+                type="primary" if st.session_state["playlist_edit_mode"] == "new" else "secondary",
+            ):
+                if st.session_state["playlist_edit_mode"] != "new":
+                    st.session_state["playlist_edit_mode"] = "new"
+                    st.session_state["playlist_draft"] = []
+                    st.session_state.pop("editing_playlist_id", None)
+                    st.session_state.pop("editing_playlist_name", None)
+                    st.session_state["editor_load_select"] = None
+                    st.session_state["new_playlist_name"] = ""
+                    st.rerun()
+        with mode_col2:
+            if st.button(
+                "📂 Load Existing Playlist",
+                width="stretch",
+                type="primary" if st.session_state["playlist_edit_mode"] == "edit" else "secondary",
+                disabled=not existing_playlists,
+            ):
+                if st.session_state["playlist_edit_mode"] != "edit":
+                    st.session_state["playlist_edit_mode"] = "edit"
+                    st.session_state["playlist_draft"] = []
+                    st.session_state.pop("editing_playlist_id", None)
+                    st.session_state.pop("editing_playlist_name", None)
+                    st.session_state["editor_load_select"] = None
+                    st.session_state["new_playlist_name"] = ""
                     st.rerun()
 
-        with col_load:
-            st.markdown("#### 🎶 Load an Existing Playlist")
-            if existing_playlists:
+        st.markdown("---")
+
+        # ---- Only the active mode's panel renders ----
+        if st.session_state["playlist_edit_mode"] == "edit":
+            if not existing_playlists:
+                st.caption("No saved playlists yet — start a new one instead.")
+            else:
                 st.selectbox(
                     "Choose a playlist to edit",
                     [p["playlist_name"] for p in existing_playlists],
@@ -403,20 +404,40 @@ if st.session_state["active_section"] == "Create a Playlist":
                     key="editor_load_select",
                     on_change=on_load_playlist_change,
                 )
-                if st.button("+ Start New", width="stretch"):
-                    st.session_state["playlist_draft"] = []
-                    st.session_state.pop("editing_playlist_id", None)
-                    st.session_state.pop("editing_playlist_name", None)
-                    st.session_state["editor_load_select"] = None
-                    st.session_state["new_playlist_name"] = ""
-                    st.rerun()
-            else:
-                st.caption("No saved playlists yet — build one on the left to get started.")
+                editing_id = st.session_state.get("editing_playlist_id")
+                editing_name = st.session_state.get("editing_playlist_name")
+                if editing_name:
+                    st.caption(f"✏️ Currently editing: **{editing_name}**")
+        else:
+            editing_id = None
 
-            if editing_id:
-                st.caption(f"✏️ Currently editing: **{editing_name}**")
+        builder_show = st.selectbox(
+            "Pick a show to grab tracks from",
+            unique_shows,
+            index=None,
+            placeholder="Type to search...",
+            key="playlist_builder_show",
+        )
 
-        st.markdown("---")
+        if builder_show:
+            builder_grouped = get_playlist_for_show(_data_file_mtimes(), builder_show)
+
+            st.write("Select tracks to add:")
+            checked_tracks = []
+            for i, track in enumerate(builder_grouped):
+                label = f"{track['label']}  ·  {track['duration']}"
+                is_checked = st.checkbox(label, key=f"track_check_{builder_show}_{i}")
+                if is_checked:
+                    checked_tracks.append(track)
+
+            if st.button("➕ Add selected to playlist"):
+                for track in checked_tracks:
+                    track_with_show = {**track, "show": builder_show}
+                    if track_with_show not in st.session_state["playlist_draft"]:
+                        st.session_state["playlist_draft"].append(track_with_show)
+                for i in range(len(builder_grouped)):
+                    st.session_state.pop(f"track_check_{builder_show}_{i}", None)
+                st.rerun()
 
         if st.session_state["playlist_draft"]:
             st.write("**Current draft:**")
@@ -477,7 +498,7 @@ if st.session_state["active_section"] == "Create a Playlist":
                         st.error("Couldn't save right now — the account database is unreachable. Your draft is still here, try again shortly.")
         else:
             st.caption("Pick a show above and add some tracks to get started.")
-            
+
 st.divider()
 
 st.markdown(
