@@ -42,13 +42,11 @@ last_show_label = f"{last_show_date_str} — {last_show_location}"
 
 st.markdown("<div style='text-align: center;'><strong>Most Recent Setlist</strong></div>", unsafe_allow_html=True)
 if st.button(last_show_label, key="most_recent_setlist_btn", width="stretch"):
-    st.session_state.selected_show = last_show_label
-    if "selected_show_widget" in st.session_state:
-        del st.session_state["selected_show_widget"]
-    st.session_state.active_tab = "Setlist Lookup"
-    st.session_state.scroll_to_content = True
-    st.switch_page("pages/explore.py")
-
+    st.session_state["listen_show_select"] = last_show_label
+    st.session_state["listen_playlist_select"] = None
+    st.session_state["player_mode"] = "setlist"
+    st.switch_page("pages/listen.py")
+    
 # -------------------------
 # ON THIS DAY
 # -------------------------
