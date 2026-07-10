@@ -5,5 +5,5 @@ msal
 requests
 supabase
 bcrypt
-streamlit_authenticator==0.4.2
+streamlit_authenticator==0.3.3
 extra-streamlit-components
