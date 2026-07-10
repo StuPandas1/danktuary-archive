@@ -27,6 +27,21 @@ st.session_state["credentials"] = credentials
 if st.session_state["supabase_up"]:
     authenticator = get_authenticator(credentials)
     st.session_state["authenticator"] = authenticator
-    authenticator.login(location='unrendered')
+    
+    # 🌟 STEP 1: Pass an explicit, static string KEY to the unrendered login check.
+    # Without a key, the JavaScript component drops cookie tracking on a hard refresh.
+    try:
+        authenticator.login(location='unrendered', key="global_cookie_tracker")
+    except Exception:
+        pass
+
+    # 🌟 STEP 2: NATIVE STREAMLIT COOKIE FAILSAFE
+    # If a hard refresh wiped st.session_state, but the browser still has the cookie,
+    # force a quick automatic rerun to allow the JS component to finish hydrating Python.
+    cookie_name = st.secrets["cookie"]["name"]
+    has_cookie = cookie_name in st.context.cookies
+    
+    if has_cookie and st.session_state.get("authentication_status") is None:
+        st.rerun()
 
 pg.run()
