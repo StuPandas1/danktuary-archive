@@ -37,15 +37,23 @@ else:
             login_tab, signup_tab = st.tabs(["Log In", "Create Account"])
 
             with login_tab:
-                try:
-                    name, auth_status, username = authenticator.login("Login", "main")
-                    st.session_state["name"] = name
-                    st.session_state["authentication_status"] = auth_status
-                    st.session_state["username"] = username
-                except Exception as e:
-                    st.error(f"Login error: {repr(e)}")
-                if auth_status is False:
-                    st.error("Incorrect username or password.")
+                with st.form("login_form"):
+                    login_username = st.text_input("Username")
+                    login_password = st.text_input("Password", type="password")
+                    submitted = st.form_submit_button("Log In")
+                if submitted:
+                    if authenticator.credentials["usernames"].get(login_username):
+                        import bcrypt
+                        stored_hash = authenticator.credentials["usernames"][login_username]["password"]
+                        if bcrypt.checkpw(login_password.encode(), stored_hash.encode()):
+                            st.session_state["authentication_status"] = True
+                            st.session_state["name"] = authenticator.credentials["usernames"][login_username]["name"]
+                            st.session_state["username"] = login_username
+                            st.rerun()
+                        else:
+                            st.error("Incorrect username or password.")
+                    else:
+                        st.error("Incorrect username or password.")
 
             with signup_tab:
                 with st.form("signup_form"):
@@ -71,7 +79,11 @@ else:
         with col1:
             st.success(f"Logged in as {name}")
         with col2:
-            authenticator.logout("Log out", "main")
+            if st.button("Log out"):
+                st.session_state["authentication_status"] = None
+                st.session_state["name"] = None
+                st.session_state["username"] = None
+                st.rerun()
             
 # -------------------------
 # NOTES HELPERS
