@@ -13,7 +13,7 @@ from shared import (
     style_playlist_draft_rows,
     load_all_recordings, _data_file_mtimes
 )
-from auth_shared import get_cookie_manager, clear_login_cookie
+from auth_shared import clear_login_cookie
 
 df = load_all_recordings(_data_file_mtimes())
 
