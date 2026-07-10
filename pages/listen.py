@@ -28,6 +28,7 @@ authenticator = st.session_state.get("authenticator")
 auth_status = st.session_state.get("authentication_status")
 name = st.session_state.get("name")
 username = st.session_state.get("username")
+credentials = st.session_state.get("credentials", {"usernames": {}})
 
 if not supabase_up:
     st.warning("⚠️ Login is temporarily unavailable...")
@@ -42,19 +43,19 @@ else:
                     login_password = st.text_input("Password", type="password")
                     submitted = st.form_submit_button("Log In")
                 if submitted:
-                    if authenticator.credentials["usernames"].get(login_username):
-                        import bcrypt
-                        stored_hash = authenticator.credentials["usernames"][login_username]["password"]
+                    import bcrypt
+                    if credentials["usernames"].get(login_username):
+                        stored_hash = credentials["usernames"][login_username]["password"]
                         if bcrypt.checkpw(login_password.encode(), stored_hash.encode()):
                             st.session_state["authentication_status"] = True
-                            st.session_state["name"] = authenticator.credentials["usernames"][login_username]["name"]
+                            st.session_state["name"] = credentials["usernames"][login_username]["name"]
                             st.session_state["username"] = login_username
                             st.rerun()
                         else:
                             st.error("Incorrect username or password.")
                     else:
                         st.error("Incorrect username or password.")
-
+            
             with signup_tab:
                 with st.form("signup_form"):
                     new_username = st.text_input("Choose a username")
