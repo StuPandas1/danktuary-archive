@@ -23,8 +23,7 @@ suppress_selectbox_keyboard()
 # -------------------------
 # AUTH (degrades gracefully if Supabase is unreachable)
 # -------------------------
-No worries — I can reconstruct the signup tab from create_user_in_supabase. Here's the full block:
-pythonsupabase_up = st.session_state.get("supabase_up", False)
+supabase_up = st.session_state.get("supabase_up", False)
 authenticator = st.session_state.get("authenticator")
 auth_status = st.session_state.get("authentication_status")
 name = st.session_state.get("name")
