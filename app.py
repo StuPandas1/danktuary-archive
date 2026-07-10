@@ -5,16 +5,7 @@ st.set_page_config(page_title="DankApp", layout="wide", initial_sidebar_state="c
 from auth_shared import get_authenticator
 from shared import load_users_from_supabase
 
-pg = st.navigation(
-    [
-        st.Page("pages/landing.py", title="Dashboard", icon="💀", default=True),
-        st.Page("pages/tools.py", title="Useful Tools", icon="🛠️"),
-        st.Page("pages/explore.py", title="Explore the Archive", icon="🔍"),
-        st.Page("pages/listen.py", title="Listen", icon="🎧"),
-    ],
-    position="hidden"
-)
-
+# 1. Load your credentials and construct your Authenticator
 try:
     credentials = load_users_from_supabase()
     st.session_state["supabase_up"] = True
@@ -28,20 +19,30 @@ if st.session_state["supabase_up"]:
     authenticator = get_authenticator(credentials)
     st.session_state["authenticator"] = authenticator
     
-    # 🌟 STEP 1: Pass an explicit, static string KEY to the unrendered login check.
-    # Without a key, the JavaScript component drops cookie tracking on a hard refresh.
+    # 🌟 CRITICAL COOKIE STEP: Natively prompt the cookie recheck on EVERY execution
     try:
-        authenticator.login(location='unrendered', key="global_cookie_tracker")
+        authenticator.login(location='unrendered')
     except Exception:
         pass
 
-    # 🌟 STEP 2: NATIVE STREAMLIT COOKIE FAILSAFE
-    # If a hard refresh wiped st.session_state, but the browser still has the cookie,
-    # force a quick automatic rerun to allow the JS component to finish hydrating Python.
-    cookie_name = st.secrets["cookie"]["name"]
-    has_cookie = cookie_name in st.context.cookies
-    
-    if has_cookie and st.session_state.get("authentication_status") is None:
-        st.rerun()
+# 2. Get the real-time auth status
+auth_status = st.session_state.get("authentication_status")
 
+# 3. DYNAMIC NAVIGATION GATEKEEPER
+# If the user is logged in, show all pages normally.
+if auth_status is True:
+    pg = st.navigation([
+        st.Page("pages/landing.py", title="Dashboard", icon="💀", default=True),
+        st.Page("pages/tools.py", title="Useful Tools", icon="🛠️"),
+        st.Page("pages/explore.py", title="Explore the Archive", icon="🔍"),
+        st.Page("pages/listen.py", title="Listen", icon="🎧"),
+    ], position="hidden")
+
+# If they are NOT logged in, restrict the navigation tree ONLY to the login page
+else:
+    pg = st.navigation([
+        st.Page("pages/listen.py", title="Listen", icon="🎧", default=True)
+    ], position="hidden")
+
+# 4. Fire the router
 pg.run()
