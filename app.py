@@ -38,4 +38,15 @@ if st.session_state["supabase_up"]:
         st.rerun()
     # --- END NEW ---
 
+    # --- TEMP DEBUG, remove after diagnosing ---
+    st.write("auth_status:", st.session_state.get("authentication_status"))
+    st.write("username:", st.session_state.get("username"))
+    st.write("recheck attempts used:", st.session_state.get("_cookie_recheck_attempts"))
+    try:
+        raw_cookie = authenticator.cookie_controller.get_cookie()
+        st.write("raw cookie value seen by get_cookie():", raw_cookie)
+    except Exception as e:
+        st.write("get_cookie() raised:", repr(e))
+    # --- END TEMP DEBUG ---
+    
 pg.run()
