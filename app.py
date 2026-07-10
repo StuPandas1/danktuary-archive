@@ -1,10 +1,14 @@
 import streamlit as st  # type: ignore
-import time
 
 st.set_page_config(page_title="DankApp", layout="wide", initial_sidebar_state="collapsed")
 
-from auth_shared import get_authenticator
+from auth_shared import get_authenticator, get_cookie_manager, restore_login_from_cookie, sync_login_cookie
 from shared import load_users_from_supabase
+
+# Must come early, before anything else that depends on login state.
+cookies = get_cookie_manager()
+if not cookies.ready():
+    st.stop()
 
 pg = st.navigation(
     [
@@ -25,31 +29,9 @@ except Exception:
 
 if st.session_state["supabase_up"]:
     authenticator = get_authenticator(credentials)
-    try:
-        authenticator.login(location="unrendered")
-    except Exception as e:
-        st.write("DEBUG cookie login error:", repr(e))
     st.session_state["authenticator"] = authenticator
 
-    # --- NEW: work around streamlit_authenticator's cookie race on a fresh session ---
-    attempts = st.session_state.get("_cookie_recheck_attempts", 0)
-    if not st.session_state.get("authentication_status") and attempts < 3:
-        st.session_state["_cookie_recheck_attempts"] = attempts + 1
-        st.rerun()
-    # --- END NEW ---
-
-    # --- TEMP DEBUG, remove after diagnosing ---
-    st.write("auth_status:", st.session_state.get("authentication_status"))
-    st.write("username:", st.session_state.get("username"))
-    st.write("recheck attempts used:", st.session_state.get("_cookie_recheck_attempts"))
-    try:
-        raw_cookie = authenticator.cookie_controller.get_cookie()
-        st.write("raw cookie value seen by get_cookie():", raw_cookie)
-    except Exception as e:
-        st.write("get_cookie() raised:", repr(e))
-    if st.button("Recheck cookie now"):
-        val = authenticator.cookie_controller.get_cookie()
-        st.write("manual recheck raw cookie:", val)
-    # --- END TEMP DEBUG ---
+    restore_login_from_cookie(cookies, credentials)
+    sync_login_cookie(cookies, st.secrets["cookie"]["expiry_days"])
 
 pg.run()
