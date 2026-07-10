@@ -22,12 +22,10 @@ except Exception:
     credentials = {"usernames": {}}
     st.session_state["supabase_up"] = False
 
+st.session_state["credentials"] = credentials
+
 if st.session_state["supabase_up"]:
     authenticator = get_authenticator(credentials)
-    try:
-        authenticator.login(location="unrendered")
-    except Exception as e:
-        st.write("DEBUG cookie login error:", repr(e))  # keep this for now
     st.session_state["authenticator"] = authenticator
 
 pg.run()
