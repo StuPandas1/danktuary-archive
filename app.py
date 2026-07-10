@@ -1,16 +1,9 @@
-import streamlit as st  # type: ignore
+import streamlit as st
 
 st.set_page_config(page_title="DankApp", layout="wide", initial_sidebar_state="collapsed")
 
-from auth_shared import get_authenticator, get_cookie_manager, restore_login_from_cookie, sync_login_cookie
+from auth_shared import get_authenticator, restore_login_from_cookie, sync_login_cookie
 from shared import load_users_from_supabase
-
-# Must come early, before anything else that depends on login state.
-cookies = get_cookie_manager()
-ready = cookies.ready()
-st.write("DEBUG cookies.ready():", ready)
-if not ready:
-    st.stop()
 
 pg = st.navigation(
     [
@@ -25,15 +18,16 @@ pg = st.navigation(
 try:
     credentials = load_users_from_supabase()
     st.session_state["supabase_up"] = True
-except Exception as e:
+except Exception:
     credentials = {"usernames": {}}
     st.session_state["supabase_up"] = False
 
 if st.session_state["supabase_up"]:
     authenticator = get_authenticator(credentials)
     st.session_state["authenticator"] = authenticator
-
-    restore_login_from_cookie(cookies, credentials)
-    sync_login_cookie(cookies, st.secrets["cookie"]["expiry_days"])
+    restore_login_from_cookie(credentials)
 
 pg.run()
+
+if st.session_state.get("supabase_up") and st.session_state.get("authentication_status"):
+    sync_login_cookie(st.secrets["cookie"]["expiry_days"])
