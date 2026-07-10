@@ -15,7 +15,8 @@ from shared import (
 )
 
 df = load_all_recordings(_data_file_mtimes())
-st.write("stauth version:", stauth.__version__)
+import importlib.metadata
+st.write(importlib.metadata.version("streamlit-authenticator"))
 
 page_menu()
 dank_header(subtitle="If you get confused...")
