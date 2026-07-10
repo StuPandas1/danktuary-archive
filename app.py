@@ -27,5 +27,6 @@ st.session_state["credentials"] = credentials
 if st.session_state["supabase_up"]:
     authenticator = get_authenticator(credentials)
     st.session_state["authenticator"] = authenticator
+    authenticator.login(location='unrendered')
 
 pg.run()
