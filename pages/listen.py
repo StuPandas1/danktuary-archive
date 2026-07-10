@@ -25,48 +25,25 @@ suppress_selectbox_keyboard()
 # -------------------------
 supabase_up = st.session_state.get("supabase_up", False)
 authenticator = st.session_state.get("authenticator")
+auth_status = st.session_state.get("authentication_status")
+name = st.session_state.get("name")
 username = st.session_state.get("username")
 
 if not supabase_up:
     st.warning("⚠️ Login is temporarily unavailable...")
 else:
-    auth_status = st.session_state.get("authentication_status")
-
-    if auth_status is True:
-        # 🔓 UNLOCKED CONTAINER
-        name = st.session_state.get("name")
-        col1, col2 = st.columns([5, 1])
-        with col1:
-            st.success(f"Logged in as {name}")
-        with col2:
-            # When clicked, clear tracking flag and log out
-            if st.button("Log out"):
-                st.session_state["cookie_hydrated"] = False
-                authenticator.logout("Log out", location="unrendered")
-                st.rerun()
-            
-        st.title("🎧 Listen to the Audio Archive")
-        st.write("Your premium audio streams have loaded successfully.")
-        
-    else:
-        # 🔐 LOCKED LOGIN SECTIONS
-        with st.expander("🔐 Band Login", expanded=True):
+    if not auth_status:
+        with st.expander("🔐 Band Login", expanded=False):
             login_tab, signup_tab = st.tabs(["Log In", "Create Account"])
-            
             with login_tab:
-                # Triggers standard forms
-                authenticator.login(location="main", key="listen_tab_login")
-                
-                # Check for manual form submission events
-                if st.session_state.get("authentication_status") is True:
-                    st.session_state["cookie_hydrated"] = False  # Reset flag for fresh sessions
-                    time.sleep(0.15)  # Let the browser write the file
-                    st.rerun()
-                elif st.session_state.get("authentication_status") is False:
+                authenticator.login(location="main")
+                auth_status = st.session_state.get("authentication_status")
+                name = st.session_state.get("name")
+                username = st.session_state.get("username")
+                if auth_status is False:
                     st.error("Incorrect username or password.")
-                    
             with signup_tab:
-                with st.form("signup_form", clear_on_submit=True):
+                with st.form("signup_form"):
                     new_username = st.text_input("Choose a username")
                     new_name = st.text_input("Your name")
                     new_password = st.text_input("Choose a password", type="password")
@@ -84,6 +61,12 @@ else:
                             st.success(message)
                         else:
                             st.error(message)
+    else:
+        col1, col2 = st.columns([5, 1])
+        with col1:
+            st.success(f"Logged in as {name}")
+        with col2:
+            authenticator.logout("Log out", location="main")
             
 # -------------------------
 # NOTES HELPERS
