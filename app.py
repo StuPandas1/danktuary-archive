@@ -1,4 +1,5 @@
 import streamlit as st  # type: ignore
+import time
 
 st.set_page_config(page_title="DankApp", layout="wide", initial_sidebar_state="collapsed")
 
@@ -27,7 +28,15 @@ if st.session_state["supabase_up"]:
     try:
         authenticator.login(location="unrendered")
     except Exception as e:
-        st.write("DEBUG cookie login error:", repr(e))  # keep this for now
+        st.write("DEBUG cookie login error:", repr(e))
     st.session_state["authenticator"] = authenticator
+
+    # --- NEW: work around streamlit_authenticator's cookie race on a fresh session ---
+    attempts = st.session_state.get("_cookie_recheck_attempts", 0)
+    if not st.session_state.get("authentication_status") and attempts < 3:
+        st.session_state["_cookie_recheck_attempts"] = attempts + 1
+        time.sleep(0.4)
+        st.rerun()
+    # --- END NEW ---
 
 pg.run()
