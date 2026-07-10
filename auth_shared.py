@@ -8,6 +8,5 @@ def get_authenticator(credentials):
             st.secrets["cookie"]["name"],
             st.secrets["cookie"]["key"],
             st.secrets["cookie"]["expiry_days"],
-            pre_authorized=[]
         )
     return st.session_state["authenticator"]

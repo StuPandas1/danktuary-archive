@@ -31,7 +31,6 @@ username = st.session_state.get("username")
 if not supabase_up:
     st.warning("⚠️ Login is temporarily unavailable...")
 else:
-    time.sleep(2)  # Simulate a small delay
     # Always fetch the absolute current status directly from session_state
     auth_status = st.session_state.get("authentication_status")
 
