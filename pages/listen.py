@@ -27,13 +27,15 @@ supabase_up = st.session_state.get("supabase_up", False)
 authenticator = st.session_state.get("authenticator")
 name = st.session_state.get("name")
 username = st.session_state.get("username")
+auth_status = st.session_state.get("authentication_status")
+
+st.write(auth_status)
 
 if not supabase_up:
     st.warning("⚠️ Login is temporarily unavailable...")
 else:
     # Always fetch the absolute current status directly from session_state
-    auth_status = st.session_state.get("authentication_status")
-
+    time.sleep(0.25)
     if auth_status is True:
         # 1. Authenticated View
         name = st.session_state.get("name")
