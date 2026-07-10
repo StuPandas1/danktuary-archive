@@ -47,6 +47,9 @@ if st.session_state["supabase_up"]:
         st.write("raw cookie value seen by get_cookie():", raw_cookie)
     except Exception as e:
         st.write("get_cookie() raised:", repr(e))
+    if st.button("Recheck cookie now"):
+        val = authenticator.cookie_controller.get_cookie()
+        st.write("manual recheck raw cookie:", val)
     # --- END TEMP DEBUG ---
-    
+
 pg.run()
