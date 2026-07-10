@@ -32,18 +32,36 @@ username = st.session_state.get("username")
 if not supabase_up:
     st.warning("⚠️ Login is temporarily unavailable...")
 else:
-    if not auth_status:
+    # Always fetch the absolute current status directly from session_state
+    auth_status = st.session_state.get("authentication_status")
+
+    if auth_status is True:
+        # 1. Authenticated View
+        name = st.session_state.get("name")
+        col1, col2 = st.columns([5, 1])
+        with col1:
+            st.success(f"Logged in as {name}")
+        with col2:
+            # If logout is clicked, it will reset state and rerun automatically
+            authenticator.logout("Log out", location="main")
+            
+    else:
+        # 2. Unauthenticated View (auth_status is None or False)
         with st.expander("🔐 Band Login", expanded=False):
             login_tab, signup_tab = st.tabs(["Log In", "Create Account"])
+            
             with login_tab:
+                # streamlit-authenticator renders its own form here
                 authenticator.login(location="main")
-                auth_status = st.session_state.get("authentication_status")
-                name = st.session_state.get("name")
-                username = st.session_state.get("username")
-                if auth_status is False:
+                
+                # Check if the user JUST successfully logged in within this frame
+                if st.session_state.get("authentication_status") is True:
+                    st.rerun()
+                elif st.session_state.get("authentication_status") is False:
                     st.error("Incorrect username or password.")
+                    
             with signup_tab:
-                with st.form("signup_form"):
+                with st.form("signup_form", clear_on_submit=True):
                     new_username = st.text_input("Choose a username")
                     new_name = st.text_input("Your name")
                     new_password = st.text_input("Choose a password", type="password")
@@ -61,12 +79,6 @@ else:
                             st.success(message)
                         else:
                             st.error(message)
-    else:
-        col1, col2 = st.columns([5, 1])
-        with col1:
-            st.success(f"Logged in as {name}")
-        with col2:
-            authenticator.logout("Log out", location="main")
             
 # -------------------------
 # NOTES HELPERS
