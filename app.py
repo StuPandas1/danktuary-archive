@@ -35,7 +35,6 @@ if st.session_state["supabase_up"]:
     attempts = st.session_state.get("_cookie_recheck_attempts", 0)
     if not st.session_state.get("authentication_status") and attempts < 3:
         st.session_state["_cookie_recheck_attempts"] = attempts + 1
-        time.sleep(0.4)
         st.rerun()
     # --- END NEW ---
 
