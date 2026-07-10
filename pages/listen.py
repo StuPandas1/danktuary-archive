@@ -43,8 +43,24 @@ else:
                 if auth_status is False:
                     st.error("Incorrect username or password.")
             with signup_tab:
-                # unchanged
-                ...
+                with st.form("signup_form"):
+                    new_username = st.text_input("Choose a username")
+                    new_name = st.text_input("Your name")
+                    new_password = st.text_input("Choose a password", type="password")
+                    new_password_confirm = st.text_input("Confirm password", type="password")
+                    signup_submitted = st.form_submit_button("Create Account")
+
+                if signup_submitted:
+                    if not new_username or not new_name or not new_password:
+                        st.error("Please fill in all fields.")
+                    elif new_password != new_password_confirm:
+                        st.error("Passwords don't match.")
+                    else:
+                        success, message = create_user_in_supabase(new_username, new_name, new_password)
+                        if success:
+                            st.success(message)
+                        else:
+                            st.error(message)
     else:
         col1, col2 = st.columns([5, 1])
         with col1:
