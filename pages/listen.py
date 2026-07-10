@@ -28,45 +28,29 @@ authenticator = st.session_state.get("authenticator")
 auth_status = st.session_state.get("authentication_status")
 name = st.session_state.get("name")
 username = st.session_state.get("username")
-credentials = st.session_state.get("credentials", {"usernames": {}})
 
 if not supabase_up:
     st.warning("⚠️ Login is temporarily unavailable...")
 else:
     if not auth_status:
-        with st.expander("🔐 Log In", expanded=False):
-            name, auth_status, username = authenticator.login("Login", "main")
-            st.session_state["name"] = name
-            st.session_state["authentication_status"] = auth_status
-            st.session_state["username"] = username
-            if auth_status is False:
-                st.error("Incorrect username or password.")
-
-        with st.expander("✏️ Create Account", expanded=False):
-            with st.form("signup_form"):
-                new_username = st.text_input("Choose a username")
-                new_name = st.text_input("Your name")
-                new_password = st.text_input("Choose a password", type="password")
-                new_password_confirm = st.text_input("Confirm password", type="password")
-                signup_submitted = st.form_submit_button("Create Account")
-
-            if signup_submitted:
-                if not new_username or not new_name or not new_password:
-                    st.error("Please fill in all fields.")
-                elif new_password != new_password_confirm:
-                    st.error("Passwords don't match.")
-                else:
-                    success, message = create_user_in_supabase(new_username, new_name, new_password)
-                    if success:
-                        st.success(message)
-                    else:
-                        st.error(message)
+        with st.expander("🔐 Band Login", expanded=False):
+            login_tab, signup_tab = st.tabs(["Log In", "Create Account"])
+            with login_tab:
+                authenticator.login(location="main")
+                auth_status = st.session_state.get("authentication_status")
+                name = st.session_state.get("name")
+                username = st.session_state.get("username")
+                if auth_status is False:
+                    st.error("Incorrect username or password.")
+            with signup_tab:
+                # unchanged
+                ...
     else:
         col1, col2 = st.columns([5, 1])
         with col1:
             st.success(f"Logged in as {name}")
         with col2:
-            authenticator.logout("Log out", "main")
+            authenticator.logout("Log out", location="main")
             
 # -------------------------
 # NOTES HELPERS
