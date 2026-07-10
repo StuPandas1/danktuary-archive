@@ -36,10 +36,10 @@ else:
         with st.expander("🔐 Band Login", expanded=False):
             login_tab, signup_tab = st.tabs(["Log In", "Create Account"])
             with login_tab:
-                authenticator.login(location="main")
-                auth_status = st.session_state.get("authentication_status")
-                name = st.session_state.get("name")
-                username = st.session_state.get("username")
+                name, auth_status, username = authenticator.login("Login", "main")
+                st.session_state["name"] = name
+                st.session_state["authentication_status"] = auth_status
+                st.session_state["username"] = username
                 if auth_status is False:
                     st.error("Incorrect username or password.")
             with signup_tab:
@@ -50,7 +50,7 @@ else:
         with col1:
             st.success(f"Logged in as {name}")
         with col2:
-            authenticator.logout("Log out", location="main")
+            authenticator.logout("Log out", "main")
             
 # -------------------------
 # NOTES HELPERS
