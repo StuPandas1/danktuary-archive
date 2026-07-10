@@ -25,38 +25,37 @@ suppress_selectbox_keyboard()
 # -------------------------
 supabase_up = st.session_state.get("supabase_up", False)
 authenticator = st.session_state.get("authenticator")
-name = st.session_state.get("name")
-username = st.session_state.get("username")
-auth_status = st.session_state.get("authentication_status")
-
-st.write(auth_status)
+username= st.session_state.get("username")
 
 if not supabase_up:
     st.warning("⚠️ Login is temporarily unavailable...")
 else:
-    # Always fetch the absolute current status directly from session_state
-    time.sleep(0.25)
+    auth_status = st.session_state.get("authentication_status")
+
     if auth_status is True:
-        # 1. Authenticated View
+        # 🔓 WHAT LOGGED-IN USERS SEE
         name = st.session_state.get("name")
         col1, col2 = st.columns([5, 1])
         with col1:
             st.success(f"Logged in as {name}")
         with col2:
-            # If logout is clicked, it will reset state and rerun automatically
             authenticator.logout("Log out", location="main")
             
+        st.title("🎧 Listen to the Audio Archive")
+        st.write("Your exclusive content is fully unlocked!")
+        
     else:
-        # 2. Unauthenticated View (auth_status is None or False)
-        with st.expander("🔐 Band Login", expanded=False):
+        # 🔐 WRAPPED LOGIN / SIGNUP FOR UNAUTHENTICATED USERS
+        with st.expander("🔐 Band Login", expanded=True):
             login_tab, signup_tab = st.tabs(["Log In", "Create Account"])
             
             with login_tab:
-                # streamlit-authenticator renders its own form here
+                # This renders the username/password input boxes
                 authenticator.login(location="main")
                 
-                # Check if the user JUST successfully logged in within this frame
+                # Check if submission changed the state manually
                 if st.session_state.get("authentication_status") is True:
+                    time.sleep(0.1)
                     st.rerun()
                 elif st.session_state.get("authentication_status") is False:
                     st.error("Incorrect username or password.")
