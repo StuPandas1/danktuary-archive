@@ -25,7 +25,7 @@ suppress_selectbox_keyboard()
 # -------------------------
 supabase_up = st.session_state.get("supabase_up", False)
 authenticator = st.session_state.get("authenticator")
-username= st.session_state.get("username")
+username = st.session_state.get("username")
 
 if not supabase_up:
     st.warning("⚠️ Login is temporarily unavailable...")
@@ -33,29 +33,34 @@ else:
     auth_status = st.session_state.get("authentication_status")
 
     if auth_status is True:
-        # 🔓 WHAT LOGGED-IN USERS SEE
+        # 🔓 UNLOCKED CONTAINER
         name = st.session_state.get("name")
         col1, col2 = st.columns([5, 1])
         with col1:
             st.success(f"Logged in as {name}")
         with col2:
-            authenticator.logout("Log out", location="main")
+            # When clicked, clear tracking flag and log out
+            if st.button("Log out"):
+                st.session_state["cookie_hydrated"] = False
+                authenticator.logout("Log out", location="unrendered")
+                st.rerun()
             
         st.title("🎧 Listen to the Audio Archive")
-        st.write("Your exclusive content is fully unlocked!")
+        st.write("Your premium audio streams have loaded successfully.")
         
     else:
-        # 🔐 WRAPPED LOGIN / SIGNUP FOR UNAUTHENTICATED USERS
+        # 🔐 LOCKED LOGIN SECTIONS
         with st.expander("🔐 Band Login", expanded=True):
             login_tab, signup_tab = st.tabs(["Log In", "Create Account"])
             
             with login_tab:
-                # This renders the username/password input boxes
-                authenticator.login(location="main")
+                # Triggers standard forms
+                authenticator.login(location="main", key="listen_tab_login")
                 
-                # Check if submission changed the state manually
+                # Check for manual form submission events
                 if st.session_state.get("authentication_status") is True:
-                    time.sleep(0.1)
+                    st.session_state["cookie_hydrated"] = False  # Reset flag for fresh sessions
+                    time.sleep(0.15)  # Let the browser write the file
                     st.rerun()
                 elif st.session_state.get("authentication_status") is False:
                     st.error("Incorrect username or password.")
