@@ -1,4 +1,0 @@
-[server]
-cookieSecret = "x7k2mQpL9vRnTw4j"
-enableCORS = false
-enableXsrfProtection = false
