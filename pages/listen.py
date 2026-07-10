@@ -13,6 +13,7 @@ from shared import (
     style_playlist_draft_rows,
     load_all_recordings, _data_file_mtimes
 )
+from auth_shared import get_cookie_manager, clear_login_cookie
 
 df = load_all_recordings(_data_file_mtimes())
 
@@ -66,7 +67,9 @@ else:
         with col1:
             st.success(f"Logged in as {name}")
         with col2:
-            authenticator.logout("Log out", location="main")
+            authenticator.logout("Log out", location="main",
+            callback=lambda *a, **kw: clear_login_cookie(get_cookie_manager())
+            )
             
 # -------------------------
 # NOTES HELPERS
