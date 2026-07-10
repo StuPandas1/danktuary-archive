@@ -68,7 +68,10 @@ def load_users_from_supabase():
         row["username"]: {"name": row["name"], "password": row["password_hash"]}
         for row in response.data
     }
-    return {"usernames": usernames}
+    return {
+    "usernames": usernames,
+    "preauthorized": {"emails": []}
+}
 
 def create_user_in_supabase(username, name, password):
     supabase = get_supabase_client()
@@ -671,7 +674,6 @@ def _load_data_cached(_mtimes):
 def load_data():
     return _load_data_cached(_data_file_mtimes())
 
-
 # -------------------------
 # SHARED HELPERS
 # -------------------------
@@ -684,7 +686,6 @@ def parse_duration(d):
         return int(parts[0]) * 60 + int(parts[1])
     except Exception:
         return 0
-
 
 def build_filtered(df, metadata, artist_filter, year_range):
     filtered_df = df[
@@ -716,7 +717,6 @@ def build_filtered(df, metadata, artist_filter, year_range):
 
     return filtered_df, filtered_song_stats
 
-
 def weighted_pick(series, used_songs):
     counts = series.value_counts()
     available = [
@@ -731,7 +731,6 @@ def weighted_pick(series, used_songs):
     chosen = random.choices(songs, weights=weights, k=1)[0]
     odds = round((weights[songs.index(chosen)] / total) * 100, 1)
     return chosen, odds
-
 
 def find_closers(source_df, allowed_titles=None):
     closers = []
