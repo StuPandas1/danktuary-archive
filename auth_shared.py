@@ -1,7 +1,8 @@
 import streamlit as st
 import streamlit_authenticator as stauth
-from streamlit_cookies_manager import EncryptedCookieManager
-import json
+from streamlit.components.v1 import html as components_html
+import hmac
+import hashlib
 import time
 
 def get_authenticator(credentials):
@@ -10,39 +11,34 @@ def get_authenticator(credentials):
             credentials,
             st.secrets["cookie"]["name"],
             st.secrets["cookie"]["key"],
-            0,  # disable streamlit_authenticator's own broken cookie handling
+            0,  # we handle persistence ourselves now
         )
     return st.session_state["authenticator"]
 
-def get_cookie_manager():
-    if "cookie_manager" not in st.session_state:
-        st.session_state["cookie_manager"] = EncryptedCookieManager(
-            prefix="dankapp/",
-            password=st.secrets["cookie"]["key"],  # reuse your existing secret
-        )
-    return st.session_state["cookie_manager"]
+_COOKIE_NAME = "dankapp_auth"
 
-_COOKIE_KEY = "dankapp_auth"
+def _sign(username: str, exp: int) -> str:
+    secret = st.secrets["cookie"]["key"].encode()
+    msg = f"{username}|{exp}".encode()
+    return hmac.new(secret, msg, hashlib.sha256).hexdigest()
 
-def restore_login_from_cookie(cookies, credentials):
-    """On a fresh session, pull login state back out of our own cookie."""
+def restore_login_from_cookie(credentials):
+    """Reads our own signed cookie straight from the request headers. Synchronous, no waiting."""
     if st.session_state.get("authentication_status"):
-        return  # already logged in this session
+        return
 
-    raw = cookies.get(_COOKIE_KEY)
+    raw = st.context.cookies.get(_COOKIE_NAME)
     if not raw:
         return
     try:
-        payload = json.loads(raw)
-        username, exp_date = payload["username"], payload["exp_date"]
-    except (KeyError, ValueError, TypeError):
+        username, exp_str, sig = raw.split("|")
+        exp = int(exp_str)
+    except ValueError:
         return
-
-    if time.time() > exp_date:
-        if _COOKIE_KEY in cookies:
-            del cookies[_COOKIE_KEY]
-            cookies.save()
+    if time.time() > exp:
         return
+    if not hmac.compare_digest(sig, _sign(username, exp)):
+        return  # tampered or forged cookie, ignore it
 
     user_record = credentials.get("usernames", {}).get(username)
     if not user_record:
@@ -52,30 +48,24 @@ def restore_login_from_cookie(cookies, credentials):
     st.session_state["username"] = username
     st.session_state["name"] = user_record.get("name", username)
 
-def sync_login_cookie(cookies, expiry_days):
-    """Keep our cookie in sync with session_state after a real login happens."""
+def sync_login_cookie(expiry_days: float):
+    """Call this after determining login state. Writes/refreshes the cookie if logged in."""
     if not st.session_state.get("authentication_status"):
         return
     username = st.session_state.get("username")
     if not username:
         return
+    exp = int(time.time() + expiry_days * 86400)
+    sig = _sign(username, exp)
+    value = f"{username}|{exp}|{sig}"
+    max_age = int(expiry_days * 86400)
+    components_html(
+        f'<script>document.cookie = "{_COOKIE_NAME}={value}; path=/; max-age={max_age}; SameSite=Lax";</script>',
+        height=0,
+    )
 
-    raw = cookies.get(_COOKIE_KEY)
-    if raw:
-        try:
-            payload = json.loads(raw)
-            if payload.get("username") == username and payload.get("exp_date", 0) - time.time() > 86400:
-                return  # still valid for >1 day, no need to rewrite
-        except (ValueError, TypeError):
-            pass
-
-    cookies[_COOKIE_KEY] = json.dumps({
-        "username": username,
-        "exp_date": time.time() + expiry_days * 86400,
-    })
-    cookies.save()
-
-def clear_login_cookie(cookies):
-    if _COOKIE_KEY in cookies:
-        del cookies[_COOKIE_KEY]
-        cookies.save()
+def clear_login_cookie():
+    components_html(
+        f'<script>document.cookie = "{_COOKIE_NAME}=; path=/; max-age=0; SameSite=Lax";</script>',
+        height=0,
+    )

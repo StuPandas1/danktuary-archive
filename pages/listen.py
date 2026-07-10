@@ -36,13 +36,13 @@ else:
     if not auth_status:
         with st.expander("🔐 Band Login", expanded=False):
             login_tab, signup_tab = st.tabs(["Log In", "Create Account"])
-            with login_tab:
-                authenticator.login(location="main")
-                auth_status = st.session_state.get("authentication_status")
-                name = st.session_state.get("name")
-                username = st.session_state.get("username")
-                if auth_status is False:
-                    st.error("Incorrect username or password.")
+        with login_tab:
+            authenticator.login(location="main")
+            auth_status = st.session_state.get("authentication_status")
+            if auth_status:
+                st.rerun()
+            elif auth_status is False:
+                st.error("Incorrect username or password.")
             with signup_tab:
                 with st.form("signup_form"):
                     new_username = st.text_input("Choose a username")
@@ -68,7 +68,7 @@ else:
             st.success(f"Logged in as {name}")
         with col2:
             authenticator.logout("Log out", location="main",
-            callback=lambda *a, **kw: clear_login_cookie(get_cookie_manager())
+            callback=lambda *a, **kw: clear_login_cookie()
             )
             
 # -------------------------
