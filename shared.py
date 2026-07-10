@@ -153,7 +153,6 @@ def update_playlist_in_supabase(playlist_id, playlist_name, tracks):
     }).eq("id", playlist_id).execute()
     return True, "Playlist updated!"
 
-
 def add_tracks_to_playlist(playlist_id, new_tracks):
     """Appends new_tracks (deduped) onto an existing playlist without
     touching the draft/save flow — used for the 'add from this show
