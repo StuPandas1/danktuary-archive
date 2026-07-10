@@ -32,16 +32,31 @@ username = st.session_state.get("username")
 if not supabase_up:
     st.warning("⚠️ Login is temporarily unavailable...")
 else:
+    # always run login to restore session from cookie
+    name, auth_status, username = authenticator.login("Login", "unrendered")
+    st.session_state["name"] = name
+    st.session_state["authentication_status"] = auth_status
+    st.session_state["username"] = username
+
     if not auth_status:
         with st.expander("🔐 Band Login", expanded=False):
             login_tab, signup_tab = st.tabs(["Log In", "Create Account"])
+
             with login_tab:
-                name, auth_status, username = authenticator.login("Login", "main")
-                st.session_state["name"] = name
-                st.session_state["authentication_status"] = auth_status
-                st.session_state["username"] = username
-                if auth_status is False:
-                    st.error("Incorrect username or password.")
+                with st.form("login_form"):
+                    login_username = st.text_input("Username")
+                    login_password = st.text_input("Password", type="password")
+                    submitted = st.form_submit_button("Log In")
+                if submitted:
+                    name, auth_status, username = authenticator.login("Login", "main")
+                    st.session_state["name"] = name
+                    st.session_state["authentication_status"] = auth_status
+                    st.session_state["username"] = username
+                    if auth_status is False:
+                        st.error("Incorrect username or password.")
+                    elif auth_status:
+                        st.rerun()
+
             with signup_tab:
                 # unchanged
                 ...
@@ -51,7 +66,7 @@ else:
             st.success(f"Logged in as {name}")
         with col2:
             authenticator.logout("Log out", "main")
-            
+
 # -------------------------
 # NOTES HELPERS
 # -------------------------
