@@ -49,7 +49,6 @@ def restore_login_from_cookie(credentials):
     st.session_state["name"] = user_record.get("name", username)
 
 def sync_login_cookie(expiry_days: float):
-    """Call this after determining login state. Writes/refreshes the cookie if logged in."""
     if not st.session_state.get("authentication_status"):
         return
     username = st.session_state.get("username")
@@ -60,12 +59,28 @@ def sync_login_cookie(expiry_days: float):
     value = f"{username}|{exp}|{sig}"
     max_age = int(expiry_days * 86400)
     components_html(
-        f'<script>document.cookie = "{_COOKIE_NAME}={value}; path=/; max-age={max_age}; SameSite=Lax";</script>',
+        f"""
+        <script>
+        try {{
+            window.parent.document.cookie = "{_COOKIE_NAME}={value}; path=/; max-age={max_age}; SameSite=Lax";
+        }} catch (e) {{
+            console.error("DankApp cookie write failed:", e);
+        }}
+        </script>
+        """,
         height=0,
     )
 
 def clear_login_cookie():
     components_html(
-        f'<script>document.cookie = "{_COOKIE_NAME}=; path=/; max-age=0; SameSite=Lax";</script>',
+        f"""
+        <script>
+        try {{
+            window.parent.document.cookie = "{_COOKIE_NAME}=; path=/; max-age=0; SameSite=Lax";
+        }} catch (e) {{
+            console.error("DankApp cookie clear failed:", e);
+        }}
+        </script>
+        """,
         height=0,
     )
