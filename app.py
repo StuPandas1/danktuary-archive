@@ -18,7 +18,8 @@ pg = st.navigation(
 try:
     credentials = load_users_from_supabase()
     st.session_state["supabase_up"] = True
-except Exception:
+except Exception as e:
+    st.write("DEBUG supabase error:", repr(e))
     credentials = {"usernames": {}}
     st.session_state["supabase_up"] = False
 
