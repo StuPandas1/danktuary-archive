@@ -25,13 +25,13 @@ def get_authenticator(credentials):
 
 def get_cookie_controller():
     """
-    Must be instantiated fresh every run (not cached in session_state) and
-    called unconditionally near the top of app.py, outside any expander or
-    conditional block, so the underlying component actually mounts on
-    every single script run. We never call .getAll()/.get() on this --
-    reads go through st.context.cookies instead. This is a write-only tool.
+    Must be called unconditionally near the top of app.py, every run,
+    outside any expander/conditional, so the component actually mounts.
+    Cached in session_state so read/write calls hit the same instance.
     """
-    return CookieController(key="dankapp_cookie_controller")
+    if "cookie_controller" not in st.session_state:
+        st.session_state["cookie_controller"] = CookieController(key="dankapp_cookie_controller")
+    return st.session_state["cookie_controller"]
 
 
 def create_session(username, name, expiry_days):
@@ -52,11 +52,23 @@ def delete_session(token):
 
 
 def restore_login_from_cookie(credentials):
-    """Read-only, synchronous, via st.context.cookies -- confirmed working."""
+    """
+    Reads via the CookieController component round-trip (NOT st.context.cookies --
+    confirmed non-functional in this deployment). The component needs one
+    render cycle to report back on a fresh page load, so we allow exactly
+    ONE retry rerun, gated by a session_state flag so we never loop forever.
+    """
     if st.session_state.get("authentication_status"):
         return
 
-    token = st.context.cookies.get(_COOKIE_NAME)
+    controller = get_cookie_controller()
+    token = controller.get(_COOKIE_NAME)
+
+    if token is None and not st.session_state.get("_cookie_check_retried"):
+        st.session_state["_cookie_check_retried"] = True
+        st.rerun()
+        return
+
     if not token:
         return
 
@@ -83,7 +95,7 @@ def sync_login_cookie(expiry_days):
     if not st.session_state.get("authentication_status"):
         return
     if st.session_state.get("session_token"):
-        return  # already synced this session
+        return
     username = st.session_state.get("username")
     name = st.session_state.get("name")
     if not username:
