@@ -2,7 +2,7 @@ import streamlit as st
 
 st.set_page_config(page_title="DankApp", layout="wide", initial_sidebar_state="collapsed")
 
-from auth_shared import get_authenticator, restore_login_from_cookie, sync_login_cookie, get_cookie_controller
+from auth_shared import get_authenticator, restore_login_from_cookie, sync_login_cookie
 from shared import load_users_from_supabase
 
 pg = st.navigation(
@@ -15,8 +15,6 @@ pg = st.navigation(
     position="hidden"
 )
 
-cookie_controller = get_cookie_controller()
-
 try:
     credentials = load_users_from_supabase()
     st.session_state["supabase_up"] = True
@@ -27,13 +25,6 @@ except Exception:
 st.session_state["credentials"] = credentials
 
 restore_login_from_cookie(credentials)
-
-# --- TEMP DEBUG ---
-with st.expander("🐛 debug", expanded=True):
-    st.write("controller.getAll():", cookie_controller.getAll())
-    st.write("retry count:", st.session_state.get("_cookie_retry_count"))
-    st.write("auth_status:", st.session_state.get("authentication_status"))
-# --- END TEMP DEBUG ---
 
 if st.session_state["supabase_up"]:
     authenticator = get_authenticator(credentials)

@@ -1,12 +1,10 @@
 import streamlit as st
 import streamlit_authenticator as stauth
 import secrets
-import time
 from datetime import datetime, timezone, timedelta
 from supabase import create_client
-from streamlit_cookies_controller import CookieController
 
-_COOKIE_NAME = "dankapp_session"
+_SESSION_PARAM = "session"
 
 
 def get_supabase():
@@ -22,17 +20,6 @@ def get_authenticator(credentials):
             st.secrets["cookie"]["expiry_days"],
         )
     return st.session_state["authenticator"]
-
-
-def get_cookie_controller():
-    """
-    Must be called unconditionally near the top of app.py, every run,
-    outside any expander/conditional, so the component actually mounts.
-    Cached in session_state so read/write calls hit the same instance.
-    """
-    if "cookie_controller" not in st.session_state:
-        st.session_state["cookie_controller"] = CookieController(key="dankapp_cookie_controller")
-    return st.session_state["cookie_controller"]
 
 
 def create_session(username, name, expiry_days):
@@ -53,21 +40,16 @@ def delete_session(token):
 
 
 def restore_login_from_cookie(credentials):
+    """
+    Reads the session token from the URL query string, not a cookie.
+    st.query_params comes straight from the request line -- it's not
+    filtered by Community Cloud's proxy the way headers/cookies are,
+    and needs no component/iframe round-trip.
+    """
     if st.session_state.get("authentication_status"):
         return
 
-    controller = get_cookie_controller()
-    all_cookies = controller.getAll()
-
-    if all_cookies is None:
-        retries = st.session_state.get("_cookie_retry_count", 0)
-        if retries < 5:
-            st.session_state["_cookie_retry_count"] = retries + 1
-            time.sleep(0.15)
-            st.rerun()
-        return  # gave it 5 tries -- treat as no session this load
-
-    token = all_cookies.get(_COOKIE_NAME)
+    token = st.query_params.get(_SESSION_PARAM)
     if not token:
         return
 
@@ -81,6 +63,8 @@ def restore_login_from_cookie(credentials):
             expires_at = expires_at.replace(tzinfo=timezone.utc)
         if datetime.now(timezone.utc) > expires_at:
             delete_session(token)
+            if _SESSION_PARAM in st.query_params:
+                del st.query_params[_SESSION_PARAM]
             return
         st.session_state["authentication_status"] = True
         st.session_state["username"] = session["username"]
@@ -91,24 +75,24 @@ def restore_login_from_cookie(credentials):
 
 
 def sync_login_cookie(expiry_days):
+    """Writes the session token into the URL query string."""
     if not st.session_state.get("authentication_status"):
         return
-    if st.session_state.get("session_token"):
-        return
+    existing = st.session_state.get("session_token")
+    if existing and st.query_params.get(_SESSION_PARAM) == existing:
+        return  # already synced
     username = st.session_state.get("username")
     name = st.session_state.get("name")
     if not username:
         return
-    token = create_session(username, name, expiry_days)
+    token = existing or create_session(username, name, expiry_days)
     st.session_state["session_token"] = token
-    controller = get_cookie_controller()
-    max_age = int(expiry_days * 86400)
-    controller.set(_COOKIE_NAME, token, max_age=max_age)
+    st.query_params[_SESSION_PARAM] = token
 
 
 def clear_login_cookie():
     token = st.session_state.get("session_token")
     delete_session(token)
     st.session_state["session_token"] = None
-    controller = get_cookie_controller()
-    controller.remove(_COOKIE_NAME)
+    if _SESSION_PARAM in st.query_params:
+        del st.query_params[_SESSION_PARAM]
