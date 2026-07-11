@@ -62,7 +62,7 @@ def sync_login_cookie(expiry_days: float):
         f"""
         <script>
         try {{
-            window.parent.document.cookie = "{_COOKIE_NAME}={value}; path=/; max-age={max_age}; SameSite=Lax";
+            window.top.document.cookie = "{_COOKIE_NAME}={value}; path=/; max-age={max_age}; SameSite=Lax";
         }} catch (e) {{
             console.error("DankApp cookie write failed:", e);
         }}
@@ -76,7 +76,7 @@ def clear_login_cookie():
         f"""
         <script>
         try {{
-            window.parent.document.cookie = "{_COOKIE_NAME}=; path=/; max-age=0; SameSite=Lax";
+            window.top.document.cookie = "{_COOKIE_NAME}=; path=/; max-age=0; SameSite=Lax";
         }} catch (e) {{
             console.error("DankApp cookie clear failed:", e);
         }}
