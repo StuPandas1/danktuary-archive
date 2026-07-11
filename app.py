@@ -30,10 +30,9 @@ restore_login_from_cookie(credentials)
 
 # --- TEMP DEBUG ---
 with st.expander("🐛 debug", expanded=True):
-    st.write("cookie via controller.get():", cookie_controller.get("dankapp_session"))
+    st.write("controller.getAll():", cookie_controller.getAll())
+    st.write("retry count:", st.session_state.get("_cookie_retry_count"))
     st.write("auth_status:", st.session_state.get("authentication_status"))
-    st.write("username:", st.session_state.get("username"))
-    st.write("retried flag:", st.session_state.get("_cookie_check_retried"))
 # --- END TEMP DEBUG ---
 
 if st.session_state["supabase_up"]:
