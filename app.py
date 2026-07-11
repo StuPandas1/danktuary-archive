@@ -24,8 +24,16 @@ except Exception:
 
 st.session_state["credentials"] = credentials
 
-# restore login from our own signed cookie — synchronous, no stauth needed
 restore_login_from_cookie(credentials)
+
+# --- TEMP DEBUG, remove after diagnosing ---
+with st.expander("🐛 debug", expanded=True):
+    st.write("cookies seen by server:", dict(st.context.cookies))
+    st.write("auth_status:", st.session_state.get("authentication_status"))
+    st.write("username:", st.session_state.get("username"))
+    st.write("session_token:", st.session_state.get("session_token"))
+    st.write("restore error:", st.session_state.get("_restore_error"))
+# --- END TEMP DEBUG ---
 
 if st.session_state["supabase_up"]:
     authenticator = get_authenticator(credentials)
