@@ -28,6 +28,8 @@ def restore_login_from_cookie(credentials):
         return
 
     raw = st.context.cookies.get(_COOKIE_NAME)
+    st.write("DEBUG cookie raw:", raw)  # add this
+
     if not raw:
         return
     try:
