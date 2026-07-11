@@ -36,41 +36,46 @@ if not supabase_up:
     st.warning("⚠️ Login is temporarily unavailable...")
 else:
     if not auth_status:
-            with st.form("login_form"):
-                login_username = st.text_input("Username")
-                login_password = st.text_input("Password", type="password")
-                submitted = st.form_submit_button("Log In")
-            if submitted:
-                user = credentials["usernames"].get(login_username)
-                if user and bcrypt.checkpw(login_password.encode(), user["password"].encode()):
-                    st.session_state["authentication_status"] = True
-                    st.session_state["name"] = user["name"]
-                    st.session_state["username"] = login_username
-                    st.session_state["session_token"] = None  # clear so sync_login_cookie creates a fresh one
-                    sync_login_cookie(st.secrets["cookie"]["expiry_days"])
-                    time.sleep(0.5)  # give cookie time to be set before rerun
-                    st.rerun()
-                else:
-                    st.error("Incorrect username or password.")
+        with st.expander("🔐 Band Login", expanded=False):
+            login_tab, signup_tab = st.tabs(["Log In", "Create Account"])
 
-            with st.form("signup_form"):
-                new_username = st.text_input("Choose a username")
-                new_name = st.text_input("Your name")
-                new_password = st.text_input("Choose a password", type="password")
-                new_password_confirm = st.text_input("Confirm password", type="password")
-                signup_submitted = st.form_submit_button("Create Account")
-
-            if signup_submitted:
-                if not new_username or not new_name or not new_password:
-                    st.error("Please fill in all fields.")
-                elif new_password != new_password_confirm:
-                    st.error("Passwords don't match.")
-                else:
-                    success, message = create_user_in_supabase(new_username, new_name, new_password)
-                    if success:
-                        st.success(message)
+            with login_tab:
+                with st.form("login_form"):
+                    login_username = st.text_input("Username")
+                    login_password = st.text_input("Password", type="password")
+                    submitted = st.form_submit_button("Log In")
+                if submitted:
+                    user = credentials["usernames"].get(login_username)
+                    if user and bcrypt.checkpw(login_password.encode(), user["password"].encode()):
+                        st.session_state["authentication_status"] = True
+                        st.session_state["name"] = user["name"]
+                        st.session_state["username"] = login_username
+                        st.session_state["session_token"] = None  # clear so sync_login_cookie creates a fresh one
+                        sync_login_cookie(st.secrets["cookie"]["expiry_days"])
+                        time.sleep(0.5)  # give cookie time to be set before rerun
+                        st.rerun()
                     else:
-                        st.error(message)
+                        st.error("Incorrect username or password.")
+
+            with signup_tab:
+                with st.form("signup_form"):
+                    new_username = st.text_input("Choose a username")
+                    new_name = st.text_input("Your name")
+                    new_password = st.text_input("Choose a password", type="password")
+                    new_password_confirm = st.text_input("Confirm password", type="password")
+                    signup_submitted = st.form_submit_button("Create Account")
+
+                if signup_submitted:
+                    if not new_username or not new_name or not new_password:
+                        st.error("Please fill in all fields.")
+                    elif new_password != new_password_confirm:
+                        st.error("Passwords don't match.")
+                    else:
+                        success, message = create_user_in_supabase(new_username, new_name, new_password)
+                        if success:
+                            st.success(message)
+                        else:
+                            st.error(message)
     else:
         col1, col2 = st.columns([5, 1])
         with col1:
