@@ -8,3 +8,4 @@ bcrypt
 streamlit_authenticator==0.3.3
 extra-streamlit-components
 streamlit-cookies-manager==0.2.0
+streamlit-cookies-controller
