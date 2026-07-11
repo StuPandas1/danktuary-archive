@@ -1,22 +1,14 @@
 import streamlit as st
+import streamlit.components.v1 as components
 import streamlit_authenticator as stauth
-import hmac
-import hashlib
-import time
 import secrets
 from datetime import datetime, timezone, timedelta
 from supabase import create_client
-from streamlit_cookies_controller import CookieController
 
 _COOKIE_NAME = "dankapp_session"
 
 def get_supabase():
     return create_client(st.secrets["supabase"]["url"], st.secrets["supabase"]["key"])
-
-def get_cookie_controller():
-    if "cookie_controller" not in st.session_state:
-        st.session_state["cookie_controller"] = CookieController()
-    return st.session_state["cookie_controller"]
 
 def get_authenticator(credentials):
     if "authenticator" not in st.session_state:
@@ -44,19 +36,14 @@ def delete_session(token):
         get_supabase().table("sessions").delete().eq("token", token).execute()
 
 def restore_login_from_cookie(credentials):
+    """Read-only, synchronous — no rerun loop needed."""
     if st.session_state.get("authentication_status"):
         return
-    controller = get_cookie_controller()
-    cookies = controller.getAll()
-    
-    # cookies not ready yet — rerun to get them
-    if cookies is None:
-        st.rerun()
-        return
-        
-    token = cookies.get(_COOKIE_NAME)
+
+    token = st.context.cookies.get(_COOKIE_NAME)
     if not token:
         return
+
     try:
         result = get_supabase().table("sessions").select("*").eq("token", token).execute()
         if not result.data:
@@ -75,24 +62,34 @@ def restore_login_from_cookie(credentials):
     except Exception:
         return
 
+def _write_cookie_js(name, value, max_age_seconds):
+    components.html(
+        f"""
+        <script>
+        document.cookie = "{name}={value}; max-age={max_age_seconds}; path=/; SameSite=Lax";
+        </script>
+        """,
+        height=0,
+        width=0,
+    )
+
+def _clear_cookie_js(name):
+    components.html(
+        f"""
+        <script>
+        document.cookie = "{name}=; max-age=0; path=/; SameSite=Lax";
+        </script>
+        """,
+        height=0,
+        width=0,
+    )
+
 def sync_login_cookie(expiry_days):
     if not st.session_state.get("authentication_status"):
         return
     if st.session_state.get("session_token"):
-        return
+        return  # already have a token this session, nothing new to write
     username = st.session_state.get("username")
     name = st.session_state.get("name")
     if not username:
         return
-    token = create_session(username, name, expiry_days)
-    st.session_state["session_token"] = token
-    controller = get_cookie_controller()
-    max_age = int(expiry_days * 86400)
-    controller.set(_COOKIE_NAME, token, max_age=max_age)
-
-def clear_login_cookie():
-    token = st.session_state.get("session_token")
-    delete_session(token)
-    st.session_state["session_token"] = None
-    controller = get_cookie_controller()
-    controller.remove(_COOKIE_NAME)
