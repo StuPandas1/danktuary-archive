@@ -11,7 +11,7 @@ def get_authenticator(credentials):
             credentials,
             st.secrets["cookie"]["name"],
             st.secrets["cookie"]["key"],
-            0,  # we handle persistence ourselves now
+            st.secrets["cookie"]["expiry_days"],
         )
     return st.session_state["authenticator"]
 
