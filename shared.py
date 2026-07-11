@@ -70,7 +70,7 @@ def load_users_from_supabase():
     }
     return {
     "usernames": usernames,
-    "pre_authorized": {"emails": []}
+    "preauthorized": {"emails": []}
 }
 
 def create_user_in_supabase(username, name, password):
