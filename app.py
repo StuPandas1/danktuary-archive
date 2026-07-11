@@ -2,7 +2,7 @@ import streamlit as st
 
 st.set_page_config(page_title="DankApp", layout="wide", initial_sidebar_state="collapsed")
 
-from auth_shared import get_authenticator, restore_login_from_cookie, sync_login_cookie, get_cookie_controller
+from auth_shared import get_authenticator, restore_login_from_cookie, sync_login_cookie
 from shared import load_users_from_supabase
 
 pg = st.navigation(
