@@ -15,7 +15,6 @@ pg = st.navigation(
     position="hidden"
 )
 
-# mount the cookie-writer component unconditionally, every run
 cookie_controller = get_cookie_controller()
 
 try:
@@ -28,13 +27,14 @@ except Exception:
 st.session_state["credentials"] = credentials
 
 restore_login_from_cookie(credentials)
+
+# --- TEMP DEBUG ---
 with st.expander("🐛 debug", expanded=True):
-    st.write("streamlit version:", st.__version__)
-    st.write("raw Cookie header via st.context.headers:", st.context.headers.get("Cookie"))
-    st.write("cookies seen by server:", dict(st.context.cookies))
+    st.write("cookie via controller.get():", cookie_controller.get("dankapp_session"))
     st.write("auth_status:", st.session_state.get("authentication_status"))
     st.write("username:", st.session_state.get("username"))
-    st.write("session_token:", st.session_state.get("session_token"))
+    st.write("retried flag:", st.session_state.get("_cookie_check_retried"))
+# --- END TEMP DEBUG ---
 
 if st.session_state["supabase_up"]:
     authenticator = get_authenticator(credentials)
