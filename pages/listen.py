@@ -13,7 +13,8 @@ from shared import (
     style_playlist_draft_rows,
     load_all_recordings, _data_file_mtimes
 )
-from auth_shared import clear_login_cookie
+from auth_shared import sync_login_cookie, clear_login_cookie
+import bcrypt
 
 df = load_all_recordings(_data_file_mtimes())
 
@@ -25,10 +26,11 @@ suppress_selectbox_keyboard()
 # AUTH (degrades gracefully if Supabase is unreachable)
 # -------------------------
 supabase_up = st.session_state.get("supabase_up", False)
-authenticator = st.session_state.get("authenticator")
 auth_status = st.session_state.get("authentication_status")
 name = st.session_state.get("name")
 username = st.session_state.get("username")
+credentials = st.session_state.get("credentials", {"usernames": {}})
+authenticator = st.session_state.get("authenticator")
 
 if not supabase_up:
     st.warning("⚠️ Login is temporarily unavailable...")
@@ -36,13 +38,23 @@ else:
     if not auth_status:
         with st.expander("🔐 Band Login", expanded=False):
             login_tab, signup_tab = st.tabs(["Log In", "Create Account"])
-        with login_tab:
-            authenticator.login(location="main")
-            auth_status = st.session_state.get("authentication_status")
-            if auth_status:
-                st.rerun()
-            elif auth_status is False:
-                st.error("Incorrect username or password.")
+
+            with login_tab:
+                with st.form("login_form"):
+                    login_username = st.text_input("Username")
+                    login_password = st.text_input("Password", type="password")
+                    submitted = st.form_submit_button("Log In")
+                if submitted:
+                    user = credentials["usernames"].get(login_username)
+                    if user and bcrypt.checkpw(login_password.encode(), user["password"].encode()):
+                        st.session_state["authentication_status"] = True
+                        st.session_state["name"] = user["name"]
+                        st.session_state["username"] = login_username
+                        sync_login_cookie(st.secrets["cookie"]["expiry_days"])
+                        st.rerun()
+                    else:
+                        st.error("Incorrect username or password.")
+
             with signup_tab:
                 with st.form("signup_form"):
                     new_username = st.text_input("Choose a username")
@@ -67,9 +79,12 @@ else:
         with col1:
             st.success(f"Logged in as {name}")
         with col2:
-            authenticator.logout("Log out", location="main",
-            callback=lambda *a, **kw: clear_login_cookie()
-            )
+            if st.button("Log out"):
+                st.session_state["authentication_status"] = None
+                st.session_state["name"] = None
+                st.session_state["username"] = None
+                clear_login_cookie()
+                st.rerun()
             
 # -------------------------
 # NOTES HELPERS

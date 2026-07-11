@@ -18,34 +18,21 @@ pg = st.navigation(
 try:
     credentials = load_users_from_supabase()
     st.session_state["supabase_up"] = True
-except Exception as e:
-    st.write("DEBUG supabase error:", repr(e))
+except Exception:
     credentials = {"usernames": {}}
     st.session_state["supabase_up"] = False
 
-st.session_state["credentials"] = credentials  # must be after the try/except
+st.session_state["credentials"] = credentials
 
-
-st.write("DEBUG supabase_up:", st.session_state.get("supabase_up"))
-st.write("DEBUG credentials:", st.session_state.get("credentials"))
-
-import importlib.metadata
-st.write("stauth version:", importlib.metadata.version("streamlit-authenticator"))
+# restore login from our own signed cookie — synchronous, no stauth needed
+restore_login_from_cookie(credentials)
 
 if st.session_state["supabase_up"]:
     authenticator = get_authenticator(credentials)
-    try:
-        name, auth_status, username = authenticator.login("Login", "unrendered".strip())
-        st.write("DEBUG cookie restore:", auth_status, name, username)
-        if auth_status:
-            st.session_state["authentication_status"] = auth_status
-            st.session_state["name"] = name
-            st.session_state["username"] = username
-    except Exception as e:
-        st.write("DEBUG cookie error:", repr(e))
     st.session_state["authenticator"] = authenticator
 
 pg.run()
 
+# write/refresh cookie after page runs if logged in
 if st.session_state.get("supabase_up") and st.session_state.get("authentication_status"):
     sync_login_cookie(st.secrets["cookie"]["expiry_days"])
