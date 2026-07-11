@@ -28,7 +28,12 @@ except Exception:
 st.session_state["credentials"] = credentials
 
 restore_login_from_cookie(credentials)
-
+with st.expander("🐛 debug", expanded=True):
+    st.write("cookies seen by server:", dict(st.context.cookies))
+    st.write("auth_status:", st.session_state.get("authentication_status"))
+    st.write("username:", st.session_state.get("username"))
+    st.write("session_token:", st.session_state.get("session_token"))
+    
 if st.session_state["supabase_up"]:
     authenticator = get_authenticator(credentials)
     st.session_state["authenticator"] = authenticator
