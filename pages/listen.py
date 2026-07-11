@@ -52,6 +52,7 @@ else:
                         st.session_state["username"] = login_username
                         st.session_state["session_token"] = None  # clear so sync_login_cookie creates a fresh one
                         sync_login_cookie(st.secrets["cookie"]["expiry_days"])
+                        time.sleep(0.5)  # give cookie time to be set before rerun
                         st.rerun()
                     else:
                         st.error("Incorrect username or password.")
