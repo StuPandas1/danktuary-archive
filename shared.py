@@ -10,7 +10,7 @@ import bcrypt
 
 times_played_mult = 1.3  # multiplier for how much weight to give times played in overdue score
 
-dead_weight_artists = ["Grateful Dead", "Jerry Garcia Band", "The Band", "Little Feat", "Phish", "The Rolling Stones", "Sam Cooke", "The Four Tops", "The Allman Brothers Band"]
+dead_weight_artists = ["Grateful Dead", "Jerry Garcia Band", "The Band", "Little Feat", "Phish", "The Rolling Stones", "Sam Cooke", "The Four Tops", "The Allman Brothers Band", "The Who"]
 dead_weight_year = 2022
 
 @st.cache_data
