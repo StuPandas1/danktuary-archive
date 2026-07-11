@@ -22,6 +22,8 @@ except Exception as e:
     st.write("DEBUG supabase error:", repr(e))
     credentials = {"usernames": {}}
     st.session_state["supabase_up"] = False
+st.write("DEBUG supabase_up:", st.session_state.get("supabase_up"))
+st.write("DEBUG credentials:", st.session_state.get("credentials"))
 
 if st.session_state["supabase_up"]:
     authenticator = get_authenticator(credentials)
