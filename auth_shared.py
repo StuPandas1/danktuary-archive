@@ -1,6 +1,7 @@
 import streamlit as st
 import streamlit_authenticator as stauth
 import secrets
+import time
 from datetime import datetime, timezone, timedelta
 from supabase import create_client
 from streamlit_cookies_controller import CookieController
@@ -52,23 +53,21 @@ def delete_session(token):
 
 
 def restore_login_from_cookie(credentials):
-    """
-    Reads via the CookieController component round-trip (NOT st.context.cookies --
-    confirmed non-functional in this deployment). The component needs one
-    render cycle to report back on a fresh page load, so we allow exactly
-    ONE retry rerun, gated by a session_state flag so we never loop forever.
-    """
     if st.session_state.get("authentication_status"):
         return
 
     controller = get_cookie_controller()
-    token = controller.get(_COOKIE_NAME)
+    all_cookies = controller.getAll()
 
-    if token is None and not st.session_state.get("_cookie_check_retried"):
-        st.session_state["_cookie_check_retried"] = True
-        st.rerun()
-        return
+    if all_cookies is None:
+        retries = st.session_state.get("_cookie_retry_count", 0)
+        if retries < 5:
+            st.session_state["_cookie_retry_count"] = retries + 1
+            time.sleep(0.15)
+            st.rerun()
+        return  # gave it 5 tries -- treat as no session this load
 
+    token = all_cookies.get(_COOKIE_NAME)
     if not token:
         return
 
