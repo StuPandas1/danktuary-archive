@@ -25,7 +25,7 @@ except Exception:
 if st.session_state["supabase_up"]:
     authenticator = get_authenticator(credentials)
     try:
-        name, auth_status, username = authenticator.login("Login", "unrendered")
+        name, auth_status, username = authenticator.login("Login", "unrendered".strip())
         st.write("DEBUG cookie restore:", auth_status, name, username)
         if auth_status:
             st.session_state["authentication_status"] = auth_status
