@@ -47,7 +47,14 @@ def restore_login_from_cookie(credentials):
     if st.session_state.get("authentication_status"):
         return
     controller = get_cookie_controller()
-    token = controller.get(_COOKIE_NAME)
+    cookies = controller.getAll()
+    
+    # cookies not ready yet — rerun to get them
+    if cookies is None:
+        st.rerun()
+        return
+        
+    token = cookies.get(_COOKIE_NAME)
     if not token:
         return
     try:
