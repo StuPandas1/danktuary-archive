@@ -27,13 +27,17 @@ st.session_state["credentials"] = credentials
 # restore login from our own signed cookie — synchronous, no stauth needed
 restore_login_from_cookie(credentials)
 
+st.write("DEBUG all cookies:", dict(st.context.cookies))
+st.write("DEBUG session token in state:", st.session_state.get("session_token"))
+st.write("DEBUG auth status:", st.session_state.get("authentication_status"))
+
 if st.session_state["supabase_up"]:
     authenticator = get_authenticator(credentials)
     st.session_state["authenticator"] = authenticator
 
 if "session_token" not in st.session_state:
     st.session_state["session_token"] = None
-    
+
 pg.run()
 
 # write/refresh cookie after page runs if logged in
