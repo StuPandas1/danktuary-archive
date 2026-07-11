@@ -27,11 +27,6 @@ st.session_state["credentials"] = credentials
 # restore login from our own signed cookie — synchronous, no stauth needed
 restore_login_from_cookie(credentials)
 
-controller = get_cookie_controller()
-st.write("DEBUG all cookies:", controller.getAll())
-st.write("DEBUG session token:", st.session_state.get("session_token"))
-st.write("DEBUG auth status:", st.session_state.get("authentication_status"))
-
 if st.session_state["supabase_up"]:
     authenticator = get_authenticator(credentials)
     st.session_state["authenticator"] = authenticator
