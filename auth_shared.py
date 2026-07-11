@@ -93,3 +93,9 @@ def sync_login_cookie(expiry_days):
     name = st.session_state.get("name")
     if not username:
         return
+    
+def clear_login_cookie():
+    token = st.session_state.get("session_token")
+    delete_session(token)
+    st.session_state["session_token"] = None
+    _clear_cookie_js(_COOKIE_NAME)
