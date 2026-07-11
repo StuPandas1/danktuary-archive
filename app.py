@@ -2,7 +2,7 @@ import streamlit as st
 
 st.set_page_config(page_title="DankApp", layout="wide", initial_sidebar_state="collapsed")
 
-from auth_shared import get_authenticator, restore_login_from_cookie, sync_login_cookie
+from auth_shared import get_authenticator, restore_login_from_cookie, sync_login_cookie, get_cookie_controller
 from shared import load_users_from_supabase
 
 pg = st.navigation(
@@ -15,6 +15,9 @@ pg = st.navigation(
     position="hidden"
 )
 
+# mount the cookie-writer component unconditionally, every run
+cookie_controller = get_cookie_controller()
+
 try:
     credentials = load_users_from_supabase()
     st.session_state["supabase_up"] = True
@@ -26,15 +29,6 @@ st.session_state["credentials"] = credentials
 
 restore_login_from_cookie(credentials)
 
-# --- TEMP DEBUG, remove after diagnosing ---
-with st.expander("🐛 debug", expanded=True):
-    st.write("cookies seen by server:", dict(st.context.cookies))
-    st.write("auth_status:", st.session_state.get("authentication_status"))
-    st.write("username:", st.session_state.get("username"))
-    st.write("session_token:", st.session_state.get("session_token"))
-    st.write("restore error:", st.session_state.get("_restore_error"))
-# --- END TEMP DEBUG ---
-
 if st.session_state["supabase_up"]:
     authenticator = get_authenticator(credentials)
     st.session_state["authenticator"] = authenticator
@@ -44,6 +38,5 @@ if "session_token" not in st.session_state:
 
 pg.run()
 
-# write/refresh cookie after page runs if logged in
 if st.session_state.get("supabase_up") and st.session_state.get("authentication_status"):
     sync_login_cookie(st.secrets["cookie"]["expiry_days"])
