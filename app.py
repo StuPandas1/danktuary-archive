@@ -24,8 +24,15 @@ except Exception:
 
 if st.session_state["supabase_up"]:
     authenticator = get_authenticator(credentials)
+    try:
+        name, auth_status, username = authenticator.login("Login", "unrendered")
+        if auth_status:
+            st.session_state["authentication_status"] = auth_status
+            st.session_state["name"] = name
+            st.session_state["username"] = username
+    except Exception:
+        pass
     st.session_state["authenticator"] = authenticator
-    restore_login_from_cookie(credentials)
 
 pg.run()
 
