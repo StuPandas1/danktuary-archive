@@ -2,7 +2,7 @@ import streamlit as st
 
 st.set_page_config(page_title="DankApp", layout="wide", initial_sidebar_state="collapsed")
 
-from auth_shared import get_authenticator, restore_login_from_cookie, sync_login_cookie
+from auth_shared import get_authenticator, restore_login_from_cookie, sync_login_cookie, get_cookie_controller
 from shared import load_users_from_supabase
 
 pg = st.navigation(
@@ -27,8 +27,9 @@ st.session_state["credentials"] = credentials
 # restore login from our own signed cookie — synchronous, no stauth needed
 restore_login_from_cookie(credentials)
 
-st.write("DEBUG all cookies:", dict(st.context.cookies))
-st.write("DEBUG session token in state:", st.session_state.get("session_token"))
+controller = get_cookie_controller()
+st.write("DEBUG all cookies:", controller.getAll())
+st.write("DEBUG session token:", st.session_state.get("session_token"))
 st.write("DEBUG auth status:", st.session_state.get("authentication_status"))
 
 if st.session_state["supabase_up"]:
