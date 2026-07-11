@@ -31,6 +31,9 @@ if st.session_state["supabase_up"]:
     authenticator = get_authenticator(credentials)
     st.session_state["authenticator"] = authenticator
 
+if "session_token" not in st.session_state:
+    st.session_state["session_token"] = None
+    
 pg.run()
 
 # write/refresh cookie after page runs if logged in

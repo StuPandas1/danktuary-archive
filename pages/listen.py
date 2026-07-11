@@ -50,8 +50,8 @@ else:
                         st.session_state["authentication_status"] = True
                         st.session_state["name"] = user["name"]
                         st.session_state["username"] = login_username
+                        st.session_state["session_token"] = None  # clear so sync_login_cookie creates a fresh one
                         sync_login_cookie(st.secrets["cookie"]["expiry_days"])
-                        time.sleep(0.5)  # slight delay to ensure cookie is set before rerun
                         st.rerun()
                     else:
                         st.error("Incorrect username or password.")
@@ -81,10 +81,10 @@ else:
             st.success(f"Logged in as {name}")
         with col2:
             if st.button("Log out"):
+                clear_login_cookie()
                 st.session_state["authentication_status"] = None
                 st.session_state["name"] = None
                 st.session_state["username"] = None
-                clear_login_cookie()
                 st.rerun()
             
 # -------------------------
