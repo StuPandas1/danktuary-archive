@@ -1,17 +1,22 @@
 import streamlit as st
 import streamlit_authenticator as stauth
-from streamlit.components.v1 import html as components_html
 import hmac
 import hashlib
 import time
 import secrets
 from datetime import datetime, timezone, timedelta
 from supabase import create_client
+from streamlit_cookies_controller import CookieController
 
 _COOKIE_NAME = "dankapp_session"
 
 def get_supabase():
     return create_client(st.secrets["supabase"]["url"], st.secrets["supabase"]["key"])
+
+def get_cookie_controller():
+    if "cookie_controller" not in st.session_state:
+        st.session_state["cookie_controller"] = CookieController()
+    return st.session_state["cookie_controller"]
 
 def get_authenticator(credentials):
     if "authenticator" not in st.session_state:
@@ -41,7 +46,8 @@ def delete_session(token):
 def restore_login_from_cookie(credentials):
     if st.session_state.get("authentication_status"):
         return
-    token = st.context.cookies.get(_COOKIE_NAME)
+    controller = get_cookie_controller()
+    token = controller.get(_COOKIE_NAME)
     if not token:
         return
     try:
@@ -66,40 +72,20 @@ def sync_login_cookie(expiry_days):
     if not st.session_state.get("authentication_status"):
         return
     if st.session_state.get("session_token"):
-        return  # already have a token, no need to create another
+        return
     username = st.session_state.get("username")
     name = st.session_state.get("name")
     if not username:
         return
     token = create_session(username, name, expiry_days)
     st.session_state["session_token"] = token
+    controller = get_cookie_controller()
     max_age = int(expiry_days * 86400)
-    components_html(
-        f"""
-        <script>
-        try {{
-            window.top.document.cookie = "{_COOKIE_NAME}={token}; path=/; max-age={max_age}; SameSite=Lax";
-        }} catch(e) {{
-            document.cookie = "{_COOKIE_NAME}={token}; path=/; max-age={max_age}; SameSite=Lax";
-        }}
-        </script>
-        """,
-        height=0,
-    )
+    controller.set(_COOKIE_NAME, token, max_age=max_age)
 
 def clear_login_cookie():
     token = st.session_state.get("session_token")
     delete_session(token)
     st.session_state["session_token"] = None
-    components_html(
-        f"""
-        <script>
-        try {{
-            window.top.document.cookie = "{_COOKIE_NAME}=; path=/; max-age=0; SameSite=Lax";
-        }} catch(e) {{
-            document.cookie = "{_COOKIE_NAME}=; path=/; max-age=0; SameSite=Lax";
-        }}
-        </script>
-        """,
-        height=0,
-    )
+    controller = get_cookie_controller()
+    controller.remove(_COOKIE_NAME)
