@@ -4,6 +4,14 @@ from streamlit.components.v1 import html as components_html
 import hmac
 import hashlib
 import time
+import secrets
+from datetime import datetime, timezone, timedelta
+from supabase import create_client
+
+_COOKIE_NAME = "dankapp_session"
+
+def get_supabase():
+    return create_client(st.secrets["supabase"]["url"], st.secrets["supabase"]["key"])
 
 def get_authenticator(credentials):
     if "authenticator" not in st.session_state:
@@ -15,58 +23,64 @@ def get_authenticator(credentials):
         )
     return st.session_state["authenticator"]
 
-_COOKIE_NAME = "dankapp_auth"
+def create_session(username, name, expiry_days):
+    token = secrets.token_urlsafe(32)
+    expires_at = datetime.now(timezone.utc) + timedelta(days=expiry_days)
+    get_supabase().table("sessions").insert({
+        "username": username,
+        "name": name,
+        "token": token,
+        "expires_at": expires_at.isoformat()
+    }).execute()
+    return token
 
-def _sign(username: str, exp: int) -> str:
-    secret = st.secrets["cookie"]["key"].encode()
-    msg = f"{username}|{exp}".encode()
-    return hmac.new(secret, msg, hashlib.sha256).hexdigest()
+def delete_session(token):
+    if token:
+        get_supabase().table("sessions").delete().eq("token", token).execute()
 
 def restore_login_from_cookie(credentials):
-    """Reads our own signed cookie straight from the request headers. Synchronous, no waiting."""
     if st.session_state.get("authentication_status"):
         return
-
-    raw = st.context.cookies.get(_COOKIE_NAME)
-    st.write("DEBUG cookie raw:", raw)  # add this
-
-    if not raw:
+    token = st.context.cookies.get(_COOKIE_NAME)
+    if not token:
         return
     try:
-        username, exp_str, sig = raw.split("|")
-        exp = int(exp_str)
-    except ValueError:
+        result = get_supabase().table("sessions").select("*").eq("token", token).execute()
+        if not result.data:
+            return
+        session = result.data[0]
+        expires_at = datetime.fromisoformat(session["expires_at"])
+        if expires_at.tzinfo is None:
+            expires_at = expires_at.replace(tzinfo=timezone.utc)
+        if datetime.now(timezone.utc) > expires_at:
+            delete_session(token)
+            return
+        st.session_state["authentication_status"] = True
+        st.session_state["username"] = session["username"]
+        st.session_state["name"] = session["name"]
+        st.session_state["session_token"] = token
+    except Exception:
         return
-    if time.time() > exp:
-        return
-    if not hmac.compare_digest(sig, _sign(username, exp)):
-        return  # tampered or forged cookie, ignore it
 
-    user_record = credentials.get("usernames", {}).get(username)
-    if not user_record:
-        return
-
-    st.session_state["authentication_status"] = True
-    st.session_state["username"] = username
-    st.session_state["name"] = user_record.get("name", username)
-
-def sync_login_cookie(expiry_days: float):
+def sync_login_cookie(expiry_days):
     if not st.session_state.get("authentication_status"):
         return
+    if st.session_state.get("session_token"):
+        return  # already have a token, no need to create another
     username = st.session_state.get("username")
+    name = st.session_state.get("name")
     if not username:
         return
-    exp = int(time.time() + expiry_days * 86400)
-    sig = _sign(username, exp)
-    value = f"{username}|{exp}|{sig}"
+    token = create_session(username, name, expiry_days)
+    st.session_state["session_token"] = token
     max_age = int(expiry_days * 86400)
     components_html(
         f"""
         <script>
         try {{
-            document.cookie = "{_COOKIE_NAME}={value}; path=/; max-age={max_age}; SameSite=Lax";
-        }} catch (e) {{
-            console.error("DankApp cookie write failed:", e);
+            window.top.document.cookie = "{_COOKIE_NAME}={token}; path=/; max-age={max_age}; SameSite=Lax";
+        }} catch(e) {{
+            document.cookie = "{_COOKIE_NAME}={token}; path=/; max-age={max_age}; SameSite=Lax";
         }}
         </script>
         """,
@@ -74,13 +88,16 @@ def sync_login_cookie(expiry_days: float):
     )
 
 def clear_login_cookie():
+    token = st.session_state.get("session_token")
+    delete_session(token)
+    st.session_state["session_token"] = None
     components_html(
         f"""
         <script>
         try {{
             window.top.document.cookie = "{_COOKIE_NAME}=; path=/; max-age=0; SameSite=Lax";
-        }} catch (e) {{
-            console.error("DankApp cookie clear failed:", e);
+        }} catch(e) {{
+            document.cookie = "{_COOKIE_NAME}=; path=/; max-age=0; SameSite=Lax";
         }}
         </script>
         """,
