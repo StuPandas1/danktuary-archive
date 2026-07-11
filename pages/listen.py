@@ -36,9 +36,6 @@ if not supabase_up:
     st.warning("⚠️ Login is temporarily unavailable...")
 else:
     if not auth_status:
-        login_tab, signup_tab = st.tabs(["Log In", "Create Account"])
-
-        with login_tab:
             with st.form("login_form"):
                 login_username = st.text_input("Username")
                 login_password = st.text_input("Password", type="password")
@@ -56,7 +53,6 @@ else:
                 else:
                     st.error("Incorrect username or password.")
 
-        with signup_tab:
             with st.form("signup_form"):
                 new_username = st.text_input("Choose a username")
                 new_name = st.text_input("Your name")
