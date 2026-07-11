@@ -26,12 +26,13 @@ if st.session_state["supabase_up"]:
     authenticator = get_authenticator(credentials)
     try:
         name, auth_status, username = authenticator.login("Login", "unrendered")
+        st.write("DEBUG cookie restore:", auth_status, name, username)
         if auth_status:
             st.session_state["authentication_status"] = auth_status
             st.session_state["name"] = name
             st.session_state["username"] = username
-    except Exception:
-        pass
+    except Exception as e:
+        st.write("DEBUG cookie error:", repr(e))
     st.session_state["authenticator"] = authenticator
 
 pg.run()
