@@ -45,9 +45,12 @@ def delete_session(token):
 
 def restore_login_from_cookie(credentials):
     if st.session_state.get("authentication_status"):
+        st.write("DEBUG: already authenticated, skipping restore")
         return
     controller = get_cookie_controller()
     cookies = controller.getAll()
+    st.write("DEBUG restore - cookies:", cookies)
+    st.write("DEBUG restore - cookies is None:", cookies is None)
     
     # cookies not ready yet — rerun to get them
     if cookies is None:
