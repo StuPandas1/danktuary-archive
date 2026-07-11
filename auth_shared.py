@@ -59,7 +59,8 @@ def restore_login_from_cookie(credentials):
         st.session_state["username"] = session["username"]
         st.session_state["name"] = session["name"]
         st.session_state["session_token"] = token
-    except Exception:
+    except Exception as e:
+        st.session_state["_restore_error"] = str(e)
         return
 
 def _write_cookie_js(name, value, max_age_seconds):
