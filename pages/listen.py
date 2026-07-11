@@ -33,9 +33,6 @@ username = st.session_state.get("username")
 if not supabase_up:
     st.warning("⚠️ Login is temporarily unavailable...")
 else:
-    st.write("DEBUG auth_status:", st.session_state.get("authentication_status"))
-    st.write("DEBUG username:", st.session_state.get("username"))
-    st.write("DEBUG raw cookie from context:", st.context.cookies.get("dankapp_auth"))
     if not auth_status:
         with st.expander("🔐 Band Login", expanded=False):
             login_tab, signup_tab = st.tabs(["Log In", "Create Account"])
