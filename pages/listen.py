@@ -8,7 +8,7 @@ from shared import (
     group_tracks, save_playlist_to_supabase, load_playlists_from_supabase, delete_playlist_from_supabase,
     update_playlist_in_supabase, add_tracks_to_playlist,
     get_show_list, get_playlist_for_show,
-    style_playlist_draft_rows,
+    style_playlist_draft_rows, force_columns_horizontal,
     load_all_recordings, _data_file_mtimes,
     get_display_name, set_display_name
     )
@@ -18,6 +18,7 @@ df = load_all_recordings(_data_file_mtimes())
 page_menu()
 dank_header(subtitle="If you get confused...")
 suppress_selectbox_keyboard()
+force_columns_horizontal()
 
 # -------------------------
 # AUTH -- inline, doesn't block the rest of the page
