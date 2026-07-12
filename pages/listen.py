@@ -19,25 +19,6 @@ df = load_all_recordings(_data_file_mtimes())
 page_menu()
 dank_header(subtitle="If you get confused...")
 
-st.markdown(
-    """
-    <style>
-    /* target mobile screens under 768px width */
-    @media (max-width: 768px) {
-        /* Force the text entry field to ignore tap targeting */
-        div[data-baseweb="select"] input {
-            pointer-events: none !important;
-        }
-        /* Keep the outer dropdown container clickable to open options */
-        div[data-baseweb="select"] {
-            cursor: pointer !important;
-        }
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-
 # -------------------------
 # AUTH -- inline, doesn't block the rest of the page
 # -------------------------
@@ -528,23 +509,3 @@ st.markdown(
     unsafe_allow_html=True
 )
 st.markdown("")
-
-
-components.html(
-    """
-    <script>
-    function disableMobileKeyboard() {
-        // Target all text inputs inside Streamlit selectbox containers
-        const selectInputs = window.parent.document.querySelectorAll('div[data-baseweb="select"] input');
-        selectInputs.forEach(input => {
-            if (input) {
-                input.setAttribute('readonly', 'readonly');
-            }
-        });
-    }
-    // Run repeatedly to catch any freshly rendered Streamlit elements
-    setInterval(disableMobileKeyboard, 500);
-    </script>
-    """,
-    height=0,
-)
