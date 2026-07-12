@@ -613,20 +613,34 @@ def page_menu():
 # FORCE HORIZ ROW/PLAYLIST FORMATTING
 # -------------------------
 
-def force_columns_horizontal():
-    """Injects CSS once per page load so st.columns() rows never stack
-    vertically on mobile, regardless of viewport width."""
-    st.markdown("""
+def force_columns_horizontal(gap="0.4rem", min_col_width=None, equal_width=False, key=None):
+    """
+    Injects CSS so st.columns() rows never stack vertically on mobile.
+
+    gap: space between columns, any CSS length (e.g. "0.4rem", "8px")
+    min_col_width: if set, columns won't shrink below this width (e.g. "70px") --
+        the row scrolls horizontally instead of squishing text unreadably
+    equal_width: if True, columns split space evenly; if False, they size to content
+    key: if set, only affects columns inside a matching st.container(key=key)
+        block, instead of every st.columns() row on the page
+    """
+    scope = f".st-key-{key} " if key else ""
+    flex_rule = "flex: 1 1 0% !important;" if equal_width else "flex: initial !important;"
+    min_width_rule = f"min-width: {min_col_width} !important;" if min_col_width else "min-width: 0 !important;"
+    overflow_rule = "overflow-x: auto !important;" if min_col_width else ""
+
+    st.markdown(f"""
     <style>
-    div[data-testid="stHorizontalBlock"] {
+    {scope}div[data-testid="stHorizontalBlock"] {{
         flex-wrap: nowrap !important;
-        gap: 0.4rem !important;
-    }
-    div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"] {
+        gap: {gap} !important;
+        {overflow_rule}
+    }}
+    {scope}div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"] {{
         width: auto !important;
-        min-width: 0 !important;
-        flex: initial !important;
-    }
+        {min_width_rule}
+        {flex_rule}
+    }}
     </style>
     """, unsafe_allow_html=True)
 
