@@ -42,7 +42,7 @@ if st.user.is_logged_in:
                 else:
                     st.warning("Name can't be empty.")
     with col3:
-        if st.button("Log out"):
+        if st.button("Logout"):
             st.logout()
 else:
     with st.expander("🔐 Band Login", expanded=False):
@@ -75,28 +75,30 @@ def save_notes(notes):
 if "active_section" not in st.session_state:
     st.session_state["active_section"] = "Listen to Music"
 
-nav_col1, nav_col2 = st.columns(2)
-with nav_col1:
-    if st.button(
-        "🎧 Listen to Music",
-        width="stretch",
-        type="primary" if st.session_state["active_section"] == "Listen to Music" else "secondary",
-    ):
-        st.session_state["active_section"] = "Listen to Music"
-        st.rerun()
-with nav_col2:
-    if st.button(
-        "🎶 Playlist Creator",
-        width="stretch",
-        type="primary" if st.session_state["active_section"] == "Create a Playlist" else "secondary",
-    ):
-        st.session_state["active_section"] = "Create a Playlist"
-        st.session_state.pop("editing_playlist_id", None)
-        st.session_state.pop("editing_playlist_name", None)
-        st.session_state["playlist_draft"] = []
-        st.session_state["new_playlist_name"] = ""
-        st.session_state["editor_load_select"] = None
-        st.rerun()
+force_columns_horizontal(equal_width=True, key="nav_row")
+with st.container(key="nav_row"):
+    nav_col1, nav_col2 = st.columns(2)
+    with nav_col1:
+        if st.button(
+            "🎧 Listen to Music",
+            width="stretch",
+            type="primary" if st.session_state["active_section"] == "Listen to Music" else "secondary",
+        ):
+            st.session_state["active_section"] = "Listen to Music"
+            st.rerun()
+    with nav_col2:
+        if st.button(
+            "🎶 Playlist Creator",
+            width="stretch",
+            type="primary" if st.session_state["active_section"] == "Create a Playlist" else "secondary",
+        ):
+            st.session_state["active_section"] = "Create a Playlist"
+            st.session_state.pop("editing_playlist_id", None)
+            st.session_state.pop("editing_playlist_name", None)
+            st.session_state["playlist_draft"] = []
+            st.session_state["new_playlist_name"] = ""
+            st.session_state["editor_load_select"] = None
+            st.rerun()
 
 st.markdown("---")
 
@@ -164,47 +166,49 @@ def on_load_playlist_change():
 
 if st.session_state["active_section"] == "Listen to Music":
 
-    col_setlist, col_playlist = st.columns([1,1])
+    force_columns_horizontal(equal_width=True, key="pick_row")
+    with st.container(key="pick_row"):
+        col_setlist, col_playlist = st.columns(2)
 
-    with col_setlist:
-        st.markdown("#### 🎧 Pick a Setlist")
-        selected_show = st.selectbox(
-            "Choose a show",
-            unique_shows,
-            index=None,
-            placeholder="Type to search...",
-            key="listen_show_select",
-            on_change=on_setlist_select_change,
-        )
+        with col_setlist:
+            st.markdown("#### 🎧 Pick a Setlist")
+            selected_show = st.selectbox(
+                "Choose a show",
+                unique_shows,
+                index=None,
+                placeholder="Type to search...",
+                key="listen_show_select",
+                on_change=on_setlist_select_change,
+            )
 
-    my_playlists = None
-    playlist_labels = {}
+        my_playlists = None
+        playlist_labels = {}
 
-    with col_playlist:
-        st.markdown("#### 🎶 Pick a Saved Playlist")
+        with col_playlist:
+            st.markdown("#### 🎶 Pick a Saved Playlist")
 
-        if not st.user.is_logged_in:
-            st.info("Log in above to view saved playlists.")
-        else:
-            try:
-                my_playlists = load_playlists_from_supabase(username)
-            except Exception:
-                st.error("Couldn't load your playlists right now.")
+            if not st.user.is_logged_in:
+                st.info("Log in above to view saved playlists.")
+            else:
+                try:
+                    my_playlists = load_playlists_from_supabase(username)
+                except Exception:
+                    st.error("Couldn't load your playlists right now.")
 
-            if my_playlists is not None:
-                playlist_labels = {p["playlist_name"]: p for p in my_playlists}
+                if my_playlists is not None:
+                    playlist_labels = {p["playlist_name"]: p for p in my_playlists}
 
-            if playlist_labels:
-                st.selectbox(
-                    "Choose a playlist",
-                    list(playlist_labels.keys()),
-                    index=None,
-                    placeholder="Type to search...",
-                    key="listen_playlist_select",
-                    on_change=on_playlist_select_change,
-                )
-            elif my_playlists is not None:
-                st.write("No saved playlists yet — use the 🎶 Playlist Creator button above.")
+                if playlist_labels:
+                    st.selectbox(
+                        "Choose a playlist",
+                        list(playlist_labels.keys()),
+                        index=None,
+                        placeholder="Type to search...",
+                        key="listen_playlist_select",
+                        on_change=on_playlist_select_change,
+                    )
+                elif my_playlists is not None:
+                    st.write("No saved playlists yet — use the 🎶 Playlist Creator button above.")
 
     st.markdown("---")
 
@@ -305,24 +309,26 @@ if st.session_state["active_section"] == "Listen to Music":
         ]
         dank_playlist_player(chosen_playlist_name, display_tracks)
 
-        col_edit, col_delete = st.columns(2)
-        with col_edit:
-            if st.button("✏️ Edit this playlist", width="stretch"):
-                st.session_state["playlist_draft"] = list(chosen_playlist["tracks"])
-                st.session_state["editing_playlist_id"] = chosen_playlist["id"]
-                st.session_state["editing_playlist_name"] = chosen_playlist_name
-                st.session_state["active_section"] = "Create a Playlist"
-                st.rerun()
-        with col_delete:
-            if st.button("🗑️ Delete this playlist", width="stretch"):
-                try:
-                    delete_playlist_from_supabase(chosen_playlist["id"])
-                    st.success(f"Deleted '{chosen_playlist_name}'.")
-                    st.session_state["listen_playlist_select"] = None
-                    st.session_state["player_mode"] = None
+        force_columns_horizontal(equal_width=True, key="edit_delete_row")
+        with st.container(key="edit_delete_row"):
+            col_edit, col_delete = st.columns(2)
+            with col_edit:
+                if st.button("✏️ Edit this playlist", width="stretch"):
+                    st.session_state["playlist_draft"] = list(chosen_playlist["tracks"])
+                    st.session_state["editing_playlist_id"] = chosen_playlist["id"]
+                    st.session_state["editing_playlist_name"] = chosen_playlist_name
+                    st.session_state["active_section"] = "Create a Playlist"
                     st.rerun()
-                except Exception:
-                    st.error("Couldn't delete right now — the account database is unreachable.")
+            with col_delete:
+                if st.button("🗑️ Delete this playlist", width="stretch"):
+                    try:
+                        delete_playlist_from_supabase(chosen_playlist["id"])
+                        st.success(f"Deleted '{chosen_playlist_name}'.")
+                        st.session_state["listen_playlist_select"] = None
+                        st.session_state["player_mode"] = None
+                        st.rerun()
+                    except Exception:
+                        st.error("Couldn't delete right now — the account database is unreachable.")
 
 # =========================================================
 # CREATE / EDIT PLAYLIST SECTION
@@ -351,36 +357,38 @@ if st.session_state["active_section"] == "Create a Playlist":
             st.error("Couldn't load your playlists right now.")
 
         # ---- Mode toggle: only one panel shows at a time ----
-        mode_col1, mode_col2 = st.columns(2)
-        with mode_col1:
-            if st.button(
-                "🆕 Start a New Playlist",
-                width="stretch",
-                type="primary" if st.session_state["playlist_edit_mode"] == "new" else "secondary",
-            ):
-                if st.session_state["playlist_edit_mode"] != "new":
-                    st.session_state["playlist_edit_mode"] = "new"
-                    st.session_state["playlist_draft"] = []
-                    st.session_state.pop("editing_playlist_id", None)
-                    st.session_state.pop("editing_playlist_name", None)
-                    st.session_state["editor_load_select"] = None
-                    st.session_state["new_playlist_name"] = ""
-                    st.rerun()
-        with mode_col2:
-            if st.button(
-                "📂 Load Existing Playlist",
-                width="stretch",
-                type="primary" if st.session_state["playlist_edit_mode"] == "edit" else "secondary",
-                disabled=not existing_playlists,
-            ):
-                if st.session_state["playlist_edit_mode"] != "edit":
-                    st.session_state["playlist_edit_mode"] = "edit"
-                    st.session_state["playlist_draft"] = []
-                    st.session_state.pop("editing_playlist_id", None)
-                    st.session_state.pop("editing_playlist_name", None)
-                    st.session_state["editor_load_select"] = None
-                    st.session_state["new_playlist_name"] = ""
-                    st.rerun()
+        force_columns_horizontal(equal_width=True, key="mode_toggle_row")
+        with st.container(key="mode_toggle_row"):
+            mode_col1, mode_col2 = st.columns(2)
+            with mode_col1:
+                if st.button(
+                    "🆕 Start a New Playlist",
+                    width="stretch",
+                    type="primary" if st.session_state["playlist_edit_mode"] == "new" else "secondary",
+                ):
+                    if st.session_state["playlist_edit_mode"] != "new":
+                        st.session_state["playlist_edit_mode"] = "new"
+                        st.session_state["playlist_draft"] = []
+                        st.session_state.pop("editing_playlist_id", None)
+                        st.session_state.pop("editing_playlist_name", None)
+                        st.session_state["editor_load_select"] = None
+                        st.session_state["new_playlist_name"] = ""
+                        st.rerun()
+            with mode_col2:
+                if st.button(
+                    "📂 Load Existing Playlist",
+                    width="stretch",
+                    type="primary" if st.session_state["playlist_edit_mode"] == "edit" else "secondary",
+                    disabled=not existing_playlists,
+                ):
+                    if st.session_state["playlist_edit_mode"] != "edit":
+                        st.session_state["playlist_edit_mode"] = "edit"
+                        st.session_state["playlist_draft"] = []
+                        st.session_state.pop("editing_playlist_id", None)
+                        st.session_state.pop("editing_playlist_name", None)
+                        st.session_state["editor_load_select"] = None
+                        st.session_state["new_playlist_name"] = ""
+                        st.rerun()
 
         st.markdown("---")
 
@@ -437,6 +445,7 @@ if st.session_state["active_section"] == "Create a Playlist":
             draft = st.session_state["playlist_draft"]
             style_playlist_draft_rows()
 
+            force_columns_horizontal(min_col_width="28px", key="playlist_draft_rows")
             with st.container(key="playlist_draft_rows"):
                 for i, track in enumerate(draft):
                     full_label = format_playlist_track_label(track, index=i)
