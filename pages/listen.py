@@ -1,4 +1,5 @@
 import streamlit as st  # type: ignore
+import streamlit.components.v1 as components
 import pandas as pd  # type: ignore
 import json
 import os
@@ -508,3 +509,23 @@ st.markdown(
     unsafe_allow_html=True
 )
 st.markdown("")
+
+
+components.html(
+    """
+    <script>
+    function disableMobileKeyboard() {
+        // Target all text inputs inside Streamlit selectbox containers
+        const selectInputs = window.parent.document.querySelectorAll('div[data-baseweb="select"] input');
+        selectInputs.forEach(input => {
+            if (input) {
+                input.setAttribute('readonly', 'readonly');
+            }
+        });
+    }
+    // Run repeatedly to catch any freshly rendered Streamlit elements
+    setInterval(disableMobileKeyboard, 500);
+    </script>
+    """,
+    height=0,
+)
