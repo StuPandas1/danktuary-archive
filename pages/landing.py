@@ -31,6 +31,16 @@ div[data-testid="stHorizontalBlock"] button {
 
 dank_header(subtitle="The Dankest App In Town")
 
+if st.user.is_logged_in:
+    st.divider()
+    col1, col2 = st.columns(2)
+    with col1:
+        st.info("✅ You're logged in.")
+    with col2:
+        if st.button("🎧 Continue to Listen"):
+                st.switch_page("pages/listen.py")
+    st.divider()
+
 # -------------------------
 # MOST RECENT SETLIST
 # -------------------------
