@@ -4,6 +4,7 @@ import random
 import os
 import re
 import string
+from streamlit_js_eval import streamlit_js_eval
 from urllib.parse import quote
 from supabase import create_client, Client
 
@@ -551,24 +552,29 @@ def dank_playlist_player(show_label, tracks):
 
 def suppress_selectbox_keyboard():
     """Stops the mobile virtual keyboard from popping up when tapping
-    a st.selectbox, while keeping tap-to-open-dropdown behavior intact."""
-    import streamlit.components.v1 as components
-    components.html("""
-    <script>
-    function suppressKeyboard() {
-        const inputs = window.parent.document.querySelectorAll(
-            'div[data-baseweb="select"] input'
-        );
-        inputs.forEach((input) => {
-            input.setAttribute('inputmode', 'none');
-            input.setAttribute('readonly', 'readonly');
-        });
-    }
-    suppressKeyboard();
-    const observer = new MutationObserver(suppressKeyboard);
-    observer.observe(window.parent.document.body, {childList: true, subtree: true});
-    </script>
-    """, height=0)
+    a st.selectbox, while keeping tap-to-open-dropdown behavior intact.
+    Runs via a real custom component (not components.html), so it has
+    genuine same-origin access to the app's real DOM."""
+    streamlit_js_eval(
+        js_expressions="""
+        (function() {
+            const doc = window.parent.document;
+            function suppressKeyboard() {
+                doc.querySelectorAll('div[data-baseweb="select"] input').forEach((input) => {
+                    input.setAttribute('inputmode', 'none');
+                    input.setAttribute('readonly', 'readonly');
+                });
+            }
+            suppressKeyboard();
+            if (!window.parent._dankKeyboardObserverActive) {
+                window.parent._dankKeyboardObserverActive = true;
+                new MutationObserver(suppressKeyboard).observe(doc.body, {childList: true, subtree: true});
+            }
+        })();
+        """,
+        key="suppress_kb",
+        want_output=False,
+    )
 
 # -------------------------
 # PAGE MENU (dropdown)

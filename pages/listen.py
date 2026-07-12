@@ -28,27 +28,29 @@ username = st.user.email if st.user.is_logged_in else None
 name = st.user.name if st.user.is_logged_in else None
 
 if st.user.is_logged_in:
-    col1, col2, col3 = st.columns(3, vertical_alignment="center")
-    with col1:
-        st.success(f"Logged in as {name}")
-    with col2:
-        with st.popover("✏️ Change display name"):
-            new_name = st.text_input("Display name", value=name, key="display_name_input")
-            if st.button("Save name"):
-                if new_name.strip():
-                    set_display_name(username, new_name.strip())
-                    st.success("Saved!")
-                    st.rerun()
-                else:
-                    st.warning("Name can't be empty.")
-    with col3:
-        if st.button("Logout"):
-            st.logout()
+    force_columns_horizontal(gap="0.5rem", key="login_row")
+    with st.container(key="login_row"):
+        col1, col2, col3 = st.columns(3, vertical_alignment="center")
+        with col1:
+            st.success(f"Logged in as {name}")
+        with col2:
+            with st.popover("✏️ Change display name"):
+                new_name = st.text_input("Display name", value=name, key="display_name_input")
+                if st.button("Save name"):
+                    if new_name.strip():
+                        set_display_name(username, new_name.strip())
+                        st.success("Saved!")
+                        st.rerun()
+                    else:
+                        st.warning("Name can't be empty.")
+        with col3:
+            if st.button("Logout"):
+                st.logout()
 else:
     with st.expander("🔐 Band Login", expanded=False):
         st.write("Log in to save playlists and leave notes on shows.")
         st.button("Log in with Google", on_click=st.login)
-
+        
 # -------------------------
 # NOTES HELPERS
 # -------------------------
@@ -208,7 +210,7 @@ if st.session_state["active_section"] == "Listen to Music":
                         on_change=on_playlist_select_change,
                     )
                 elif my_playlists is not None:
-                    st.write("No saved playlists yet — use the 🎶 Playlist Creator button above.")
+                    st.write("No saved playlists! Use the 🎶 Playlist Creator button above.")
 
     st.markdown("---")
 
