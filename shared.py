@@ -6,7 +6,6 @@ import re
 import string
 from urllib.parse import quote
 from supabase import create_client, Client
-import bcrypt
 
 times_played_mult = 1.3  # multiplier for how much weight to give times played in overdue score
 
@@ -80,29 +79,6 @@ def set_display_name(email, display_name):
 
 def get_supabase_client() -> Client:
     return create_client(st.secrets["supabase"]["url"], st.secrets["supabase"]["key"])
-
-def load_users_from_supabase():
-    supabase = get_supabase_client()
-    response = supabase.table("users").select("username, name, password_hash").execute()
-    usernames = {
-        row["username"]: {"name": row["name"], "password": row["password_hash"]}
-        for row in response.data
-    }
-    return {
-    "usernames": usernames,
-    "preauthorized": {"emails": []}
-}
-
-def create_user_in_supabase(username, name, password):
-    supabase = get_supabase_client()
-    existing = supabase.table("users").select("username").eq("username", username).execute()
-    if existing.data:
-        return False, "That username is already taken."
-    password_hash = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
-    supabase.table("users").insert({
-        "username": username, "name": name, "password_hash": password_hash
-    }).execute()
-    return True, "Account created! Switch to the Log In tab."
 
 # ------------------------
 # PLAYLIST GENERATOR
