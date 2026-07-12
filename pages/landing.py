@@ -39,7 +39,7 @@ with st.container(key="login_mod"):
         with col1:
             st.success("✅ You're logged in.")
         with col2:
-            if st.button("🎧 Continue to Listen"):
+            if st.button("🎧 Click to Listen"):
                     st.switch_page("pages/listen.py")
         st.divider()
 
