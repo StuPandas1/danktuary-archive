@@ -35,7 +35,7 @@ force_columns_horizontal(min_col_width="28px", key="login_mod")
 with st.container(key="login_mod"):
     if st.user.is_logged_in:
         st.divider()
-        col1, col2 = st.columns(2)
+        col1, col2 = st.columns(2, vertical_alignment="center")
         with col1:
             st.success("✅ You're logged in.")
         with col2:
