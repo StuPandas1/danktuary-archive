@@ -4,8 +4,5 @@ numpy
 msal
 requests
 supabase
-bcrypt
-streamlit_authenticator==0.3.3
+Authlib>=1.3.2
 extra-streamlit-components
-streamlit-cookies-manager==0.2.0
-streamlit-cookies-controller

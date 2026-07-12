@@ -2,19 +2,16 @@ import streamlit as st  # type: ignore
 import pandas as pd  # type: ignore
 import json
 import os
-import streamlit_authenticator as stauth
 import time
 from shared import (
     load_data, page_menu, dank_header, dank_playlist_player, suppress_selectbox_keyboard,
-    load_users_from_supabase, create_user_in_supabase,
     group_tracks, save_playlist_to_supabase, load_playlists_from_supabase, delete_playlist_from_supabase,
     update_playlist_in_supabase, add_tracks_to_playlist,
     get_show_list, get_playlist_for_show,
     style_playlist_draft_rows,
-    load_all_recordings, _data_file_mtimes
-)
-from auth_shared import sync_login_cookie, clear_login_cookie
-import bcrypt
+    load_all_recordings, _data_file_mtimes,
+    get_display_name, set_display_name
+    )
 
 df = load_all_recordings(_data_file_mtimes())
 
@@ -23,71 +20,34 @@ dank_header(subtitle="If you get confused...")
 suppress_selectbox_keyboard()
 
 # -------------------------
-# AUTH (degrades gracefully if Supabase is unreachable)
+# AUTH -- inline, doesn't block the rest of the page
 # -------------------------
-supabase_up = st.session_state.get("supabase_up", False)
-auth_status = st.session_state.get("authentication_status")
-name = st.session_state.get("name")
-username = st.session_state.get("username")
-credentials = st.session_state.get("credentials", {"usernames": {}})
-authenticator = st.session_state.get("authenticator")
 
-if not supabase_up:
-    st.warning("⚠️ Login is temporarily unavailable...")
+username = st.user.email if st.user.is_logged_in else None
+name = st.user.name if st.user.is_logged_in else None
+
+if st.user.is_logged_in:
+    col1, col2, col3 = st.columns([0.5,0.1,0.1])
+    with col1:
+        st.success(f"Logged in as {name}")
+    with col2:
+        with st.popover("✏️ Change display name"):
+            new_name = st.text_input("Display name", value=name, key="display_name_input")
+            if st.button("Save name"):
+                if new_name.strip():
+                    set_display_name(username, new_name.strip())
+                    st.success("Saved!")
+                    st.rerun()
+                else:
+                    st.warning("Name can't be empty.")
+    with col3:
+        if st.button("Log out"):
+            st.logout()
 else:
-    if not auth_status:
-        with st.expander("🔐 Band Login", expanded=False):
-            login_tab, signup_tab = st.tabs(["Log In", "Create Account"])
+    with st.expander("🔐 Band Login", expanded=False):
+        st.write("Log in to save playlists and leave notes on shows.")
+        st.button("Log in with Google", on_click=st.login)
 
-            with login_tab:
-                with st.form("login_form"):
-                    login_username = st.text_input("Username")
-                    login_password = st.text_input("Password", type="password")
-                    submitted = st.form_submit_button("Log In")
-                if submitted:
-                    user = credentials["usernames"].get(login_username)
-                    if user and bcrypt.checkpw(login_password.encode(), user["password"].encode()):
-                        st.session_state["authentication_status"] = True
-                        st.session_state["name"] = user["name"]
-                        st.session_state["username"] = login_username
-                        st.session_state["session_token"] = None  # clear so sync_login_cookie creates a fresh one
-                        sync_login_cookie(st.secrets["cookie"]["expiry_days"])
-                        time.sleep(0.5)  # give cookie time to be set before rerun
-                        st.rerun()
-                    else:
-                        st.error("Incorrect username or password.")
-
-            with signup_tab:
-                with st.form("signup_form"):
-                    new_username = st.text_input("Choose a username")
-                    new_name = st.text_input("Your name")
-                    new_password = st.text_input("Choose a password", type="password")
-                    new_password_confirm = st.text_input("Confirm password", type="password")
-                    signup_submitted = st.form_submit_button("Create Account")
-
-                if signup_submitted:
-                    if not new_username or not new_name or not new_password:
-                        st.error("Please fill in all fields.")
-                    elif new_password != new_password_confirm:
-                        st.error("Passwords don't match.")
-                    else:
-                        success, message = create_user_in_supabase(new_username, new_name, new_password)
-                        if success:
-                            st.success(message)
-                        else:
-                            st.error(message)
-    else:
-        col1, col2 = st.columns([5, 1])
-        with col1:
-            st.success(f"Logged in as {name}")
-        with col2:
-            if st.button("Log out"):
-                clear_login_cookie()
-                st.session_state["authentication_status"] = None
-                st.session_state["name"] = None
-                st.session_state["username"] = None
-                st.rerun()
-            
 # -------------------------
 # NOTES HELPERS
 # -------------------------
@@ -186,7 +146,7 @@ def on_load_playlist_change():
     if not chosen:
         return
     try:
-        playlists = load_playlists_from_supabase(st.session_state.get("username"))
+        playlists = load_playlists_from_supabase(username)
     except Exception:
         return
     match = next((p for p in playlists if p["playlist_name"] == chosen), None)
@@ -222,9 +182,7 @@ if st.session_state["active_section"] == "Listen to Music":
     with col_playlist:
         st.markdown("#### 🎶 Pick a Saved Playlist")
 
-        if not supabase_up:
-            st.info("Playlists are unavailable right now.")
-        elif not auth_status:
+        if not st.user.is_logged_in:
             st.info("Log in above to view saved playlists.")
         else:
             try:
@@ -260,7 +218,7 @@ if st.session_state["active_section"] == "Listen to Music":
         else:
             st.write("No playable tracks found for this show.")
 
-        if auth_status and supabase_up and playlist:
+        if st.user.is_logged_in and playlist:
             with st.expander("➕ Add tracks from this show to a playlist"):
                 show_checked = []
                 for i, track in enumerate(playlist):
@@ -296,7 +254,7 @@ if st.session_state["active_section"] == "Listen to Music":
                             except Exception:
                                 st.error("Couldn't add right now — the account database is unreachable.")
 
-        if auth_status:
+        if st.user.is_logged_in:
             st.markdown("---")
             st.markdown("#### 📝 Show Notes")
 
@@ -327,7 +285,7 @@ if st.session_state["active_section"] == "Listen to Music":
                     st.rerun()
                 else:
                     st.warning("Note is empty.")
-        elif supabase_up:
+        else:
             st.markdown("---")
             st.info("Log in above to add and view show notes.")
 
@@ -376,9 +334,7 @@ if st.session_state["active_section"] == "Create a Playlist":
     editing_id = st.session_state.get("editing_playlist_id")
     editing_name = st.session_state.get("editing_playlist_name")
 
-    if not supabase_up:
-        st.info("Playlists are unavailable right now — the account database is unreachable.")
-    elif not auth_status:
+    if not st.user.is_logged_in:
         st.info("Log in above to create or edit playlists.")
     else:
         if "playlist_draft" not in st.session_state:

@@ -58,6 +58,26 @@ def get_playlist_for_show(_mtimes, show_label):
 # LOGIN INFO
 # -------------------------
 
+def login_screen():
+    st.header("🔒 Danktuary Archive")
+    st.subheader("This app is private. Please log in.")
+    st.button("Log in with Google", on_click=st.login)
+
+def get_supabase():
+    return create_client(st.secrets["supabase"]["url"], st.secrets["supabase"]["key"])
+
+def get_display_name(email):
+    try:
+        result = get_supabase().table("profiles").select("display_name").eq("email", email).execute()
+        if result.data:
+            return result.data[0]["display_name"]
+    except Exception:
+        pass
+    return None
+
+def set_display_name(email, display_name):
+    get_supabase().table("profiles").upsert({"email": email, "display_name": display_name}).execute()
+
 def get_supabase_client() -> Client:
     return create_client(st.secrets["supabase"]["url"], st.secrets["supabase"]["key"])
 
