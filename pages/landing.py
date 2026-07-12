@@ -42,11 +42,9 @@ with st.container(key="login_mod"):
             if st.button("🎧 Click to Listen"):
                     st.switch_page("pages/listen.py")
         st.divider()
-
 # -------------------------
 # MOST RECENT SETLIST
 # -------------------------
-
 last_show_row = df[df["Date"] == df["Date"].max()]
 last_show_date_str = df["Date"].max().strftime("%m/%d/%Y")
 last_show_location = last_show_row["Location"].iloc[0]
