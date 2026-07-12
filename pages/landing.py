@@ -4,7 +4,7 @@ import streamlit.components.v1 as components
 import random
 from zoneinfo import ZoneInfo
 today_md = pd.Timestamp.now(tz=ZoneInfo("America/New_York")).strftime("%m/%d")
-from shared import load_data, parse_duration, page_menu, dank_header #type: ignore
+from shared import load_data, parse_duration, page_menu, dank_header, force_columns_horizontal #type: ignore
 
 df, song_stats, metadata, jam_metadata = load_data()
 df = df[df["Take"] == 1]
@@ -31,15 +31,17 @@ div[data-testid="stHorizontalBlock"] button {
 
 dank_header(subtitle="The Dankest App In Town")
 
-if st.user.is_logged_in:
-    st.divider()
-    col1, col2 = st.columns(2)
-    with col1:
-        st.info("✅ You're logged in.")
-    with col2:
-        if st.button("🎧 Continue to Listen"):
-                st.switch_page("pages/listen.py")
-    st.divider()
+force_columns_horizontal(min_col_width="28px", key="login_mod")
+with st.container(key="login_mod"):
+    if st.user.is_logged_in:
+        st.divider()
+        col1, col2 = st.columns(2)
+        with col1:
+            st.success("✅ You're logged in.")
+        with col2:
+            if st.button("🎧 Continue to Listen"):
+                    st.switch_page("pages/listen.py")
+        st.divider()
 
 # -------------------------
 # MOST RECENT SETLIST
