@@ -164,7 +164,7 @@ def on_load_playlist_change():
 
 if st.session_state["active_section"] == "Listen to Music":
 
-    col_setlist, col_playlist = st.columns(2)
+    col_setlist, col_playlist = st.columns([1,1])
 
     with col_setlist:
         st.markdown("#### 🎧 Pick a Setlist")
@@ -204,7 +204,7 @@ if st.session_state["active_section"] == "Listen to Music":
                     on_change=on_playlist_select_change,
                 )
             elif my_playlists is not None:
-                st.write("No saved playlists yet — use the 🎶 Create a Playlist button above.")
+                st.write("No saved playlists yet — use the 🎶 Playlist Creator button above.")
 
     st.markdown("---")
 
