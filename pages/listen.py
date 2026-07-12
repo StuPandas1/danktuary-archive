@@ -28,7 +28,7 @@ username = st.user.email if st.user.is_logged_in else None
 name = st.user.name if st.user.is_logged_in else None
 
 if st.user.is_logged_in:
-    col1, col2, col3 = st.columns(3)
+    col1, col2, col3 = st.columns(3, vertical_alignment="center")
     with col1:
         st.success(f"Logged in as {name}")
     with col2:
