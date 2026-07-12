@@ -17,8 +17,6 @@ df = load_all_recordings(_data_file_mtimes())
 
 page_menu()
 dank_header(subtitle="If you get confused...")
-suppress_selectbox_keyboard()
-force_columns_horizontal()
 
 # -------------------------
 # AUTH -- inline, doesn't block the rest of the page
@@ -50,7 +48,7 @@ else:
     with st.expander("🔐 Band Login", expanded=False):
         st.write("Log in to save playlists and leave notes on shows.")
         st.button("Log in with Google", on_click=st.login)
-        
+
 # -------------------------
 # NOTES HELPERS
 # -------------------------
