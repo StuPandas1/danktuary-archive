@@ -3,6 +3,7 @@ import streamlit.components.v1 as components
 import pandas as pd  # type: ignore
 import json
 import os
+import re
 import time
 from shared import (
     load_data, page_menu, dank_header, dank_playlist_player, suppress_selectbox_keyboard,
@@ -11,7 +12,8 @@ from shared import (
     get_show_list, get_playlist_for_show,
     style_playlist_draft_rows, force_columns_horizontal,
     load_all_recordings, _data_file_mtimes,
-    get_display_name, set_display_name
+    get_display_name, set_display_name,
+    parse_duration
     )
 
 df = load_all_recordings(_data_file_mtimes())
@@ -129,6 +131,174 @@ def format_playlist_track_label(track, index=None):
     return f"{prefix}{track['label']}"
 
 
+def _format_seconds(total_seconds):
+    """Formats a duration in seconds as H:MM:SS (or MM:SS if under an hour)."""
+    total_seconds = int(round(total_seconds))
+    hours, remainder = divmod(total_seconds, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    if hours:
+        return f"{hours}:{minutes:02d}:{seconds:02d}"
+    return f"{minutes}:{seconds:02d}"
+
+
+def compute_setlist_stats(playlist):
+    """Crunches basic stats for a setlist's tracks. Skips any track whose
+    duration can't be parsed rather than blowing up the page."""
+    parsed = []
+    for track in playlist:
+        try:
+            seconds = parse_duration(track.get("duration", ""))
+            if seconds:
+                parsed.append((track, seconds))
+        except Exception:
+            continue
+
+    total_seconds = sum(s for _, s in parsed)
+    return {
+        "track_count": len(playlist),
+        "total_seconds": total_seconds,
+        "avg_seconds": (total_seconds / len(parsed)) if parsed else 0,
+        "longest": max(parsed, key=lambda x: x[1]) if parsed else None,
+        "shortest": min(parsed, key=lambda x: x[1]) if parsed else None,
+    }
+
+
+def _normalize_song_title(title):
+    """Normalizes casing/whitespace for matching a setlist track's label
+    back to the archive's Title column. Scanner.py already splits segues
+    out into their own rows before this point, so no segue-marker
+    stripping is needed here."""
+    if not isinstance(title, str):
+        return ""
+    return title.strip().lower()
+
+
+def _extract_show_date(show_label):
+    """Best-effort extraction of a show's date from its display label,
+    assumed to lead with the date (e.g. 'MM/DD/YYYY - Location'). Returns
+    a pandas Timestamp, or None if it can't be parsed -- flag this if
+    show labels turn out to be formatted differently."""
+    if not isinstance(show_label, str):
+        return None
+    candidate = re.split(r"\s[-–—]\s", show_label, maxsplit=1)[0].strip()
+    parsed = pd.to_datetime(candidate, errors="coerce")
+    return None if pd.isna(parsed) else parsed
+
+
+def _extract_show_location(show_label):
+    """Best-effort extraction of the location half of a show's display
+    label (e.g. 'MM/DD/YYYY - Location' -> 'Location')."""
+    if not isinstance(show_label, str):
+        return None
+    parts = re.split(r"\s[-–—]\s", show_label, maxsplit=1)
+    return parts[1].strip() if len(parts) == 2 else None
+
+
+def _get_show_setlist_titles(show_label, archive_df):
+    """Pulls the canonical list of songs played at a show directly from
+    the archive CSV (matched by Date + Location, Take=1 only), in
+    archive order. This sidesteps any mismatch between a playlist
+    track's display label and the archive's Title column."""
+    show_date = _extract_show_date(show_label)
+    if show_date is None or "Title" not in archive_df.columns or "Date" not in archive_df.columns:
+        return []
+
+    archive_dates = pd.to_datetime(archive_df["Date"], errors="coerce")
+    date_match = archive_dates.dt.date == show_date.date()
+    take_one = pd.to_numeric(archive_df["Take"], errors="coerce") == 1
+
+    show_location = _extract_show_location(show_label)
+    rows = pd.DataFrame()
+    if show_location and "Location" in archive_df.columns:
+        location_match = archive_df["Location"].astype(str).str.strip().str.lower() == show_location.lower()
+        rows = archive_df[date_match & take_one & location_match]
+
+    if rows.empty:
+        # No location match (or none extracted) -- fall back to date-only.
+        rows = archive_df[date_match & take_one]
+
+    sort_col = "Track Number" if "Track Number" in rows.columns else None
+    if sort_col:
+        rows = rows.sort_values(by=sort_col)
+
+    titles = []
+    seen = set()
+    for title in rows["Title"]:
+        key = _normalize_song_title(title)
+        if key and key not in seen:
+            seen.add(key)
+            titles.append(title)
+    return titles
+
+
+def get_song_history(title, archive_df, before_date=None):
+    """Looks up every performance of a song across the whole archive,
+    counting only Take=1 rows so multiple takes recorded in a single
+    session don't inflate the play count. "Last played" excludes the
+    current show -- it's the most recent performance strictly before
+    before_date. Returns (times_played, last_played_date_or_None)."""
+    target = _normalize_song_title(title)
+    if not target or "Title" not in archive_df.columns or "Take" not in archive_df.columns:
+        return 0, None
+
+    take_one = pd.to_numeric(archive_df["Take"], errors="coerce") == 1
+    title_match = archive_df["Title"].apply(_normalize_song_title) == target
+    matches = archive_df[take_one & title_match]
+    if matches.empty:
+        return 0, None
+
+    dates = pd.to_datetime(matches["Date"], errors="coerce").dropna()
+    times_played = len(dates)
+
+    if before_date is not None:
+        prior_dates = dates[dates < before_date]
+    else:
+        # Can't determine the current show's date from its label -- fall
+        # back to excluding just the single most recent date so today's
+        # show (if it's the latest) doesn't count as "last played."
+        prior_dates = dates[dates < dates.max()] if not dates.empty else dates
+
+    last_played = prior_dates.max() if not prior_dates.empty else None
+    return times_played, last_played
+
+
+def render_setlist_stats(playlist, archive_df, show_label):
+    """Renders the setlist stats dropdown contents: quick metrics, a
+    longest/shortest callout, and per-song play history (one row per
+    unique song, regardless of segues or repeated plays within the set)."""
+    stats = compute_setlist_stats(playlist)
+
+    stat_col1, stat_col2, stat_col3 = st.columns(3)
+    stat_col1.metric("Tracks", stats["track_count"])
+    stat_col2.metric("Total Runtime", _format_seconds(stats["total_seconds"]))
+    stat_col3.metric("Avg Track Length", _format_seconds(stats["avg_seconds"]))
+
+    if stats["longest"] and stats["shortest"]:
+        longest_track, longest_secs = stats["longest"]
+        shortest_track, shortest_secs = stats["shortest"]
+        st.caption(
+            f"🏆 Longest: **{longest_track['label']}** ({_format_seconds(longest_secs)})  ·  "
+            f"⚡ Shortest: **{shortest_track['label']}** ({_format_seconds(shortest_secs)})"
+        )
+
+    current_show_date = _extract_show_date(show_label)
+    setlist_titles = _get_show_setlist_titles(show_label, archive_df)
+
+    st.markdown("**Song History**")
+    if not setlist_titles:
+        st.caption("Couldn't match this show back to a date/location in the archive CSV to pull song titles.")
+    else:
+        history_rows = []
+        for title in setlist_titles:
+            count, last_played = get_song_history(title, archive_df, before_date=current_show_date)
+            history_rows.append({
+                "Song": title,
+                "Times Played": count if count else "First time!",
+                "Last Played": last_played.strftime("%m/%d/%Y") if last_played is not None else "First time!",
+            })
+        st.dataframe(pd.DataFrame(history_rows), hide_index=True, width="stretch")
+
+
 def on_setlist_select_change():
     """Selecting a setlist deactivates any chosen saved playlist, so only
     one player is ever active at a time."""
@@ -221,6 +391,9 @@ if st.session_state["active_section"] == "Listen to Music":
 
         if playlist:
             dank_playlist_player(selected_show, playlist)
+
+            with st.expander("📊 Setlist Stats"):
+                render_setlist_stats(playlist, df, selected_show)
         else:
             st.write("No playable tracks found for this show.")
 
