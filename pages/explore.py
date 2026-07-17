@@ -10,6 +10,7 @@ from shared import ( #type: ignore
 )
 
 df, song_stats, metadata, jam_metadata = load_data()
+df2 = df.copy()
 df = df[df["Take"] == 1]
 
 page_menu()
@@ -254,7 +255,7 @@ if st.session_state.active_tab == "Song Search":
 elif st.session_state.active_tab == "Setlist Lookup":
     st.markdown("#### Setlist Lookup")
 
-    performances = df.copy()
+    performances = df2.copy()
     performances["Show_Label"] = (
         performances["Date"].dt.strftime("%m/%d/%Y") + " — " + performances["Location"]
     )
