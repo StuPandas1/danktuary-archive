@@ -7,6 +7,8 @@ today_md = pd.Timestamp.now(tz=ZoneInfo("America/New_York")).strftime("%m/%d")
 from shared import load_data, parse_duration, page_menu, dank_header, force_columns_horizontal #type: ignore
 
 df, song_stats, metadata, jam_metadata = load_data()
+df2 = df.copy()
+df_durationfiltered = df[df["Duration"] != df["Duration"].shift()].reset_index(drop=True)
 df = df[df["Take"] == 1]
 
 page_menu()
@@ -168,12 +170,12 @@ st.divider()
 st.markdown("#### **Stats Dashboard**")
 
 total_shows = df["Date"].nunique()
-total_songs_played = len(df)
+total_songs_played = len(df2)
 total_unique_songs = df["Title"].nunique()
 days_since_last_show = (pd.Timestamp.now() - df["Date"].max()).days
 last_show_date = df["Date"].max().strftime("%m/%d/%y")
 
-total_secs_all = df["Duration"].apply(parse_duration).sum()
+total_secs_all = df_durationfiltered["Duration"].apply(parse_duration).sum()
 total_days = total_secs_all // 86400
 total_hours_remainder = (total_secs_all % 86400) // 3600
 total_mins_remainder = (total_secs_all % 3600) // 60
