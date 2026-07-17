@@ -294,7 +294,7 @@ def render_setlist_stats(playlist, archive_df, show_label):
             history_rows.append({
                 "Song": title,
                 "Total Times Played": count if count else "First time!",
-                "Previous TimePlayed": last_played.strftime("%m/%d/%Y") if last_played is not None else "First time!",
+                "Previous Time Played": last_played.strftime("%m/%d/%Y") if last_played is not None else "First time!",
             })
         st.dataframe(pd.DataFrame(history_rows), hide_index=True, width="stretch")
 
