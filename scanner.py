@@ -22,25 +22,14 @@ def get_duration(filepath):
         audio = MutagenFile(filepath)
         if audio is not None and audio.info is not None:
             seconds = int(audio.info.length)
-
-            # if mutagen returned milliseconds instead of seconds
-            if seconds > 10000:
-                seconds = seconds // 1000
-
-            if seconds > 3600:
-                seconds = seconds // 60
-
-            minutes = seconds // 60
-            secs = seconds % 60
+            minutes, secs = divmod(seconds, 60)
             if minutes >= 60:
-                hours = minutes // 60
-                minutes = minutes % 60
+                hours, minutes = divmod(minutes, 60)
                 return f"{hours}:{minutes:02d}:{secs:02d}"
             return f"{minutes}:{secs:02d}"
     except Exception:
         pass
     return "N/A"
-
 
 # -------------------------
 # LOAD EXISTING IA URLS TO PRESERVE ACROSS REWRITES
