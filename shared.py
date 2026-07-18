@@ -586,6 +586,8 @@ def page_menu():
             st.switch_page("pages/landing.py")
         if st.button("Listen", width="stretch"):
             st.switch_page("pages/listen.py")
+        if st.button("Watch", width="stretch"):
+            st.switch_page("pages/watch.py")
         if st.button("Useful Tools", width="stretch"):
             st.switch_page("pages/tools.py")
         if st.button("Explore the Archive", width="stretch"):
