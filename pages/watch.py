@@ -319,14 +319,15 @@ def main():
         header_col, refresh_col = st.columns([5, 1])
         with header_col:
             st.caption(f"{len(tracks)} tracks")
-        with refresh_col:
-            if st.button("🔄", help="Refresh tracklist", key="watch_refresh_tracks"):
-                fetch_playlist_tracks.clear()
-                st.rerun()
 
         with st.container(height=1000):
             st.write("Jump to another track in this playlist:")
             render_tracklist(tracks, active_video_id=st.session_state.watch_selected_video_id)
+        
+        with refresh_col:
+            if st.button("🔄", help="Refresh tracklist", key="watch_refresh_tracks"):
+                fetch_playlist_tracks.clear()
+                st.rerun()
 
 
 if __name__ == "__main__":
