@@ -252,7 +252,7 @@ def _inject_track_list_css():
 
 def main():
     if HAVE_SHARED:
-        dank_header("Watch")
+        dank_header("See the man with the stage fright...")
     else:
         _inject_base_theme_fallback()
         st.title("🎬 Watch")
@@ -273,6 +273,7 @@ def main():
         st.session_state.watch_selected_video_id = None
 
     # 1. Playlist picker -- dropdown, no visible label, mobile-friendly
+    st.write("Pick something to watch:")
     selected_title = st.selectbox(
         "Playlist",
         options=titles,
