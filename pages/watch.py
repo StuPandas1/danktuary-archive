@@ -258,6 +258,8 @@ def main():
         st.title("🎬 Watch")
 
     _inject_track_list_css()
+  
+    page_menu()
 
     df = load_video_links(VIDEO_CSV_PATH, get_mtime(VIDEO_CSV_PATH))
 
@@ -316,18 +318,15 @@ def main():
         st.caption("Couldn't load the tracklist for this playlist right now.")
     else:
         tracks = result["tracks"]
-        header_col, refresh_col = st.columns([5, 1])
-        with header_col:
-            st.caption(f"{len(tracks)} tracks")
 
-        with st.container(height=1000):
-            st.write("Jump to another track in this playlist:")
+        with st.container():
+            st.markdown("---")
+            st.write(f"**{selected_row['Title']}**  |  Jump to another track:")
             render_tracklist(tracks, active_video_id=st.session_state.watch_selected_video_id)
-        
-        with refresh_col:
-            if st.button("🔄", help="Refresh tracklist", key="watch_refresh_tracks"):
-                fetch_playlist_tracks.clear()
-                st.rerun()
+    
+        if st.button("🔄", help="Refresh tracklist", key="watch_refresh_tracks"):
+            fetch_playlist_tracks.clear()
+            st.rerun()
 
 
 if __name__ == "__main__":
