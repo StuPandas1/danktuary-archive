@@ -252,6 +252,7 @@ def _inject_track_list_css():
 
 def main():
     if HAVE_SHARED:
+        page_menu()
         dank_header("See the man with the stage fright...")
     else:
         _inject_base_theme_fallback()
@@ -259,8 +260,6 @@ def main():
 
     _inject_track_list_css()
   
-    page_menu()
-
     df = load_video_links(VIDEO_CSV_PATH, get_mtime(VIDEO_CSV_PATH))
 
     if df.empty:
