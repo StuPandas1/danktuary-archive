@@ -36,12 +36,7 @@ dank_header(subtitle="The Dankest App In Town")
 force_columns_horizontal(min_col_width="28px", key="login_mod")
 with st.container(key="login_mod"):
     if st.user.is_logged_in:
-        col1, col2 = st.columns(2, vertical_alignment="center")
-        with col1:
-            st.success("✅ You're logged in.")
-        with col2:
-            if st.button("🎧 Click to Listen"):
-                    st.switch_page("pages/listen.py")
+        st.success("✅ You're logged in.")
         st.divider()
 # -------------------------
 # MOST RECENT SETLIST
@@ -51,12 +46,15 @@ last_show_date_str = df["Date"].max().strftime("%m/%d/%Y")
 last_show_location = last_show_row["Location"].iloc[0]
 last_show_label = f"{last_show_date_str} — {last_show_location}"
 
-st.markdown("<div style='text-align: center;'><strong>Most Recent Setlist</strong></div>", unsafe_allow_html=True)
-if st.button(last_show_label, key="most_recent_setlist_btn", width="stretch"):
-    st.session_state["listen_show_select"] = last_show_label
-    st.session_state["listen_playlist_select"] = None
-    st.session_state["player_mode"] = "setlist"
-    st.switch_page("pages/listen.py")
+col1, col2 = st.columns(2, gap="small")
+with col1:
+    st.markdown("<div style='text-align: center;'><strong>Listen to the most recent setlist:</strong></div>", unsafe_allow_html=True)
+with col2:
+    if st.button(last_show_label, key="most_recent_setlist_btn", width="stretch"):
+        st.session_state["listen_show_select"] = last_show_label
+        st.session_state["listen_playlist_select"] = None
+        st.session_state["player_mode"] = "setlist"
+        st.switch_page("pages/listen.py")
     
 # -------------------------
 # ON THIS DAY
@@ -66,29 +64,31 @@ day_name = pd.Timestamp.now(tz=ZoneInfo("America/New_York")).strftime("%A")
 on_this_day_df = df[df["Date"].dt.strftime("%m/%d") == today_md].copy()
 on_this_day_dates = sorted(on_this_day_df["Date"].unique())
 
+
 if on_this_day_dates:
-    st.markdown("<div style='text-align: center;'><strong>On This Day</strong></div>", unsafe_allow_html=True)
-    st.write(
-        f"**{today_md}: We have {len(on_this_day_dates)} {'recording' if len(on_this_day_dates) == 1 else 'recordings'} in the archive**"
-    )
+    col1, col2 = st.columns(2, gap="small")
+    with col1:
+        st.markdown(
+            f"<div style='text-align: center;'><strong>Explore the {len(on_this_day_dates)} {'recording' if len(on_this_day_dates) == 1 else 'recordings'} from this day ({today_md}):</strong></div>", unsafe_allow_html=True
+            )
 
-    cols = st.columns(len(on_this_day_dates))
-    for i, date in enumerate(on_this_day_dates):
-        date_str = pd.Timestamp(date).strftime("%m/%d/%Y")
-        location = on_this_day_df[on_this_day_df["Date"] == date]["Location"].iloc[0]
-        label = f"{date_str} — {location}"
+    with col2:
+        cols = st.columns(len(on_this_day_dates))
+        for i, date in enumerate(on_this_day_dates):
+            date_str = pd.Timestamp(date).strftime("%m/%d/%Y")
+            location = on_this_day_df[on_this_day_df["Date"] == date]["Location"].iloc[0]
+            label = f"{date_str} — {location}"
 
-        with cols[i]:
-            if st.button(label, key=f"otd_{date_str}", width="stretch"):
-                st.session_state.selected_show = label
-                if "selected_show_widget" in st.session_state:
-                    del st.session_state["selected_show_widget"]
-                st.session_state.active_tab = "Setlist Lookup"
-                st.query_params["scroll"] = "1"
-                st.switch_page("pages/explore.py")
+            with cols[i]:
+                if st.button(label, key=f"otd_{date_str}", width="stretch"):
+                    st.session_state.selected_show = label
+                    if "selected_show_widget" in st.session_state:
+                        del st.session_state["selected_show_widget"]
+                    st.session_state.active_tab = "Setlist Lookup"
+                    st.query_params["scroll"] = "1"
+                    st.switch_page("pages/explore.py")
 else:
-    st.markdown("<div style='text-align: center;'><strong>On This Day</strong></div>", unsafe_allow_html=True)
-    st.write(f"**{today_md}: No recordings found**")
+    st.markdown(f"<div style='text-align: center;'><strong>No recordings found on this day ({today_md})</strong></div>", unsafe_allow_html=True)
 
 st.write("")
 
@@ -158,8 +158,11 @@ oldest_song_date = df["Date"].min().strftime("%m/%d/%Y")
 oldest_song_title = df[df["Date"] == df["Date"].min()]["Title"].iloc[0]
 fun_facts.append(f"The earliest recording in the archive is **\"{oldest_song_title}\"** from **{oldest_song_date}**.")
 
-st.markdown("<div style='text-align: center;'><strong>Random Fact</strong></div>", unsafe_allow_html=True)
-st.write(f"{random.choice(fun_facts)}")
+col1, col2 = st.columns(2, gap="small")
+with col1:  
+    st.markdown(f"<div style='text-align: center;'><strong>Random fact:</strong></div>", unsafe_allow_html=True)
+with col2:
+    st.write(f"{random.choice(fun_facts)}")
  
 st.divider()
 
