@@ -17,7 +17,7 @@ with col2:
     with st.container(key="login_mod"):
         if st.user.is_logged_in:
             st.success("✅ You're logged in.")
-            st.divider()
+
 with col1:
     page_menu()
 st.markdown("""
@@ -40,7 +40,7 @@ div[data-testid="stHorizontalBlock"] button {
 """, unsafe_allow_html=True)
 
 dank_header(subtitle="The Dankest App In Town")
-
+st.divider()
 
 # -------------------------
 # MOST RECENT SETLIST
