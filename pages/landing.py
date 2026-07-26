@@ -10,8 +10,16 @@ df, song_stats, metadata, jam_metadata = load_data()
 df2 = df.copy()
 df_durationfiltered = df[df["Duration"] != df["Duration"].shift()].reset_index(drop=True)
 df = df[df["Take"] == 1]
+force_columns_horizontal(min_col_width="28px", key="login_mod")
 
-page_menu()
+col1, col2 = st.columns(2, gap="small")
+with col2:
+    with st.container(key="login_mod"):
+        if st.user.is_logged_in:
+            st.success("✅ You're logged in.")
+            st.divider()
+with col1:
+    page_menu()
 st.markdown("""
 <style>
 div[data-testid="stHorizontalBlock"] {
@@ -33,11 +41,7 @@ div[data-testid="stHorizontalBlock"] button {
 
 dank_header(subtitle="The Dankest App In Town")
 
-force_columns_horizontal(min_col_width="28px", key="login_mod")
-with st.container(key="login_mod"):
-    if st.user.is_logged_in:
-        st.success("✅ You're logged in.")
-        st.divider()
+
 # -------------------------
 # MOST RECENT SETLIST
 # -------------------------
