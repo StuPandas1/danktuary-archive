@@ -10,7 +10,17 @@ from supabase import create_client, Client
 
 times_played_mult = 1.3  # multiplier for how much weight to give times played in overdue score
 
-dead_weight_artists = ["Grateful Dead", "David Bowie", "Jerry Garcia Band", "The Band", "Little Feat", "Phish", "The Rolling Stones", "Sam Cooke", "The Four Tops", "The Allman Brothers Band", "The Who"]
+dead_weight_artists = ["Grateful Dead", "David Bowie", "Jerry Garcia Band", 
+                       "The Band", "Little Feat", "Phish", "The Rolling Stones", 
+                       "Sam Cooke", "The Four Tops", "The Allman Brothers Band", "The Who", 
+                       "Sublime", "AC/DC", "The Doors", "The Beatles", "Pink Floyd", "Led Zeppelin",
+                       "Funkadelic", "The Beach Boys", "Velvet Underground", "Herbie Hancock", "Talking Heads",
+                       "Stevie Ray Vaughan", "Jimi Hendrix", "Traditional", "Lynyrd Skynyrd", "Traffic", "Jackson 5",
+                       "Otis Redding", "Tommy James", "Fleetwood Mac", "Dr. Dog", "Neil Young", "Bob Seger", "Levon Helm",
+                       "Hall And Oates", "The Staple Singers", "Eric Clapton", "The 5th Dimension", "The Doobie Brothers", "The Meters",
+                       "Van Morrison", "Brewer & Shipley", "Billy Preston", "Creedence Clearwater Revival", "Paul McCartney", "Assembly of Dust", ""
+                       "Bob Dylan", "Otis Day & The Knights", "Ray Charles", "The Supremes"
+                       ]
 dead_weight_year = 2022
 
 @st.cache_data
