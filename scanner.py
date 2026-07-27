@@ -4,7 +4,7 @@ import csv
 import string
 import pandas as pd  # type: ignore
 from mutagen import File as MutagenFile
-from shared import manual_fixes, junk_terms, segue_fixes
+from shared import manual_fixes, junk_terms, segue_fixes, local_path_to_onedrive_url
 
 print("Let's a-gooooo!")
 
@@ -54,7 +54,7 @@ with open("band_archive.csv", "w", newline="", encoding="utf-8") as csvfile:
     writer = csv.writer(csvfile)
     writer.writerow([
         "Track Number", "File Track", "Title", "Date", "Location",
-        "Type", "Duration", "Raw Title", "File Path", "Take", "IA URL"
+        "Type", "Duration", "Raw Title", "File Path", "Take", "IA URL", "OneDrive URL"
     ])
 
     for archive_path in archive_paths:
@@ -120,6 +120,7 @@ with open("band_archive.csv", "w", newline="", encoding="utf-8") as csvfile:
                         filepath = os.path.join(root, file)
                         duration = get_duration(filepath)
                         ia_url = existing_ia_urls.get(filepath, "")
+                        onedrive_url = local_path_to_onedrive_url(filepath) or ""
 
                         if title not in seen_songs:
                             take = 1
@@ -139,7 +140,8 @@ with open("band_archive.csv", "w", newline="", encoding="utf-8") as csvfile:
                             raw_name,
                             filepath,
                             take,
-                            ia_url
+                            ia_url,
+                            onedrive_url
                         ])
                         seen_songs[title] = take
                         logical_track_number += 1
