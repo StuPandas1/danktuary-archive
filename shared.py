@@ -10,7 +10,7 @@ from supabase import create_client, Client
 
 times_played_mult = 1.3  # multiplier for how much weight to give times played in overdue score
 
-dead_weight_artists = ["Grateful Dead", "Jerry Garcia Band", "The Band", "Little Feat", "Phish", "The Rolling Stones", "Sam Cooke", "The Four Tops", "The Allman Brothers Band", "The Who"]
+dead_weight_artists = ["Grateful Dead", "David Bowie", "Jerry Garcia Band", "The Band", "Little Feat", "Phish", "The Rolling Stones", "Sam Cooke", "The Four Tops", "The Allman Brothers Band", "The Who"]
 dead_weight_year = 2022
 
 @st.cache_data
@@ -718,6 +718,8 @@ def build_filtered(df, metadata, artist_filter, year_range):
     ).reset_index()
 
     filtered_song_stats = filtered_song_stats.merge(metadata, on="Title", how="left")
+    st.write("Artist values after merge:", filtered_song_stats["Artist"].dropna().unique())
+    st.write("Rows with non-null Artist:", filtered_song_stats["Artist"].notna().sum(), "/", len(filtered_song_stats))
 
     if artist_filter:
         filtered_song_stats = filtered_song_stats[

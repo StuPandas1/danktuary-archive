@@ -25,4 +25,4 @@ song_stats.to_csv(
     index=False
 )
 
-print("analyzerino!.csv created!")
+print("song_stats.csv created!")

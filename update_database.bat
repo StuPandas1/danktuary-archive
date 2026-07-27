@@ -8,7 +8,7 @@ echo.
 
 cd /d "%~dp0"
 
-echo [1/9] Scanning audio files...
+echo [1/8] Scanning audio files...
 python scanner.py
 if errorlevel 1 (
     echo.
@@ -18,17 +18,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo [2/9] Generating OneDrive links...
-python generate_onedrive_urls.py
-if errorlevel 1 (
-    echo.
-    echo ERROR: generate_onedrive_urls.py failed. Stopping.
-    pause
-    exit /b 1
-)
-
-echo.
-echo [3/9] Uploading new recordings to the Internet Archive...
+echo [2/8] Uploading new recordings to the Internet Archive...
 python upload_to_archive.py
 if errorlevel 1 (
     echo.
@@ -39,7 +29,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo [4/9] Uploading extra takes to the Internet Archive...
+echo [3/8] Uploading extra takes to the Internet Archive...
 python upload_extra_takes.py
 if errorlevel 1 (
     echo.
@@ -49,7 +39,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo [5/9] Analyzing data...
+echo [4/8] Analyzing data...
 python analyze.py
 if errorlevel 1 (
     echo.
@@ -59,7 +49,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo [6/9] Building metadata...
+echo [5/8] Building metadata...
 python build_metadata.py
 if errorlevel 1 (
     echo.
@@ -69,7 +59,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo [7/9] Checking for changes...
+echo [6/8] Checking for changes...
 git add band_archive.csv song_stats.csv song_metadata.csv metadata_jam.csv uploaded_shows_cache.json last_known_shows.csv
 
 git diff --cached --quiet
@@ -86,7 +76,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo [8/9] Committing to GitHub...
+echo [7/8] Committing to GitHub...
 set TIMESTAMP=%date% %time%
 git commit -m "Update archive data - %TIMESTAMP%"
 if errorlevel 1 (
@@ -97,7 +87,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo [9/9] Pushing to GitHub...
+echo [8/8] Pushing to GitHub...
 git push
 if errorlevel 1 (
     echo.
