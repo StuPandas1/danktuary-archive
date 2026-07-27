@@ -728,8 +728,6 @@ def build_filtered(df, metadata, artist_filter, year_range):
     ).reset_index()
 
     filtered_song_stats = filtered_song_stats.merge(metadata, on="Title", how="left")
-    st.write("Artist values after merge:", filtered_song_stats["Artist"].dropna().unique())
-    st.write("Rows with non-null Artist:", filtered_song_stats["Artist"].notna().sum(), "/", len(filtered_song_stats))
 
     if artist_filter:
         filtered_song_stats = filtered_song_stats[
