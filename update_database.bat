@@ -1,5 +1,7 @@
 @echo off
 setlocal enabledelayedexpansion
+set IA_ACCESS_KEY=rJJgSLmF12MHLojB
+set IA_SECRET_KEY=Q7A0OzIwnvAcurZO
 
 echo ============================================
 echo   DankApp Database Update
