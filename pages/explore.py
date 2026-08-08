@@ -362,12 +362,23 @@ elif st.session_state.active_tab == "Setlist Lookup":
         sample_filepath = historical_setlist["File Path"].dropna().iloc[0] if not historical_setlist["File Path"].dropna().empty else None
         if sample_filepath:
             folder_path = "\\".join(sample_filepath.split("\\")[:-1])
-            onedrive_url = historical_setlist["OneDrive Share URL"].dropna().iloc[0] \
-                if "OneDrive Share URL" in historical_setlist.columns \
-                and not historical_setlist["OneDrive Share URL"].dropna().empty \
-                else None
-            if onedrive_url:
-                st.markdown(f"[Listen in OneDrive ↗]({onedrive_url})")
+            has_ia_url = "IA URL" in historical_setlist.columns and historical_setlist["IA URL"].notna().any()
+
+            if has_ia_url:
+                if st.button("🎧 Listen on DankApp", key=f"listen_btn_{selected_label}"):
+                    st.session_state["listen_show_select"] = selected_label
+                    st.session_state["listen_playlist_select"] = None
+                    st.session_state["player_mode"] = "setlist"
+                    st.switch_page("pages/listen.py")
+            else:
+                onedrive_url = (
+                    historical_setlist["OneDrive Share URL"].dropna().iloc[0]
+                    if "OneDrive Share URL" in historical_setlist.columns
+                    and not historical_setlist["OneDrive Share URL"].dropna().empty
+                    else None
+                )
+                if onedrive_url:
+                    st.markdown(f"[Listen in OneDrive ↗]({onedrive_url})")
 
         display_setlist = historical_setlist[["Track Number", "Title", "Duration"]].rename(
             columns={"Track Number": "Number"}
