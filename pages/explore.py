@@ -362,7 +362,10 @@ elif st.session_state.active_tab == "Setlist Lookup":
         sample_filepath = historical_setlist["File Path"].dropna().iloc[0] if not historical_setlist["File Path"].dropna().empty else None
         if sample_filepath:
             folder_path = "\\".join(sample_filepath.split("\\")[:-1])
-            onedrive_url = local_path_to_onedrive_url(folder_path)
+            onedrive_url = historical_setlist["OneDrive Share URL"].dropna().iloc[0] \
+                if "OneDrive Share URL" in historical_setlist.columns \
+                and not historical_setlist["OneDrive Share URL"].dropna().empty \
+                else None
             if onedrive_url:
                 st.markdown(f"[Listen in OneDrive ↗]({onedrive_url})")
 
