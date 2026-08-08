@@ -6,13 +6,12 @@ import os
 import re
 import time
 from shared import (
-    load_data, page_menu, dank_header, dank_playlist_player, suppress_selectbox_keyboard,
+    load_data, page_menu, dank_header, dank_playlist_player, suppress_selectbox_keyboard, get_supabase_client,
     group_tracks, save_playlist_to_supabase, load_playlists_from_supabase, delete_playlist_from_supabase,
     update_playlist_in_supabase, add_tracks_to_playlist,
     get_show_list, get_playlist_for_show,
     style_playlist_draft_rows, force_columns_horizontal,
     load_all_recordings, _data_file_mtimes,
-    get_display_name, set_display_name,
     parse_duration
     )
 
@@ -31,20 +30,10 @@ name = st.user.name if st.user.is_logged_in else None
 if st.user.is_logged_in:
     force_columns_horizontal(gap="0.5rem", key="login_row")
     with st.container(key="login_row"):
-        col1, col2, col3 = st.columns(3, vertical_alignment="center")
+        col1, col2 = st.columns([5, 1], vertical_alignment="center")
         with col1:
             st.success(f"Logged in as {name}")
         with col2:
-            with st.popover("✏️ Change display name"):
-                new_name = st.text_input("Display name", value=name, key="display_name_input")
-                if st.button("Save name"):
-                    if new_name.strip():
-                        set_display_name(username, new_name.strip())
-                        st.success("Saved!")
-                        st.rerun()
-                    else:
-                        st.warning("Name can't be empty.")
-        with col3:
             if st.button("Logout"):
                 st.logout()
 else:
@@ -56,17 +45,26 @@ else:
 # NOTES HELPERS
 # -------------------------
 
-NOTES_FILE = "show_notes.json"
+def load_notes(show_label):
+    try:
+        supabase = get_supabase_client()
+        result = supabase.table("show_notes").select("*").eq("show_label", show_label).order("created_at").execute()
+        return result.data or []
+    except Exception:
+        return []
 
-def load_notes():
-    if os.path.exists(NOTES_FILE):
-        with open(NOTES_FILE, "r") as f:
-            return json.load(f)
-    return {}
-
-def save_notes(notes):
-    with open(NOTES_FILE, "w") as f:
-        json.dump(notes, f, indent=2)
+def save_note(show_label, username, display_name, note):
+    try:
+        supabase = get_supabase_client()
+        supabase.table("show_notes").insert({
+            "show_label": show_label,
+            "username": username,
+            "display_name": display_name,
+            "note": note
+        }).execute()
+        return True
+    except Exception:
+        return False
 
 # -------------------------
 # TOP-LEVEL NAVIGATION
@@ -437,12 +435,12 @@ if st.session_state["active_section"] == "Listen to Music":
             st.markdown("---")
             st.markdown("#### 📝 Show Notes")
 
-            notes = load_notes()
-            show_notes = notes.get(selected_show, [])
+            show_notes = load_notes(selected_show)
 
             if show_notes:
                 for entry in show_notes:
-                    st.markdown(f"**{entry['user']}** · *{entry['date']}*")
+                    date_str = pd.Timestamp(entry["created_at"]).strftime("%m/%d/%Y")
+                    st.markdown(f"**{entry['display_name']}** · *{date_str}*")
                     st.write(entry["note"])
                     st.markdown("---")
             else:
@@ -452,16 +450,12 @@ if st.session_state["active_section"] == "Listen to Music":
 
             if st.button("Save Note"):
                 if new_note.strip():
-                    if selected_show not in notes:
-                        notes[selected_show] = []
-                    notes[selected_show].append({
-                        "user": name,
-                        "date": pd.Timestamp.today().strftime("%m/%d/%Y"),
-                        "note": new_note.strip()
-                    })
-                    save_notes(notes)
-                    st.success("Note saved!")
-                    st.rerun()
+                    success = save_note(selected_show, username, name, new_note.strip())
+                    if success:
+                        st.success("Note saved!")
+                        st.rerun()
+                    else:
+                        st.error("Couldn't save note right now.")
                 else:
                     st.warning("Note is empty.")
         else:
