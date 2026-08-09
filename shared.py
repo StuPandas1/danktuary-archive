@@ -901,7 +901,7 @@ def pick_by_kind(kind, pools, used_songs, improv_titles, prev_song=None):
     return song, odds
 
 
-def generate_setlist(num_songs, randomizer_df, jam_titles, improv_titles, today):
+def generate_setlist(num_songs, randomizer_df, jam_titles, today):
     pools = build_randomizer_pools(randomizer_df, jam_titles, today)
     used_songs = set()
     setlist = []
@@ -921,7 +921,7 @@ def generate_setlist(num_songs, randomizer_df, jam_titles, improv_titles, today)
 
     prev_song = None
     for i, kind in enumerate(kinds):
-        song, odds = pick_by_kind(kind, pools, used_songs, improv_titles, prev_song)
+        song, odds = pick_by_kind(kind, pools, used_songs, prev_song)
         if song:
             used_songs.add(song)
             setlist.append({

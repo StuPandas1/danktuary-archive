@@ -1,10 +1,9 @@
 import streamlit as st  # type: ignore
 import streamlit.components.v1 as components
 import pandas as pd  # type: ignore
-import json
-import os
+import urllib.parse
+import html
 import re
-import time
 from shared import (
     load_data, page_menu, dank_header, dank_playlist_player, suppress_selectbox_keyboard, get_supabase_client,
     group_tracks, save_playlist_to_supabase, load_playlists_from_supabase, delete_playlist_from_supabase,
@@ -286,17 +285,58 @@ def render_setlist_stats(playlist, archive_df, show_label):
     if not setlist_titles:
         st.caption("Couldn't match this show back to a date/location in the archive CSV to pull song titles.")
     else:
-        history_rows = []
+        rows_html = []
         for title in setlist_titles:
             count, last_played = get_song_history(title, archive_df, before_date=current_show_date)
-            history_rows.append({
-                "Song": title,
-                "Total Times Played": count if count else "First time!",
-                "Previous Time Played": last_played.strftime("%m/%d/%Y") if last_played is not None else "First time!",
-            })
-        st.dataframe(pd.DataFrame(history_rows), hide_index=True, width="stretch")
+            times_played = count if count else "First time!"
+            prev_played = last_played.strftime("%m/%d/%Y") if last_played is not None else "First time!"
 
+            encoded_title = urllib.parse.quote(title, safe="")
+            safe_title = html.escape(title)
 
+            rows_html.append(
+                "<tr>"
+                f'<td><a href="/explore?song={encoded_title}" target="_self">{safe_title}</a></td>'
+                f"<td>{html.escape(str(times_played))}</td>"
+                f"<td>{html.escape(str(prev_played))}</td>"
+                "</tr>"
+            )
+
+        table_html = f"""
+        <style>
+        .song-history-table {{
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }}
+        .song-history-table th, .song-history-table td {{
+            text-align: left;
+            padding: 6px 10px;
+            border-bottom: 1px solid rgba(128,128,128,0.3);
+        }}
+        .song-history-table a {{
+            color: #4a9eff;
+            text-decoration: none;
+        }}
+        .song-history-table a:hover {{
+            text-decoration: underline;
+        }}
+        </style>
+        <table class="song-history-table">
+            <thead>
+                <tr>
+                    <th>Song</th>
+                    <th>Total Times Played</th>
+                    <th>Previous Time Played</th>
+                </tr>
+            </thead>
+            <tbody>
+                {''.join(rows_html)}
+            </tbody>
+        </table>
+        """
+        st.markdown(table_html, unsafe_allow_html=True)
+        
 def on_setlist_select_change():
     """Selecting a setlist deactivates any chosen saved playlist, so only
     one player is ever active at a time."""
