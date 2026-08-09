@@ -3,6 +3,8 @@ import pandas as pd  # type: ignore
 import altair as alt  # type: ignore
 import os
 import streamlit.components.v1 as components  # type: ignore
+import html
+import urllib.parse
 from shared import ( #type: ignore
     load_data, build_filtered, find_closers, parse_duration,
     make_dead_weight_callback, page_menu, local_path_to_onedrive_url, dank_header, ranked_table,
@@ -49,6 +51,23 @@ if "t1_year" not in st.session_state:
 
 if "active_tab" not in st.session_state:
     st.session_state.active_tab = "Song Search"
+
+# Deep-link support:
+#   /explore?song=<title>  -> selects a song, jumps to Song Search
+#   /explore?show=<label>  -> selects a show, jumps to Setlist Lookup
+query_song = st.query_params.get("song")
+query_show = st.query_params.get("show")
+
+if query_song and query_song != st.session_state.selected_song:
+    st.session_state.selected_song = query_song
+    st.session_state.active_tab = "Song Search"
+    st.query_params.clear()
+elif query_show and query_show != st.session_state.selected_show:
+    st.session_state.selected_show = query_show
+    st.session_state.active_tab = "Setlist Lookup"
+    if "selected_show_widget" in st.session_state:
+        del st.session_state["selected_show_widget"]
+    st.query_params.clear()
 
 dank_header(subtitle="Explore the Archive")
 
@@ -246,7 +265,55 @@ if st.session_state.active_tab == "Song Search":
                 Show=lambda x: x["Date"].dt.strftime("%m/%d/%Y") + " — " + x["Location"]
             )[["Show", "Segue", "Duration", "Gap Since Previous"]]
 
-            st.dataframe(df_display, width="stretch", hide_index=True)
+            rows_html = []
+            for _, row in df_display.iterrows():
+                show_label = row["Show"]
+                encoded_show = urllib.parse.quote(show_label, safe="")
+                safe_show = html.escape(show_label)
+                rows_html.append(
+                    "<tr>"
+                    f'<td><a href="/explore?show={encoded_show}" target="_self">{safe_show}</a></td>'
+                    f'<td>{html.escape(str(row["Segue"]))}</td>'
+                    f'<td>{html.escape(str(row["Duration"]))}</td>'
+                    f'<td>{html.escape(str(row["Gap Since Previous"]))}</td>'
+                    "</tr>"
+                )
+
+            table_html = f"""
+            <style>
+            .perf-history-table {{
+                width: 100%;
+                border-collapse: collapse;
+                font-size: 14px;
+            }}
+            .perf-history-table th, .perf-history-table td {{
+                text-align: left;
+                padding: 6px 10px;
+                border-bottom: 1px solid rgba(128,128,128,0.3);
+            }}
+            .perf-history-table a {{
+                color: #4a9eff;
+                text-decoration: none;
+            }}
+            .perf-history-table a:hover {{
+                text-decoration: underline;
+            }}
+            </style>
+            <table class="perf-history-table">
+                <thead>
+                    <tr>
+                        <th>Show</th>
+                        <th>Segue</th>
+                        <th>Duration</th>
+                        <th>Gap Since Previous</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {''.join(rows_html)}
+                </tbody>
+            </table>
+            """
+            st.markdown(table_html, unsafe_allow_html=True)
 
 # -------------------------
 # TAB 2: SETLIST LOOKUP
@@ -387,17 +454,60 @@ elif st.session_state.active_tab == "Setlist Lookup":
         segue_indices = set()
         for i in range(len(display_setlist) - 1):
             if display_setlist.at[i, "Duration"] == display_setlist.at[i + 1, "Duration"]:
-                display_setlist.at[i, "Title"] = display_setlist.at[i, "Title"] + " ->"
-                segue_indices.add(i + 1)
+                segue_indices.add(i)
         for i in segue_indices:
             display_setlist.at[i, "Duration"] = "--"
 
-        st.dataframe(
-            display_setlist,
-            hide_index=True,
-            width='stretch',
-            height=len(display_setlist) * 35 + 38,
-        )
+        rows_html = []
+        for i, row in display_setlist.iterrows():
+            title = row["Title"]
+            encoded_title = urllib.parse.quote(title, safe="")
+            safe_title = html.escape(title)
+            link = f'<a href="/explore?song={encoded_title}" target="_self">{safe_title}</a>'
+            if i in segue_indices:
+                link += " ->"
+            rows_html.append(
+                "<tr>"
+                f'<td>{html.escape(str(row["Number"]))}</td>'
+                f"<td>{link}</td>"
+                f'<td>{html.escape(str(row["Duration"]))}</td>'
+                "</tr>"
+            )
+
+        table_html = f"""
+        <style>
+        .setlist-table {{
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }}
+        .setlist-table th, .setlist-table td {{
+            text-align: left;
+            padding: 6px 10px;
+            border-bottom: 1px solid rgba(128,128,128,0.3);
+        }}
+        .setlist-table a {{
+            color: #4a9eff;
+            text-decoration: none;
+        }}
+        .setlist-table a:hover {{
+            text-decoration: underline;
+        }}
+        </style>
+        <table class="setlist-table">
+            <thead>
+                <tr>
+                    <th>Number</th>
+                    <th>Title</th>
+                    <th>Duration</th>
+                </tr>
+            </thead>
+            <tbody>
+                {''.join(rows_html)}
+            </tbody>
+        </table>
+        """
+        st.markdown(table_html, unsafe_allow_html=True)
 
 # -------------------------
 # TAB 3: SONG STATS

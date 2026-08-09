@@ -1,9 +1,8 @@
 import streamlit as st  # type: ignore
 import pandas as pd  # type: ignore
 import random
-import re
-import subprocess
-import time
+import html
+import urllib.parse
 import streamlit.components.v1 as components  # type: ignore
 from zoneinfo import ZoneInfo
 
@@ -81,7 +80,7 @@ if active_tab == "Recently Played":
         full_df.sort_values(["Date", "Track Number"])
         .groupby("Title")
         .last()
-        .reset_index()[["Title", "Date", "Track Number"]]
+        .reset_index()[["Title", "Date", "Track Number", "Location"]]
     )
 
     recent_display = full_stats.merge(most_recent_rows, on="Title", how="left")
@@ -90,13 +89,65 @@ if active_tab == "Recently Played":
         .sort_values(["Last_Played", "Track Number"], ascending=[False, True])
         .assign(Last_Played=lambda x: x["Last_Played"].dt.strftime("%m/%d/%Y"))
         .rename(columns={"Last_Played": "Last Played", "Times_Played": "Total Plays"})
-        [["Title", "Last Played", "Total Plays"]]
+        [["Title", "Last Played", "Total Plays", "Location"]]
         .reset_index(drop=True)
     )
     recent_display.insert(0, "Rank", range(1, len(recent_display) + 1))
 
-    st.dataframe(recent_display, hide_index=True)
+    rows_html = []
+    for _, row in recent_display.iterrows():
+        encoded_title = urllib.parse.quote(row["Title"], safe="")
+        safe_title = html.escape(row["Title"])
 
+        show_label = f'{row["Last Played"]} — {row["Location"]}'
+        encoded_show = urllib.parse.quote(show_label, safe="")
+        safe_last_played = html.escape(row["Last Played"])
+
+        rows_html.append(
+            "<tr>"
+            f'<td>{row["Rank"]}</td>'
+            f'<td><a href="/explore?song={encoded_title}" target="_self">{safe_title}</a></td>'
+            f'<td><a href="/explore?show={encoded_show}" target="_self">{safe_last_played}</a></td>'
+            f'<td>{html.escape(str(row["Total Plays"]))}</td>'
+            "</tr>"
+        )
+
+    table_html = f"""
+    <style>
+    .linked-table {{
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+    }}
+    .linked-table th, .linked-table td {{
+        text-align: left;
+        padding: 6px 10px;
+        border-bottom: 1px solid rgba(128,128,128,0.3);
+    }}
+    .linked-table a {{
+        color: #4a9eff;
+        text-decoration: none;
+    }}
+    .linked-table a:hover {{
+        text-decoration: underline;
+    }}
+    </style>
+    <table class="linked-table">
+        <thead>
+            <tr>
+                <th>Rank</th>
+                <th>Title</th>
+                <th>Last Played</th>
+                <th>Total Plays</th>
+            </tr>
+        </thead>
+        <tbody>
+            {''.join(rows_html)}
+        </tbody>
+    </table>
+    """
+    st.markdown(table_html, unsafe_allow_html=True)
+    
 # -------------------------
 # TAB: BUSTOUT INFO
 # -------------------------
@@ -116,17 +167,83 @@ elif active_tab == "Bustout Info":
     max_score = bustouts["Overdue_Score"].max()
     bustouts["Overdue_Score_Normalized"] = ((bustouts["Overdue_Score"] / max_score) * 100).round(1)
 
-    st.dataframe(
-        bustouts.assign(Last_Played=lambda x: x["Last_Played"].dt.strftime("%m/%d/%Y"))
+    # pull the location of each song's most recent appearance so we can
+    # build a link back to that show
+    last_played_locations = (
+        bustout_df.sort_values(["Date"])
+        .groupby("Title")
+        .last()
+        .reset_index()[["Title", "Location"]]
+    )
+
+    bustout_display = (
+        bustouts.merge(last_played_locations, on="Title", how="left")
+        .assign(Last_Played=lambda x: x["Last_Played"].dt.strftime("%m/%d/%Y"))
         .sort_values("Overdue_Score_Normalized", ascending=False)[[
-            "Title", "Days_Since_Played", "Times_Played", "Overdue_Score_Normalized"
+            "Title", "Days_Since_Played", "Times_Played", "Overdue_Score_Normalized",
+            "Last_Played", "Location"
         ]].rename(columns={
             "Days_Since_Played": "Days Since Played",
             "Times_Played": "Times Played",
-            "Overdue_Score_Normalized": "Overdue Score (Normalized)"
-        }),
-        hide_index=True
+            "Overdue_Score_Normalized": "Overdue Score (Normalized)",
+            "Last_Played": "Last Played"
+        })
+        .reset_index(drop=True)
     )
+
+    rows_html = []
+    for _, row in bustout_display.iterrows():
+        encoded_title = urllib.parse.quote(row["Title"], safe="")
+        safe_title = html.escape(row["Title"])
+
+        show_label = f'{row["Last Played"]} — {row["Location"]}'
+        encoded_show = urllib.parse.quote(show_label, safe="")
+        safe_days = html.escape(str(row["Days Since Played"]))
+
+        rows_html.append(
+            "<tr>"
+            f'<td><a href="/explore?song={encoded_title}" target="_self">{safe_title}</a></td>'
+            f'<td><a href="/explore?show={encoded_show}" target="_self">{safe_days}</a></td>'
+            f'<td>{html.escape(str(row["Times Played"]))}</td>'
+            f'<td>{html.escape(str(row["Overdue Score (Normalized)"]))}</td>'
+            "</tr>"
+        )
+
+    table_html = f"""
+    <style>
+    .linked-table {{
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+    }}
+    .linked-table th, .linked-table td {{
+        text-align: left;
+        padding: 6px 10px;
+        border-bottom: 1px solid rgba(128,128,128,0.3);
+    }}
+    .linked-table a {{
+        color: #4a9eff;
+        text-decoration: none;
+    }}
+    .linked-table a:hover {{
+        text-decoration: underline;
+    }}
+    </style>
+    <table class="linked-table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Days Since Played</th>
+                <th>Times Played</th>
+                <th>Overdue Score (Normalized)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {''.join(rows_html)}
+        </tbody>
+    </table>
+    """
+    st.markdown(table_html, unsafe_allow_html=True)
 
 # -------------------------
 # TAB: DEAD WEIGHT SL RANDOMIZER
@@ -136,7 +253,6 @@ elif active_tab == "Setlist Randomizer":
 
     st.markdown("#### Dead Weight Setlist Randomizer")
 
-    improv_titles = set(metadata[metadata["Type"] == "Improv"]["Title"])
     jam_titles = set(jam_metadata["Title"])
 
     randomizer_df = df.merge(metadata[["Title", "Artist"]], on="Title", how="left")
@@ -144,7 +260,6 @@ elif active_tab == "Setlist Randomizer":
         (randomizer_df["Artist"].isin(dead_weight_artists)) &
         (randomizer_df["Year"] >= dead_weight_year)
     ]
-    randomizer_df = randomizer_df[~randomizer_df["Title"].isin(improv_titles)]
 
     random_messages = [
         "They're all Dark Star, man...",
@@ -169,7 +284,7 @@ elif active_tab == "Setlist Randomizer":
         st.markdown("&nbsp;", unsafe_allow_html=True)
         if st.button("Create New Setlist", width='stretch'):
             st.session_state.random_setlist = generate_setlist(
-                num_songs, randomizer_df, jam_titles, improv_titles, today_naive
+                num_songs, randomizer_df, jam_titles, today_naive
             )
             st.session_state.setlist_version = st.session_state.get("setlist_version", 0) + 1
             st.session_state.random_message = random.choice(random_messages)
@@ -182,7 +297,7 @@ elif active_tab == "Setlist Randomizer":
             if st.button("Re-Roll Those Laughing Bones", width='stretch'):
                 current = st.session_state.random_setlist.copy()
                 locked_songs = set(current[current["Locked"] == True]["Title"].tolist())
-                new = generate_setlist(num_songs, randomizer_df, jam_titles, improv_titles, today_naive)
+                new = generate_setlist(num_songs, randomizer_df, jam_titles, today_naive)
 
                 merged = []
                 locked_rows = current[current["Locked"] == True].set_index("#")
