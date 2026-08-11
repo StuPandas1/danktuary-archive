@@ -3,6 +3,7 @@ import sys
 import time
 import re
 import json
+import tomllib
 import pandas as pd  # type: ignore
 import requests  # type: ignore
 from urllib.parse import quote
@@ -12,27 +13,77 @@ from internetarchive import get_item  # type: ignore
 # CONFIG
 # -------------------------
 
-ACCESS_KEY = os.environ.get("IA_ACCESS_KEY")
-SECRET_KEY = os.environ.get("IA_SECRET_KEY")
+def load_ia_credentials():
+    """Reads IA credentials from .streamlit/secrets.toml if present (same
+    pattern generate_share_links.py uses for Microsoft credentials),
+    falling back to environment variables otherwise."""
+    secrets_path = ".streamlit/secrets.toml"
+    access_key = None
+    secret_key = None
+
+    if os.path.exists(secrets_path):
+        with open(secrets_path, "rb") as f:
+            secrets = tomllib.load(f)
+        ia_secrets = secrets.get("internet_archive", {})
+        access_key = ia_secrets.get("access_key")
+        secret_key = ia_secrets.get("secret_key")
+
+    access_key = access_key or os.environ.get("IA_ACCESS_KEY")
+    secret_key = secret_key or os.environ.get("IA_SECRET_KEY")
+    return access_key, secret_key
+
+
+ACCESS_KEY, SECRET_KEY = load_ia_credentials()
 
 COLLECTION = "opensource_audio"  # IA collection for self-uploaded audio
 UPLOAD_DELAY_SECONDS = 60  # be polite to the rate limiter, only after a REAL upload
 CACHE_PATH = "uploaded_shows_cache.json"
+CSV_PATH = "band_archive.csv"
+
+IDENTIFIER_COL = "_identifier"  # internal-only helper column, never written to disk
 
 # -------------------------
-# LOCAL CACHE (survives scanner.py wiping band_archive.csv)
+# LOCAL CACHE
 # -------------------------
+# The cache maps identifier -> set of filenames CONFIRMED present on that IA
+# item (i.e. we either just uploaded them or IA's API told us they're there).
+# It's file-level, not show-level: a show being "in the cache" doesn't mean
+# every file for that show is uploaded, only that the specific filenames
+# listed are. This matters because band_archive.csv is append-only now
+# (scanner.py doesn't wipe it) -- a new take can be added to an
+# already-uploaded show at any time, and it needs its own upload, not a
+# fabricated URL just because its show identifier looks "done".
+#
+# Old cache files (a flat JSON list of identifiers, from before this file-
+# level tracking existed) are migrated automatically: each identifier is
+# loaded with an empty confirmed-file set, so the first run after upgrading
+# will re-check that show's files against IA once (via upload_show's
+# get_uploaded_filenames call) and then remember them correctly from then on.
 
 def load_cache():
-    if os.path.exists(CACHE_PATH):
-        with open(CACHE_PATH, "r") as f:
-            return set(json.load(f))
-    return set()
+    if not os.path.exists(CACHE_PATH):
+        return {}
+    with open(CACHE_PATH, "r") as f:
+        data = json.load(f)
+
+    if isinstance(data, list):
+        print("Migrating old show-level cache to per-file cache "
+              "(shows will be re-checked against IA once)...")
+        return {identifier: set() for identifier in data}
+
+    return {identifier: set(filenames) for identifier, filenames in data.items()}
 
 
-def save_cache(confirmed_identifiers):
+def save_cache(cache):
     with open(CACHE_PATH, "w") as f:
-        json.dump(sorted(confirmed_identifiers), f, indent=2)
+        json.dump(
+            {identifier: sorted(filenames) for identifier, filenames in cache.items()},
+            f, indent=2,
+        )
+
+
+def save_df(df):
+    df.drop(columns=[IDENTIFIER_COL], errors="ignore").to_csv(CSV_PATH, index=False)
 
 
 # -------------------------
@@ -51,6 +102,13 @@ def make_identifier(date_str, location):
 IDENTIFIER_OVERRIDES = {
     "deadweight-2015-02-21-leftfield": "deadweight-2015-02-21-leftfield-",
 }
+
+
+def compute_identifier(row):
+    if pd.isna(row["Date"]) or pd.isna(row["Location"]):
+        return None
+    date_str = row["Date"].strftime("%Y-%m-%d")
+    return make_identifier(date_str, row["Location"])
 
 
 def get_uploaded_filenames(item, retries=3, retry_delay=10):
@@ -80,25 +138,26 @@ def get_uploaded_filenames(item, retries=3, retry_delay=10):
     return set()
 
 
-def upload_show(identifier, filepaths, date_str, location):
-    """Returns (item, uploaded_something: bool)."""
+def upload_show(identifier, filepaths, date_str, location, confirmed_filenames):
+    """Uploads any of filepaths not yet confirmed present on IA.
+    Returns (confirmed_filenames: set of basenames now known present, uploaded_something: bool)."""
     item = get_item(identifier)
-    existing_filenames = get_uploaded_filenames(item)
 
-    missing_filepaths = [
-        fp for fp in filepaths
-        if os.path.basename(fp) not in existing_filenames
-    ]
+    # trust the per-file cache first; only ask IA directly for filenames we
+    # don't already have confirmed, since that's a real network call
+    unconfirmed = [fp for fp in filepaths if os.path.basename(fp) not in confirmed_filenames]
 
-    if not missing_filepaths:
+    if unconfirmed:
+        existing_on_ia = get_uploaded_filenames(item)
+        confirmed_filenames = confirmed_filenames | (existing_on_ia & {os.path.basename(fp) for fp in filepaths})
+        unconfirmed = [fp for fp in filepaths if os.path.basename(fp) not in confirmed_filenames]
+
+    if not unconfirmed:
         print(f"  Skipping {identifier} (all {len(filepaths)} file(s) already present)")
-        return item, False
+        return confirmed_filenames, False
 
-    if existing_filenames:
-        print(f"  {identifier}: {len(existing_filenames)} file(s) already present, "
-              f"uploading {len(missing_filepaths)} missing file(s)...")
-    else:
-        print(f"  Uploading {len(missing_filepaths)} file(s) to {identifier}...")
+    print(f"  {identifier}: {len(confirmed_filenames)} file(s) already confirmed, "
+          f"uploading {len(unconfirmed)} file(s)...")
 
     metadata = {
         "title": f"{location} — {date_str}",
@@ -108,14 +167,21 @@ def upload_show(identifier, filepaths, date_str, location):
     }
 
     item.upload(
-        missing_filepaths,
+        unconfirmed,
         metadata=metadata,
         access_key=ACCESS_KEY,
         secret_key=SECRET_KEY,
         verbose=True,
         queue_derive=False,
     )
-    return item, True
+
+    confirmed_filenames = confirmed_filenames | {os.path.basename(fp) for fp in unconfirmed}
+    return confirmed_filenames, True
+
+
+def fill_ia_url(full_df, idx, identifier, filepath):
+    filename = os.path.basename(filepath)
+    full_df.at[idx, "IA URL"] = f"https://archive.org/download/{identifier}/{quote(filename)}"
 
 
 def main():
@@ -123,29 +189,52 @@ def main():
         print("ERROR: IA_ACCESS_KEY and IA_SECRET_KEY environment variables must be set.")
         sys.exit(1)
 
-    full_df = pd.read_csv("band_archive.csv")
+    full_df = pd.read_csv(CSV_PATH)
 
     if "File Path" not in full_df.columns:
-        print("ERROR: band_archive.csv has no 'File Path' column. Run scanner.py first.")
+        print(f"ERROR: {CSV_PATH} has no 'File Path' column. Run scanner.py first.")
         sys.exit(1)
 
     full_df["IA URL"] = full_df.get("IA URL", pd.NA)
     full_df["Date"] = pd.to_datetime(full_df["Date"])
+    full_df[IDENTIFIER_COL] = full_df.apply(compute_identifier, axis=1)
+
+    cache = load_cache()
+
+    is_real_file = full_df["File Path"].notna() & ~full_df["File Path"].str.lower().str.endswith(".bmp", na=False)
+
+    # -------------------------
+    # BACKFILL PASS
+    # -------------------------
+    # Fill IA URL for any row whose exact filename is confirmed present in
+    # the cache for its show. File-level, so a row for a take that hasn't
+    # actually been uploaded yet is correctly left blank even if other
+    # takes/files for the same show are confirmed.
+    needs_url = full_df["IA URL"].isna()
+    for idx in full_df.index[is_real_file & needs_url]:
+        row = full_df.loc[idx]
+        identifier = row[IDENTIFIER_COL]
+        if identifier is None:
+            continue
+        filename = os.path.basename(row["File Path"])
+        if filename in cache.get(identifier, set()):
+            fill_ia_url(full_df, idx, identifier, row["File Path"])
 
     # Filter: all gigs (any year) + practice recordings from 2025-2026 only.
-    # Trips are excluded entirely regardless of year.
-    # NOTE: this filtered view selects WHICH ROWS to upload, but full_df
-    # (every row, every type, every year) is what gets saved back to disk.
+    # Trips are excluded entirely regardless of year. Every row for a
+    # matching show is included here regardless of Take number -- repeated
+    # takes of the same song are separate physical files and all get
+    # uploaded together with the rest of that show's recordings.
     is_gig = full_df["Type"] == "live"
     is_recent_practice = (full_df["Type"] == "practice") & (full_df["Date"].dt.year >= 2025)
     upload_candidates = full_df[is_gig | is_recent_practice]
 
     if upload_candidates.empty:
         print("No rows match the filter (gigs + 2025-2026 practices). Nothing to upload.")
+        save_df(full_df)
         return
 
     grouped = upload_candidates.groupby(["Date", "Location"])
-    confirmed_cache = load_cache()
 
     for (date, location), group in grouped:
         date_str = date.strftime("%Y-%m-%d")
@@ -156,63 +245,43 @@ def main():
         if not filepaths:
             continue
 
-        # fast-path: skip the API entirely for shows we've already confirmed,
-        # but still rebuild the IA URL since scanner.py wipes the column each run
-        if identifier in confirmed_cache:
-            for idx, row in group.iterrows():
-                if pd.isna(row["File Path"]):
-                    continue
-                filename = os.path.basename(row["File Path"])
-                ia_url = f"https://archive.org/download/{identifier}/{quote(filename)}"
-                full_df.at[idx, "IA URL"] = ia_url
-            continue
+        confirmed_filenames = cache.get(identifier, set())
+        already_confirmed = all(os.path.basename(fp) in confirmed_filenames for fp in filepaths)
+        if already_confirmed:
+            continue  # every file in this group, including any new takes, is already confirmed
 
         print(f"{date_str} — {location}")
 
         try:
-            item, uploaded_something = upload_show(identifier, filepaths, date_str, location)
+            confirmed_filenames, uploaded_something = upload_show(
+                identifier, filepaths, date_str, location, confirmed_filenames
+            )
         except requests.exceptions.HTTPError as e:
             print(f"\nSTOPPED: hit an upload error on {identifier}.")
             print(f"  {e}")
             print("\nThis is likely IA's rate limiter. Progress so far is saved.")
             print("Wait at least an hour (longer if possible) before re-running this script.")
-            full_df.to_csv("band_archive.csv", index=False)
-            save_cache(confirmed_cache)
+            cache[identifier] = confirmed_filenames
+            save_df(full_df)
+            save_cache(cache)
             sys.exit(1)
+
+        cache[identifier] = confirmed_filenames
 
         for idx, row in group.iterrows():
             if pd.isna(row["File Path"]):
                 continue
-            filename = os.path.basename(row["File Path"])
-            ia_url = f"https://archive.org/download/{identifier}/{quote(filename)}"
-            full_df.at[idx, "IA URL"] = ia_url
+            if os.path.basename(row["File Path"]) in confirmed_filenames:
+                fill_ia_url(full_df, idx, identifier, row["File Path"])
 
-        confirmed_cache.add(identifier)
-        full_df.to_csv("band_archive.csv", index=False)
-        save_cache(confirmed_cache)
+        save_df(full_df)
+        save_cache(cache)
 
         if uploaded_something:
             time.sleep(UPLOAD_DELAY_SECONDS)
 
-    # supplemental pass: write IA URLs for any show in the cache that wasn't
-    # covered by the upload filter (e.g. newly added year, edge cases)
-    # groups the full_df by show and checks against the cache
-    all_grouped = full_df[full_df["File Path"].notna()].groupby(["Date", "Location"])
-    for (date, location), group in all_grouped:
-        date_str = date.strftime("%Y-%m-%d")
-        identifier = make_identifier(date_str, location)
-        if identifier not in confirmed_cache:
-            continue
-        for idx, row in group.iterrows():
-            if pd.isna(row.get("File Path")) or str(row["File Path"]).lower().endswith(".bmp"):
-                continue
-            if pd.isna(full_df.at[idx, "IA URL"]):
-                filename = os.path.basename(row["File Path"])
-                ia_url = f"https://archive.org/download/{identifier}/{quote(filename)}"
-                full_df.at[idx, "IA URL"] = ia_url
-
-    full_df.to_csv("band_archive.csv", index=False)
-    print("Done. band_archive.csv updated with IA URLs.")
+    save_df(full_df)
+    print(f"Done. {CSV_PATH} updated with IA URLs.")
 
 
 if __name__ == "__main__":

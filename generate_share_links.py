@@ -2,7 +2,6 @@ import os
 import pandas as pd
 import msal
 import requests
-from streamlit import secrets
 import tomllib
 
 with open(".streamlit/secrets.toml", "rb") as f:
@@ -16,22 +15,38 @@ SCOPES = ["https://graph.microsoft.com/Files.ReadWrite"]
 CSV_PATH = "band_archive.csv"
 SHARE_URL_COLUMN = "OneDrive Share URL"
 ONEDRIVE_MARKER = "OneDrive\\LoveDeep"
+TOKEN_CACHE_PATH = ".msal_token_cache.bin"
 
 # -------------------------
 # AUTH
 # -------------------------
 
 def get_access_token():
+    cache = msal.SerializableTokenCache()
+    if os.path.exists(TOKEN_CACHE_PATH):
+        cache.deserialize(open(TOKEN_CACHE_PATH, "r").read())
+
     app = msal.PublicClientApplication(
         CLIENT_ID,
-        authority=f"https://login.microsoftonline.com/common"
+        authority="https://login.microsoftonline.com/common",
+        token_cache=cache,
     )
 
-    # try device flow so you can log in via browser
-    flow = app.initiate_device_flow(scopes=SCOPES)
-    print(flow)
-    print(flow["message"])  # prints the URL and code to enter
-    result = app.acquire_token_by_device_flow(flow)
+    # try a silent refresh first using whatever account is in the cache,
+    # so re-running the script doesn't require a fresh device-code login
+    accounts = app.get_accounts()
+    result = None
+    if accounts:
+        result = app.acquire_token_silent(SCOPES, account=accounts[0])
+
+    if not result:
+        flow = app.initiate_device_flow(scopes=SCOPES)
+        print(flow["message"])  # prints the URL and code to enter
+        result = app.acquire_token_by_device_flow(flow)
+
+    if cache.has_state_changed:
+        with open(TOKEN_CACHE_PATH, "w") as f:
+            f.write(cache.serialize())
 
     if "access_token" in result:
         return result["access_token"]
@@ -83,10 +98,17 @@ df = pd.read_csv(CSV_PATH)
 if SHARE_URL_COLUMN not in df.columns:
     df[SHARE_URL_COLUMN] = None
 
-# find rows that need a share link
+# find rows that need a share link. Rows flagged Status: missing point at
+# files that no longer exist locally -- and since local files live inside
+# the OneDrive-synced folder itself, "missing locally" means "missing from
+# OneDrive too" (sync deletion), so there's nothing there to link.
+has_status_col = "Status" in df.columns
+is_missing = df["Status"] == "missing" if has_status_col else False
+
 needs_link = df[
     df["File Path"].notna() &
-    (df[SHARE_URL_COLUMN].isna() | (df[SHARE_URL_COLUMN] == ""))
+    (df[SHARE_URL_COLUMN].isna() | (df[SHARE_URL_COLUMN] == "")) &
+    ~is_missing
 ]
 
 # get unique folders only

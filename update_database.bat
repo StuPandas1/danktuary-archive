@@ -1,7 +1,5 @@
 @echo off
 setlocal enabledelayedexpansion
-set IA_ACCESS_KEY=rJJgSLmF12MHLojB
-set IA_SECRET_KEY=Q7A0OzIwnvAcurZO
 
 echo ============================================
 echo   DankApp Database Update
@@ -10,7 +8,7 @@ echo.
 
 cd /d "%~dp0"
 
-echo [1/9] Scanning audio files...
+echo [1/8] Scanning files to update band_archive.csv...
 python scanner.py
 if errorlevel 1 (
     echo.
@@ -20,7 +18,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo [2/9] Uploading new recordings to the Internet Archive...
+echo [2/8] Uploading new recordings to the Internet Archive...
 python upload_to_archive.py
 if errorlevel 1 (
     echo.
@@ -31,17 +29,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo [3/9] Uploading extra takes to the Internet Archive...
-python upload_extra_takes.py
-if errorlevel 1 (
-    echo.
-    echo ERROR: upload_extra_takes.py failed. Stopping.
-    pause
-    exit /b 1
-)
-
-echo.
-echo [4/9] Analyzing data...
+echo [3/8] Analyzing data...
 python analyze.py
 if errorlevel 1 (
     echo.
@@ -51,7 +39,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo [5/9] Building metadata...
+echo [4/8] Building metadata...
 python build_metadata.py
 if errorlevel 1 (
     echo.
@@ -61,9 +49,9 @@ if errorlevel 1 (
 )
 
 echo.
-echo[6/9] Adding share OD links...
+echo [5/8] Adding share OD links...
 python generate_share_links.py
-if errorlevel 1(
+if errorlevel 1 (
     echo.
     echo ERROR: generate_share_links.py failed. Stopping.
     pause
@@ -71,7 +59,7 @@ if errorlevel 1(
 )
 
 echo.
-echo [7/9] Checking for changes...
+echo [6/8] Checking for changes...
 git add band_archive.csv song_stats.csv song_metadata.csv metadata_jam.csv uploaded_shows_cache.json last_known_shows.csv
 
 git diff --cached --quiet
@@ -88,7 +76,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo [8/9] Committing to GitHub...
+echo [7/8] Committing to GitHub...
 set TIMESTAMP=%date% %time%
 git commit -m "Update archive data - %TIMESTAMP%"
 if errorlevel 1 (
@@ -99,7 +87,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo [9/9] Pushing to GitHub...
+echo [8/8] Pushing to GitHub...
 git push
 if errorlevel 1 (
     echo.
