@@ -152,9 +152,26 @@ if active_tab == "Recently Played":
 # TAB: BUSTOUT INFO
 # -------------------------
 
+# -------------------------
+# TAB: BUSTOUT INFO
+# -------------------------
+
 elif active_tab == "Bustout Info":
     st.subheader("Most Overdue Songs")
     dead_weight_only = st.checkbox("Dead Weight Only", value=True, key="bustout_dead_weight")
+
+    col_label, col_radio = st.columns([1, 6], vertical_alignment="center")
+    with col_label:
+        st.markdown("**Sort by**")
+    with col_radio:
+        sort_by = st.radio(
+            "Sort by",
+            ["Score", "Days Since"],
+            index=0,
+            horizontal=True,
+            label_visibility="collapsed",
+            key="bustout_sort_by",
+        )
 
     if dead_weight_only:
         bustout_df, bustout_stats = build_filtered(df, metadata, dead_weight_artists, (dead_weight_year, max_year))
@@ -166,6 +183,7 @@ elif active_tab == "Bustout Info":
     bustouts["Overdue_Score"] = bustouts["Days_Since_Played"] * (bustouts["Times_Played"] ** times_played_mult)
     max_score = bustouts["Overdue_Score"].max()
     bustouts["Overdue_Score_Normalized"] = ((bustouts["Overdue_Score"] / max_score) * 100).round(1)
+    bustouts["Last_Played_Short"] = bustouts["Last_Played"].dt.strftime("%m/%d/%y")
 
     # pull the location of each song's most recent appearance so we can
     # build a link back to that show
@@ -176,20 +194,25 @@ elif active_tab == "Bustout Info":
         .reset_index()[["Title", "Location"]]
     )
 
+    sort_col = "Overdue Score" if sort_by == "Score" else "Days Since Played"
+
     bustout_display = (
         bustouts.merge(last_played_locations, on="Title", how="left")
         .assign(Last_Played=lambda x: x["Last_Played"].dt.strftime("%m/%d/%Y"))
-        .sort_values("Overdue_Score_Normalized", ascending=False)[[
-            "Title", "Days_Since_Played", "Times_Played", "Overdue_Score_Normalized",
-            "Last_Played", "Location"
-        ]].rename(columns={
+        .rename(columns={
             "Days_Since_Played": "Days Since Played",
             "Times_Played": "Times Played",
-            "Overdue_Score_Normalized": "Overdue Score (Normalized)",
-            "Last_Played": "Last Played"
+            "Overdue_Score_Normalized": "Overdue Score",
+            "Last_Played": "Last Played",
+            "Last_Played_Short": "Last Played Short"
         })
+        .sort_values(sort_col, ascending=False)[[
+            "Title", "Days Since Played", "Last Played Short", "Times Played", "Overdue Score",
+            "Last Played", "Location"
+        ]]
         .reset_index(drop=True)
     )
+    bustout_display.insert(0, "Rank", range(1, len(bustout_display) + 1))
 
     rows_html = []
     for _, row in bustout_display.iterrows():
@@ -198,14 +221,15 @@ elif active_tab == "Bustout Info":
 
         show_label = f'{row["Last Played"]} — {row["Location"]}'
         encoded_show = urllib.parse.quote(show_label, safe="")
-        safe_days = html.escape(str(row["Days Since Played"]))
+        safe_days = html.escape(f'{row["Days Since Played"]} ({row["Last Played Short"]})')
 
         rows_html.append(
             "<tr>"
+            f'<td>{row["Rank"]}</td>'
             f'<td><a href="/explore?song={encoded_title}" target="_self">{safe_title}</a></td>'
             f'<td><a href="/explore?show={encoded_show}" target="_self">{safe_days}</a></td>'
             f'<td>{html.escape(str(row["Times Played"]))}</td>'
-            f'<td>{html.escape(str(row["Overdue Score (Normalized)"]))}</td>'
+            f'<td>{html.escape(str(row["Overdue Score"]))}</td>'
             "</tr>"
         )
 
@@ -232,10 +256,11 @@ elif active_tab == "Bustout Info":
     <table class="linked-table">
         <thead>
             <tr>
+                <th></th>
                 <th>Title</th>
                 <th>Days Since Played</th>
                 <th>Times Played</th>
-                <th>Overdue Score (Normalized)</th>
+                <th>Overdue Score</th>
             </tr>
         </thead>
         <tbody>
@@ -244,7 +269,7 @@ elif active_tab == "Bustout Info":
     </table>
     """
     st.markdown(table_html, unsafe_allow_html=True)
-
+    
 # -------------------------
 # TAB: DEAD WEIGHT SL RANDOMIZER
 # -------------------------
