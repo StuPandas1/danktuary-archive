@@ -51,23 +51,21 @@ if "t1_year" not in st.session_state:
 
 if "active_tab" not in st.session_state:
     st.session_state.active_tab = "Song Search"
-
 # Deep-link support:
 #   /explore?song=<title>  -> selects a song, jumps to Song Search
 #   /explore?show=<label>  -> selects a show, jumps to Setlist Lookup
 query_song = st.query_params.get("song")
 query_show = st.query_params.get("show")
-
+ 
 if query_song and query_song != st.session_state.selected_song:
-    st.session_state.selected_song = query_song
+    st.session_state.t1_pending_song_selection = query_song
     st.session_state.active_tab = "Song Search"
     st.query_params.clear()
 elif query_show and query_show != st.session_state.selected_show:
-    st.session_state.selected_show = query_show
+    st.session_state.pending_show_selection = query_show
     st.session_state.active_tab = "Setlist Lookup"
-    if "selected_show_widget" in st.session_state:
-        del st.session_state["selected_show_widget"]
     st.query_params.clear()
+ 
 
 dank_header(subtitle="Explore the Archive")
 
@@ -123,28 +121,48 @@ if st.session_state.active_tab == "Song Search":
         t1_year = st.slider("By Year:", min_year, max_year, key="t1_year")
 
     t1_df, t1_stats = build_filtered(df, metadata, t1_artist, t1_year)
+    all_titles = sorted(t1_stats["Title"].unique())
+
+    # Buttons below can't write directly to the selectbox's own key because
+    # the selectbox is instantiated further down in this same run --
+    # Streamlit forbids modifying a widget's session-state key after that
+    # widget has already been drawn in the current run. Instead, buttons
+    # stash their intended value in t1_pending_song_selection, and this
+    # block (which runs before the selectbox below) applies it to the
+    # widget key on the following rerun, which is a legal time to set it.
+    if "t1_pending_song_selection" in st.session_state:
+        pending = st.session_state.pop("t1_pending_song_selection")
+        st.session_state.t1_song_widget = pending
+
+    # Guard against a filter change (artist/year/dead weight) dropping the
+    # currently-selected song out of the option list -- Streamlit raises if
+    # a widget's stored value isn't in its options.
+    if st.session_state.get("t1_song_widget") not in all_titles:
+        st.session_state.t1_song_widget = None
 
     search_song = st.selectbox(
         "Get shown the light...",
-        sorted(t1_stats["Title"].unique()),
+        all_titles,
         index=None,
-        placeholder="Type to search..."
+        placeholder="Type to search...",
+        key="t1_song_widget"
     )
 
-    col1, col2, col3 = st.columns(3)
+    col1, col2 = st.columns(2)
     with col1:
-        if st.button("Load Song History"):
-            st.session_state.selected_song = search_song
-    with col2:
         if st.button("Random Song"):
             import random
-            st.session_state.selected_song = random.choice(sorted(t1_stats["Title"].unique()))
-    with col3:
+            st.session_state.t1_pending_song_selection = random.choice(all_titles)
+            st.rerun()
+    with col2:
         if st.button("Clear Song History"):
-            st.session_state.selected_song = None
+            st.session_state.t1_pending_song_selection = None
             st.rerun()
 
-    selected_song = st.session_state.selected_song
+    # the selectbox itself is the source of truth now -- selecting a song
+    # loads it immediately, no separate "load" step needed
+    st.session_state.selected_song = search_song
+    selected_song = search_song
 
     if selected_song:
 
@@ -164,6 +182,93 @@ if st.session_state.active_tab == "Song Search":
             true_debut = df[df["Title"] == selected_song]["Date"].min()
             total_shows_since_debut = df[df["Date"] >= true_debut]["Date"].nunique()
             shows_played = df[(df["Title"] == selected_song) & (df["Date"] >= true_debut)]["Date"].nunique()
+
+        with st.expander("Performance History", expanded=False):
+            performances["Gap"] = (
+                performances["Date"].diff(periods=-1).dt.days
+            )
+
+            segue_labels = []
+            for idx, row in performances.iterrows():
+                date = row["Date"]
+                track = row["Track Number"]
+                duration = row["Duration"]
+                session = df[(df["Date"] == date)].sort_values("Track Number")
+                tracks = session["Track Number"].tolist()
+                durations = session["Duration"].tolist()
+                titles = session["Title"].tolist()
+                pos = tracks.index(track) if track in tracks else -1
+                label = ""
+                if pos >= 0:
+                    prev_same = pos > 0 and durations[pos - 1] == duration
+                    next_same = pos < len(durations) - 1 and durations[pos + 1] == duration
+                    if prev_same and next_same:
+                        label = f"{titles[pos-1]} -> {titles[pos]} -> {titles[pos+1]}"
+                    elif prev_same:
+                        label = f"{titles[pos-1]} -> {titles[pos]}"
+                    elif next_same:
+                        label = f"{titles[pos]} -> {titles[pos+1]}"
+                    else:
+                        label = titles[pos]
+                segue_labels.append(label)
+
+            performances = performances.copy()
+            performances["Title"] = segue_labels
+            df_display = performances.assign(
+                Show=lambda x: x["Date"].dt.strftime("%m/%d/%Y") + " — " + x["Location"]
+            )[["Show", "Title", "Duration", "Gap"]]
+
+            rows_html = []
+            for _, row in df_display.iterrows():
+                show_label = row["Show"]
+                encoded_show = urllib.parse.quote(show_label, safe="")
+                safe_show = html.escape(show_label)
+                gap = row["Gap"]
+                gap_display = "—" if pd.isna(gap) else str(int(gap))
+                rows_html.append(
+                    "<tr>"
+                    f'<td><a href="/explore?show={encoded_show}" target="_self">{safe_show}</a></td>'
+                    f'<td>{html.escape(str(row["Title"]))}</td>'
+                    f'<td>{html.escape(str(row["Duration"]))}</td>'
+                    f'<td>{html.escape(gap_display)}</td>'
+                    "</tr>"
+                )
+
+            table_html = f"""
+            <style>
+            .perf-history-table {{
+                width: 100%;
+                border-collapse: collapse;
+                font-size: 14px;
+            }}
+            .perf-history-table th, .perf-history-table td {{
+                text-align: left;
+                padding: 6px 10px;
+                border-bottom: 1px solid rgba(128,128,128,0.3);
+            }}
+            .perf-history-table a {{
+                color: #4a9eff;
+                text-decoration: none;
+            }}
+            .perf-history-table a:hover {{
+                text-decoration: underline;
+            }}
+            </style>
+            <table class="perf-history-table">
+                <thead>
+                    <tr>
+                        <th>Show</th>
+                        <th>Title</th>
+                        <th>Duration</th>
+                        <th>Gap</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {''.join(rows_html)}
+                </tbody>
+            </table>
+            """
+            st.markdown(table_html, unsafe_allow_html=True)
 
         with st.expander("Graph By Year", expanded=False):
             yearly_counts = (
@@ -229,92 +334,7 @@ if st.session_state.active_tab == "Song Search":
             ).configure_axis(grid=False, labelColor="#888", tickColor="#888").configure_view(strokeWidth=0)
 
             st.altair_chart(length_chart, width='stretch')
-
-        with st.expander("Performance History", expanded=False):
-            performances["Gap Since Previous"] = (
-                performances["Date"].diff().dt.days
-            ).fillna(0).astype(int) * -1
-
-            segue_labels = []
-            for idx, row in performances.iterrows():
-                date = row["Date"]
-                track = row["Track Number"]
-                duration = row["Duration"]
-                session = df[(df["Date"] == date)].sort_values("Track Number")
-                tracks = session["Track Number"].tolist()
-                durations = session["Duration"].tolist()
-                titles = session["Title"].tolist()
-                pos = tracks.index(track) if track in tracks else -1
-                label = ""
-                if pos >= 0:
-                    prev_same = pos > 0 and durations[pos - 1] == duration
-                    next_same = pos < len(durations) - 1 and durations[pos + 1] == duration
-                    if prev_same and next_same:
-                        label = f"{titles[pos-1]} -> {titles[pos]} -> {titles[pos+1]}"
-                    elif prev_same:
-                        label = f"{titles[pos-1]} -> {titles[pos]}"
-                    elif next_same:
-                        label = f"{titles[pos]} -> {titles[pos+1]}"
-                    else:
-                        label = titles[pos]
-                segue_labels.append(label)
-
-            performances = performances.copy()
-            performances["Segue"] = segue_labels
-            df_display = performances.assign(
-                Show=lambda x: x["Date"].dt.strftime("%m/%d/%Y") + " — " + x["Location"]
-            )[["Show", "Segue", "Duration", "Gap Since Previous"]]
-
-            rows_html = []
-            for _, row in df_display.iterrows():
-                show_label = row["Show"]
-                encoded_show = urllib.parse.quote(show_label, safe="")
-                safe_show = html.escape(show_label)
-                rows_html.append(
-                    "<tr>"
-                    f'<td><a href="/explore?show={encoded_show}" target="_self">{safe_show}</a></td>'
-                    f'<td>{html.escape(str(row["Segue"]))}</td>'
-                    f'<td>{html.escape(str(row["Duration"]))}</td>'
-                    f'<td>{html.escape(str(row["Gap Since Previous"]))}</td>'
-                    "</tr>"
-                )
-
-            table_html = f"""
-            <style>
-            .perf-history-table {{
-                width: 100%;
-                border-collapse: collapse;
-                font-size: 14px;
-            }}
-            .perf-history-table th, .perf-history-table td {{
-                text-align: left;
-                padding: 6px 10px;
-                border-bottom: 1px solid rgba(128,128,128,0.3);
-            }}
-            .perf-history-table a {{
-                color: #4a9eff;
-                text-decoration: none;
-            }}
-            .perf-history-table a:hover {{
-                text-decoration: underline;
-            }}
-            </style>
-            <table class="perf-history-table">
-                <thead>
-                    <tr>
-                        <th>Show</th>
-                        <th>Segue</th>
-                        <th>Duration</th>
-                        <th>Gap Since Previous</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {''.join(rows_html)}
-                </tbody>
-            </table>
-            """
-            st.markdown(table_html, unsafe_allow_html=True)
-
+            
 # -------------------------
 # TAB 2: SETLIST LOOKUP
 # -------------------------
@@ -355,11 +375,25 @@ elif st.session_state.active_tab == "Setlist Lookup":
         .tolist()
     )
 
-    if (
-        st.session_state.selected_show in unique_shows
-        and st.session_state.get("selected_show_widget") != st.session_state.selected_show
-    ):
-        st.session_state.selected_show_widget = st.session_state.selected_show
+    # Buttons below can't write directly to `selected_show_widget` because
+    # the selectbox using that key is instantiated further down in this
+    # same run -- Streamlit forbids modifying a widget's session-state key
+    # after that widget has already been drawn in the current run. Instead,
+    # buttons stash their intended value in `pending_show_selection`, and
+    # this block (which runs before the selectbox below) applies it to the
+    # widget key on the following rerun, which is a legal time to set it.
+    if "pending_show_selection" in st.session_state:
+        pending = st.session_state.pop("pending_show_selection")
+        st.session_state.selected_show_widget = pending
+
+    # The selectbox's own session-state key (selected_show_widget) is the
+    # single source of truth for what's selected otherwise. The only thing
+    # we need to guard here is that whatever value is currently stored
+    # there is still a valid option: narrowing the Location/Year filters
+    # can drop the previously-selected show from `unique_shows`, and
+    # Streamlit raises if a widget's stored value isn't in its options list.
+    if st.session_state.get("selected_show_widget") not in unique_shows:
+        st.session_state.selected_show_widget = None
 
     selected_show = st.selectbox(
         "Hundreds of shows but one will do",
@@ -374,34 +408,29 @@ elif st.session_state.active_tab == "Setlist Lookup":
         if st.button("Random Show"):
             import random
             surprise = random.choice(unique_shows)
-            st.session_state.selected_show = surprise
-            if "selected_show_widget" in st.session_state:
-                del st.session_state["selected_show_widget"]
+            st.session_state.pending_show_selection = surprise
             st.rerun()
     with col2:
-        today_md = pd.Timestamp.today().strftime("%m/%d")
+        today_md = pd.Timestamp.now(tz="America/New_York").strftime("%m/%d")
         on_this_day = [s for s in unique_shows if s.startswith(today_md)]
         if st.button("On This Day"):
             if on_this_day:
                 import random
-                st.session_state.selected_show = random.choice(on_this_day)
-                if "selected_show_widget" in st.session_state:
-                    del st.session_state["selected_show_widget"]
+                st.session_state.pending_show_selection = random.choice(on_this_day)
                 st.rerun()
             else:
                 st.toast("No shows found on this date in past years.")
     with col3:
         if st.button("Clear Setlist", key="clear_setlists1"):
-            st.session_state.selected_show = None
-            if "selected_show_widget" in st.session_state:
-                del st.session_state["selected_show_widget"]
+            st.session_state.pending_show_selection = None
             st.rerun()
 
-    if selected_show:
-        st.session_state.selected_show = selected_show
+    # keep the canonical selected_show mirror in sync for any other part of
+    # the app that reads it, but the widget itself is what drives display
+    st.session_state.selected_show = selected_show
 
-    if st.session_state.selected_show:
-        selected_label = st.session_state.selected_show
+    if selected_show:
+        selected_label = selected_show
         historical_setlist = performances[performances["Show_Label"] == selected_label].sort_values("Track Number")
         selected_date_str = selected_label.split(" — ")[0]
         selected_location = selected_label.split(" — ")[1]

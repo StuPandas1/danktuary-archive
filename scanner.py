@@ -18,10 +18,17 @@ archive_paths = [
 
 CSV_PATH = "band_archive.csv"
 
-FIELDNAMES = [
+# Base columns scanner.py itself knows how to populate. Other scripts in the
+# pipeline (generate_share_links.py, etc.) add their own columns to
+# band_archive.csv over time -- FIELDNAMES gets extended below, after
+# loading the existing CSV, to include any such columns too. Otherwise
+# csv.DictWriter throws when writing back existing rows that carry a column
+# scanner.py doesn't know about ("dict contains fields not in fieldnames").
+BASE_FIELDNAMES = [
     "Track Number", "File Track", "Title", "Date", "Location",
     "Type", "Duration", "Raw Title", "File Path", "Take", "IA URL", "OneDrive URL", "Status"
 ]
+FIELDNAMES = list(BASE_FIELDNAMES)
 
 
 def get_duration(filepath):
@@ -83,6 +90,12 @@ if os.path.exists(CSV_PATH):
                     )
                 except ValueError:
                     pass
+
+        extra_cols = [c for c in existing_df.columns if c not in FIELDNAMES]
+        if extra_cols:
+            print(f"Found extra column(s) in {CSV_PATH} added by another script: "
+                  f"{extra_cols}. Preserving them.")
+            FIELDNAMES.extend(extra_cols)
 
         print(f"Loaded {len(existing_rows)} existing row(s); "
               f"{len(processed_files)} file(s) already catalogued and will be skipped.")
