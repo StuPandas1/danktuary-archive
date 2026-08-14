@@ -43,6 +43,11 @@ else:
 # -------------------------
 # NOTES HELPERS
 # -------------------------
+#
+# NOTE ON SCHEMA: replies rely on a nullable "parent_id" column on the
+# show_notes table (uuid/int, FK to show_notes.id, null for top-level
+# notes). If that column doesn't exist yet in Supabase, add it before
+# this goes live -- save_note() will otherwise fail on every reply.
 
 def load_notes(show_label):
     try:
@@ -52,18 +57,125 @@ def load_notes(show_label):
     except Exception:
         return []
 
-def save_note(show_label, username, display_name, note):
+
+def save_note(show_label, username, display_name, note, parent_id=None):
     try:
         supabase = get_supabase_client()
-        supabase.table("show_notes").insert({
+        payload = {
             "show_label": show_label,
             "username": username,
             "display_name": display_name,
-            "note": note
-        }).execute()
+            "note": note,
+            "parent_id": parent_id,
+        }
+        supabase.table("show_notes").insert(payload).execute()
         return True
     except Exception:
         return False
+
+
+def build_note_tree(notes):
+    """Organizes a flat list of notes (each possibly carrying a
+    parent_id) into a list of top-level notes, each with its replies
+    nested under a 'replies' key. Falls back gracefully -- a reply whose
+    parent got deleted (or a parent_id pointing nowhere) just surfaces
+    as a top-level note rather than vanishing."""
+    by_id = {n["id"]: {**n, "replies": []} for n in notes if "id" in n}
+    top_level = []
+    for n in notes:
+        node = by_id.get(n.get("id"))
+        if node is None:
+            continue
+        parent_id = n.get("parent_id")
+        if parent_id and parent_id in by_id and parent_id != n.get("id"):
+            by_id[parent_id]["replies"].append(node)
+        else:
+            top_level.append(node)
+    return top_level
+
+
+def render_note(entry, show_label, depth=0):
+    """Renders a single note and its replies (recursively). Anyone can
+    read notes; only logged-in users see the reply control."""
+    indent_px = depth * 24
+    date_str = pd.Timestamp(entry["created_at"]).strftime("%m/%d/%Y")
+
+    st.markdown(
+        f"<div style='margin-left:{indent_px}px'>"
+        f"<strong>{html.escape(entry['display_name'])}</strong> · "
+        f"<span style='color:grey'>{date_str}</span>"
+        f"</div>",
+        unsafe_allow_html=True,
+    )
+    st.markdown(
+        f"<div style='margin-left:{indent_px}px; white-space:pre-wrap'>{html.escape(entry['note'])}</div>",
+        unsafe_allow_html=True,
+    )
+
+    if st.user.is_logged_in:
+        reply_open_key = f"note_reply_open_{entry['id']}"
+        if st.button("↩️ Reply", key=f"note_reply_btn_{entry['id']}"):
+            st.session_state[reply_open_key] = not st.session_state.get(reply_open_key, False)
+
+        if st.session_state.get(reply_open_key):
+            reply_text = st.text_area(
+                "Reply:",
+                key=f"note_reply_text_{entry['id']}",
+                placeholder=f"Replying to {entry['display_name']}...",
+            )
+            if st.button("Post Reply", key=f"note_reply_submit_{entry['id']}"):
+                if reply_text.strip():
+                    success = save_note(show_label, username, name, reply_text.strip(), parent_id=entry["id"])
+                    if success:
+                        st.session_state[reply_open_key] = False
+                        st.session_state.pop(f"note_reply_text_{entry['id']}", None)
+                        st.rerun()
+                    else:
+                        st.error("Couldn't post reply right now.")
+                else:
+                    st.warning("Reply is empty.")
+
+    for reply in entry.get("replies", []):
+        render_note(reply, show_label, depth=depth + 1)
+
+    if depth == 0:
+        st.markdown("---")
+
+
+def render_show_notes(show_label):
+    """Notes are visible to everyone; only logged-in users get the
+    composer for a new top-level note (and the reply controls, handled
+    inside render_note)."""
+    st.markdown("---")
+    st.markdown("#### 📝 Show Notes")
+
+    show_notes = load_notes(show_label)
+
+    if show_notes:
+        note_tree = build_note_tree(show_notes)
+        for entry in note_tree:
+            render_note(entry, show_label)
+    else:
+        st.write("No notes yet for this show.")
+
+    if st.user.is_logged_in:
+        new_note = st.text_area(
+            "Add a note:",
+            placeholder="What stood out? What needs work?",
+            key=f"note_{show_label}",
+        )
+        if st.button("Save Note", key=f"save_note_{show_label}"):
+            if new_note.strip():
+                success = save_note(show_label, username, name, new_note.strip())
+                if success:
+                    st.success("Note saved!")
+                    st.rerun()
+                else:
+                    st.error("Couldn't save note right now.")
+            else:
+                st.warning("Note is empty.")
+    else:
+        st.info("Log in above to add notes or reply.")
 
 # -------------------------
 # TOP-LEVEL NAVIGATION
@@ -336,7 +448,7 @@ def render_setlist_stats(playlist, archive_df, show_label):
         </table>
         """
         st.markdown(table_html, unsafe_allow_html=True)
-        
+
 def on_setlist_select_change():
     """Selecting a setlist deactivates any chosen saved playlist, so only
     one player is ever active at a time."""
@@ -471,36 +583,10 @@ if st.session_state["active_section"] == "Listen to Music":
                             except Exception:
                                 st.error("Couldn't add right now — the account database is unreachable.")
 
-        if st.user.is_logged_in:
-            st.markdown("---")
-            st.markdown("#### 📝 Show Notes")
-
-            show_notes = load_notes(selected_show)
-
-            if show_notes:
-                for entry in show_notes:
-                    date_str = pd.Timestamp(entry["created_at"]).strftime("%m/%d/%Y")
-                    st.markdown(f"**{entry['display_name']}** · *{date_str}*")
-                    st.write(entry["note"])
-                    st.markdown("---")
-            else:
-                st.write("No notes yet for this show.")
-
-            new_note = st.text_area("Add a note:", placeholder="What stood out? What needs work?", key=f"note_{selected_show}")
-
-            if st.button("Save Note"):
-                if new_note.strip():
-                    success = save_note(selected_show, username, name, new_note.strip())
-                    if success:
-                        st.success("Note saved!")
-                        st.rerun()
-                    else:
-                        st.error("Couldn't save note right now.")
-                else:
-                    st.warning("Note is empty.")
-        else:
-            st.markdown("---")
-            st.info("Log in above to add and view show notes.")
+        # Notes are now always rendered here -- render_show_notes() handles
+        # the logged-out vs logged-in split internally (read access for
+        # everyone, composer/reply controls gated to logged-in users).
+        render_show_notes(selected_show)
 
     # ---- Saved playlist playback (no extras) ----
     elif player_mode == "playlist" and playlist_labels and st.session_state.get("listen_playlist_select"):
