@@ -19,13 +19,29 @@ if errorlevel 1 (
 
 echo.
 echo [2/8] Uploading new recordings to the Internet Archive...
+set UPLOAD_MAX_RETRIES=3
+set UPLOAD_WAIT_SECONDS=3600
+set UPLOAD_ATTEMPT=0
+
+:upload_retry
+set /a UPLOAD_ATTEMPT+=1
 python upload_to_archive.py
 if errorlevel 1 (
+    if !UPLOAD_ATTEMPT! GEQ !UPLOAD_MAX_RETRIES! (
+        echo.
+        echo ERROR: upload_to_archive.py failed after !UPLOAD_MAX_RETRIES! attempt^(s^). Stopping.
+        echo Check the output above. If it's still a rate limit, wait longer and re-run manually.
+        pause
+        exit /b 1
+    )
     echo.
-    echo ERROR: upload_to_archive.py failed or hit a rate limit. Stopping.
-    echo Check the output above. If it's a rate limit, wait before re-running.
-    pause
-    exit /b 1
+    echo upload_to_archive.py failed on attempt !UPLOAD_ATTEMPT! of !UPLOAD_MAX_RETRIES!
+    echo ^(likely IA's rate limiter -- this retry loop can't tell that apart from
+    echo  other failures, so it'll retry regardless and just fail again quickly
+    echo  if it's something else^).
+    echo Waiting !UPLOAD_WAIT_SECONDS! seconds before retrying... ^(press any key to retry now^)
+    timeout /t !UPLOAD_WAIT_SECONDS!
+    goto upload_retry
 )
 
 echo.
