@@ -509,16 +509,76 @@ def dank_playlist_player(show_label, tracks):
         color: #8a857c;
         font-size: 12px;
     }}
+    .dank-transport-row {{
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        margin-bottom: 14px;
+    }}
+    .dank-skip-btn {{
+        background-color: #2a2826;
+        color: #ece7de;
+        border: 1px solid #3a3733;
+        border-radius: 8px;
+        padding: 6px 14px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.15s ease;
+    }}
+    .dank-skip-btn:hover {{
+        background-color: #3a3733;
+    }}
+    .dank-skip-btn:disabled {{
+        opacity: 0.4;
+        cursor: not-allowed;
+    }}
     </style>
     <div class="dank-playlist-card">
         <div class="dank-playlist-title">{show_label}</div>
         <audio id="dank-player" controls preload="none"></audio>
+        <div class="dank-transport-row">
+            <button id="dank-prev" class="dank-skip-btn">⏮ Prev</button>
+            <button id="dank-skip-back" class="dank-skip-btn">⏪ 10s</button>
+            <button id="dank-skip-fwd" class="dank-skip-btn">10s ⏩</button>
+            <button id="dank-next" class="dank-skip-btn">Next ⏭</button>
+        </div>
+        <div class="dank-track-list" id="dank-track-list"></div>
         <div class="dank-track-list" id="dank-track-list"></div>
     </div>
     <script>
     const tracks = {tracks_json};
     const player = document.getElementById('dank-player');
     const listEl = document.getElementById('dank-track-list');
+    const prevBtn = document.getElementById('dank-prev');
+    const nextBtn = document.getElementById('dank-next');
+    const skipBackBtn = document.getElementById('dank-skip-back');
+    const skipFwdBtn = document.getElementById('dank-skip-fwd');
+
+    function updateTransportButtons() {{
+        prevBtn.disabled = currentIndex <= 0;
+        nextBtn.disabled = currentIndex >= tracks.length - 1;
+    }}
+
+    skipBackBtn.addEventListener('click', () => {{
+        player.currentTime = Math.max(0, player.currentTime - 10);
+    }});
+
+    skipFwdBtn.addEventListener('click', () => {{
+        if (!isNaN(player.duration)) {{
+            player.currentTime = Math.min(player.duration, player.currentTime + 10);
+        }} else {{
+            player.currentTime += 10;
+        }}
+    }});
+
+    prevBtn.addEventListener('click', () => {{
+        if (currentIndex > 0) loadTrack(currentIndex - 1, true);
+    }});
+
+    nextBtn.addEventListener('click', () => {{
+        if (currentIndex + 1 < tracks.length) loadTrack(currentIndex + 1, true);
+    }});
     let currentIndex = 0;
 
     function renderList() {{
@@ -544,6 +604,7 @@ def dank_playlist_player(show_label, tracks):
             player.play().catch(() => {{}});
         }}
         renderList();
+        updateTransportButtons();
     }}
 
     player.addEventListener('ended', () => {{
