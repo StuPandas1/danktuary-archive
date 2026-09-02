@@ -147,10 +147,6 @@ if active_tab == "Recently Played":
     </table>
     """
     st.markdown(table_html, unsafe_allow_html=True)
-    
-# -------------------------
-# TAB: BUSTOUT INFO
-# -------------------------
 
 # -------------------------
 # TAB: BUSTOUT INFO
@@ -269,7 +265,7 @@ elif active_tab == "Bustout Info":
     </table>
     """
     st.markdown(table_html, unsafe_allow_html=True)
-    
+
 # -------------------------
 # TAB: DEAD WEIGHT SL RANDOMIZER
 # -------------------------
