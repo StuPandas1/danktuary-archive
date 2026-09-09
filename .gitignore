@@ -2,3 +2,5 @@
 __pycache__/
 *.pyc.msal_token_cache.bin
 .streamlit/secrets.toml
+
+.msal_token_cache.bin
