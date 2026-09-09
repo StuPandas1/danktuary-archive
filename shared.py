@@ -627,7 +627,7 @@ def dank_playlist_player(show_label, tracks):
 
     loadTrack(0, false);
     </script>
-    """, height = 90 + min(len(tracks), 6) * 46 + 150)
+    """, height = 90 + min(len(tracks), 6) * 46 + 200)
 
 # -------------------------
 # MOBILE KEYBOARD SUPPRESSION FOR SELECTBOX
