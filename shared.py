@@ -471,6 +471,19 @@ def dank_playlist_player(show_label, tracks):
         display: flex;
         flex-direction: column;
         gap: 2px;
+        max-height: 300px;
+        overflow-y: auto;
+        padding-right: 4px;
+    }}
+    .dank-track-list::-webkit-scrollbar {{
+        width: 6px;
+    }}
+    .dank-track-list::-webkit-scrollbar-track {{
+        background: transparent;
+    }}
+    .dank-track-list::-webkit-scrollbar-thumb {{
+        background-color: #3a3733;
+        border-radius: 3px;
     }}
     .dank-track {{
         display: flex;
@@ -615,7 +628,7 @@ def dank_playlist_player(show_label, tracks):
 
     loadTrack(0, false);
     </script>
-    """, height=height)
+    """, height = 90 + min(len(tracks), 6) * 46 + 40)
 
 # -------------------------
 # MOBILE KEYBOARD SUPPRESSION FOR SELECTBOX
