@@ -557,7 +557,6 @@ def dank_playlist_player(show_label, tracks):
             <button id="dank-next" class="dank-skip-btn">Next ⏭</button>
         </div>
         <div class="dank-track-list" id="dank-track-list"></div>
-        <div class="dank-track-list" id="dank-track-list"></div>
     </div>
     <script>
     const tracks = {tracks_json};
