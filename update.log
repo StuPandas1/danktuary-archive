@@ -1,0 +1,32 @@
+2026-09-20 17:14:19  INFO     ==================================================
+2026-09-20 17:14:19  INFO       DankApp Database Update
+2026-09-20 17:14:19  INFO     ==================================================
+2026-09-20 17:14:19  INFO     Working directory: C:\Users\Administrator\OneDrive\LoveDeep\danktuary-archive-clean
+2026-09-20 17:14:19  INFO     [1/6] Scanning files to update band_archive.csv...
+2026-09-20 17:14:22  INFO       scanner.py | Let's a-gooooo!
+2026-09-20 17:14:22  INFO       scanner.py | Found extra column(s) in band_archive.csv added by another script: ['OneDrive Share URL']. Preserving them.
+2026-09-20 17:14:22  INFO       scanner.py | Loaded 6510 existing row(s); 5051 file(s) already catalogued and will be skipped.
+2026-09-20 17:14:22  INFO       scanner.py | Added 0 new row(s), removed 0 row(s), flagged 0 row(s) as missing. CSV now has 6510 total row(s).
+2026-09-20 17:14:22  WARNING    scanner.py | 2026-09-20 17:14:20.701 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-09-20 17:14:22  WARNING    scanner.py | 2026-09-20 17:14:21.011 No runtime found, using MemoryCacheStorageManager
+2026-09-20 17:14:22  WARNING    scanner.py | 2026-09-20 17:14:21.011 No runtime found, using MemoryCacheStorageManager
+2026-09-20 17:14:22  WARNING    scanner.py | 2026-09-20 17:14:21.011 No runtime found, using MemoryCacheStorageManager
+2026-09-20 17:14:22  WARNING    scanner.py | 2026-09-20 17:14:21.011 No runtime found, using MemoryCacheStorageManager
+2026-09-20 17:14:22  INFO     [2/6] Uploading new recordings to the Internet Archive...
+2026-09-20 17:14:23  INFO       upload_to_archive.py | Done. band_archive.csv updated with IA URLs.
+2026-09-20 17:14:23  INFO     [3/6] Analyzing data...
+2026-09-20 17:14:24  INFO       analyze.py | song_stats.csv created!
+2026-09-20 17:14:24  INFO     [4/6] Building metadata...
+2026-09-20 17:14:25  INFO       build_metadata.py | song_metadata.csv updated!
+2026-09-20 17:14:25  INFO     [5/6] Adding share links...
+2026-09-20 17:14:37  INFO       generate_share_links.py | Found 5 folders to generate share links for.
+2026-09-20 17:14:37  INFO       generate_share_links.py |   Processing: LoveDeep/Audio Recordings/Jam Session Recordings 2021-/2026/2026-08-19 _ Jam Session
+2026-09-20 17:14:37  WARNING    generate_share_links.py | Traceback (most recent call last):
+2026-09-20 17:14:37  WARNING    generate_share_links.py |   File "C:\Users\Administrator\OneDrive\LoveDeep\danktuary-archive-clean\generate_share_links.py", line 138, in <module>
+2026-09-20 17:14:37  WARNING    generate_share_links.py |     print(f"    \u2713 {url}")
+2026-09-20 17:14:37  WARNING    generate_share_links.py |   File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\encodings\cp1252.py", line 19, in encode
+2026-09-20 17:14:37  WARNING    generate_share_links.py |     return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+2026-09-20 17:14:37  WARNING    generate_share_links.py |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-09-20 17:14:37  WARNING    generate_share_links.py | UnicodeEncodeError: 'charmap' codec can't encode character '\u2713' in position 4: character maps to <undefined>
+2026-09-20 17:14:37  ERROR    Stopping: generate_share_links.py exited with code 1
+2026-09-20 17:14:37  INFO     [notify] Update pipeline failed: generate_share_links.py exited with code 1
