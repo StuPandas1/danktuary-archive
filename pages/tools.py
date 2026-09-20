@@ -157,13 +157,13 @@ if active_tab == "Recently Played":
 # TAB: BUSTOUT INFO
 # -------------------------
 
-elif active_tab == "Bustout Info":
+elif active_tab == "Bustout Tracker":
     st.subheader("Most Overdue Songs")
     dead_weight_only = st.checkbox("Dead Weight Only", value=True, key="bustout_dead_weight")
 
     col_label, col_radio = st.columns([1, 6], vertical_alignment="center")
     with col_label:
-        st.markdown("**Sort by**")
+        st.markdown("**Sort by:**")
     with col_radio:
         sort_by = st.radio(
             "Sort by",
