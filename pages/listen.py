@@ -14,6 +14,8 @@ from shared import (
     parse_duration
     )
 
+st.set_page_config(page_title="Listen to DankApp Tunes", page_icon="🎧", layout="wide")
+
 df = load_all_recordings(_data_file_mtimes())
 
 page_menu()

@@ -11,6 +11,8 @@ from shared import ( #type: ignore
     dead_weight_artists, dead_weight_year
 )
 
+st.set_page_config(page_title="Explore — DankApp", page_icon="🔍", layout="wide")
+
 df, song_stats, metadata, jam_metadata = load_data()
 df2 = df.copy()
 df = df[df["Take"] == 1]

@@ -33,6 +33,8 @@ import pandas as pd
 import streamlit as st
 import yt_dlp
 
+st.set_page_config(page_title="Watch DankApp Videos", page_icon="🎬", layout="wide")
+
 try:
     from shared import dank_header, page_menu
     HAVE_SHARED = True

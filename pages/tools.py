@@ -17,6 +17,8 @@ from shared import ( #type: ignore
     clean_title, manual_fixes
 )
 
+st.set_page_config(page_title="Useful DankApp Tools", page_icon="🛠️", layout="wide")
+
 st.markdown("""
 <style>
 div[data-testid="stHorizontalBlock"] {

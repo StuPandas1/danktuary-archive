@@ -6,6 +6,8 @@ from zoneinfo import ZoneInfo
 today_md = pd.Timestamp.now(tz=ZoneInfo("America/New_York")).strftime("%m/%d")
 from shared import load_data, parse_duration, page_menu, dank_header, force_columns_horizontal #type: ignore
 
+st.set_page_config(page_title="DankApp", page_icon="💀", layout="wide")
+
 df, song_stats, metadata, jam_metadata = load_data()
 df2 = df.copy()
 df_durationfiltered = df[df["Duration"] != df["Duration"].shift()].reset_index(drop=True)
