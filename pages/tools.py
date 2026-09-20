@@ -71,7 +71,7 @@ active_tab = st.session_state.active_tab
 # TAB: RECENT SETLIST STATS
 # -------------------------
 
-if active_tab in ("Recently Played", "Bustout Info", "Song Streak"):
+if active_tab in ("Recently Played", "Bustout Tracker", "Song Streak"):
     full_df, full_stats = build_filtered(df, metadata, [], (min_year, max_year))
 
 if active_tab == "Recently Played":
