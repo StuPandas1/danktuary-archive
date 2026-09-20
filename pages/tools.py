@@ -54,7 +54,7 @@ if "active_tab" not in st.session_state:
 
 dank_header(subtitle="Useful Tools for the Dank")
 
-tab_names = ["Recently Played", "Bustout Info", "Setlist Randomizer", "Unplayed Songs"]
+tab_names = ["Recently Played", "Bustout Tracker", "Setlist Randomizer", "Unplayed Songs"]
 tab_cols = st.columns(len(tab_names))
 for i, name in enumerate(tab_names):
     with tab_cols[i]:
