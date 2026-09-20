@@ -88,7 +88,10 @@ if active_tab == "Recently Played":
     recent_display = full_stats.merge(most_recent_rows, on="Title", how="left")
     recent_display = (
         recent_display
-        .sort_values(["Last_Played", "Track Number"], ascending=[False, True])
+        .sort_values(
+            ["Last_Played", "Title", "Track Number"],
+            ascending=[False, True, True]
+        )
         .assign(Last_Played=lambda x: x["Last_Played"].dt.strftime("%m/%d/%Y"))
         .rename(columns={"Last_Played": "Last Played", "Times_Played": "Total Plays"})
         [["Title", "Last Played", "Total Plays", "Location"]]
