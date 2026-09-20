@@ -86,8 +86,6 @@ if on_this_day_dates:
             with cols[i]:
                 if st.button(label, key=f"otd_{date_str}", width="stretch"):
                     st.session_state.selected_show = label
-                    if "selected_show_widget" in st.session_state:
-                        del st.session_state["selected_show_widget"]
                     st.session_state.active_tab = "Setlist Lookup"
                     st.query_params["scroll"] = "1"
                     st.switch_page("pages/explore.py")
