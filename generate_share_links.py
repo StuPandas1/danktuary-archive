@@ -28,7 +28,7 @@ def get_access_token():
 
     app = msal.PublicClientApplication(
         CLIENT_ID,
-        authority="https://login.microsoftonline.com/common",
+        authority="https://login.microsoftonline.com/consumers",
         token_cache=cache,
     )
 
@@ -65,6 +65,7 @@ def get_folder_item_id(token, folder_path):
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
         return response.json().get("id")
+    print(f"    [DEBUG] {response.status_code}: {response.text}")  # <-- add this
     return None
 
 def create_share_link(token, item_id):
