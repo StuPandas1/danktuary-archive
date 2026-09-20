@@ -3,7 +3,7 @@ import pandas as pd  # type: ignore
 import streamlit.components.v1 as components
 import random
 from zoneinfo import ZoneInfo
-today_md = pd.Timestamp.now(tz=ZoneInfo("America/New_York")).strftime("%m/%d")
+today_md = "09/16"
 from shared import load_data, parse_duration, page_menu, dank_header, force_columns_horizontal #type: ignore
 
 df, song_stats, metadata, jam_metadata = load_data()
@@ -85,7 +85,7 @@ if on_this_day_dates:
 
             with cols[i]:
                 if st.button(label, key=f"otd_{date_str}", width="stretch"):
-                    st.session_state.selected_show = label
+                    st.session_state.pending_show_selection = label
                     st.session_state.active_tab = "Setlist Lookup"
                     st.query_params["scroll"] = "1"
                     st.switch_page("pages/explore.py")
