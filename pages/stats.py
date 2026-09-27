@@ -11,7 +11,7 @@ from shared import ( #type: ignore
     dead_weight_artists, dead_weight_year
 )
 
-st.set_page_config(page_title="Stats", page_icon="📊", layout="wide")
+st.set_page_config(page_title="Heady Stats", page_icon="📊", layout="wide")
 
 df, song_stats, metadata, jam_metadata = load_data()
 df2 = df.copy()
@@ -80,14 +80,20 @@ div[data-testid="stHorizontalBlock"] button {
 </style>
 """, unsafe_allow_html=True)
 
-tab_names = ["Song Search", "Setlist Lookup", "Song Stats", "Setlist Stats"]
-tab_cols = st.columns(len(tab_names))
-for i, name in enumerate(tab_names):
-    with tab_cols[i]:
-        button_type = "primary" if st.session_state.active_tab == name else "secondary"
-        if st.button(name, key=f"tabbtn_{name}", width="stretch", type=button_type):
-            st.session_state.active_tab = name
-            st.rerun()
+tab_groups = [
+    ("Search by Show/Setlist:", ["Song Search", "Setlist Lookup"]),
+    ("Poke Around with Stats:", ["Song Stats", "Setlist Stats"]),
+]
+
+for label, names in tab_groups:
+    st.write(label)
+    cols = st.columns(len(names))
+    for i, name in enumerate(names):
+        with cols[i]:
+            button_type = "primary" if st.session_state.active_tab == name else "secondary"
+            if st.button(name, key=f"tabbtn_{name}", width="stretch", type=button_type):
+                st.session_state.active_tab = name
+                st.rerun()
 
 st.divider()
 
