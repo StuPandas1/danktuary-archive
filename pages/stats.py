@@ -11,7 +11,7 @@ from shared import ( #type: ignore
     dead_weight_artists, dead_weight_year
 )
 
-st.set_page_config(page_title="Explore the DankApp", page_icon="🔍", layout="wide")
+st.set_page_config(page_title="Stats", page_icon="📊", layout="wide")
 
 df, song_stats, metadata, jam_metadata = load_data()
 df2 = df.copy()
@@ -69,7 +69,7 @@ elif query_show and query_show != st.session_state.selected_show:
     st.query_params.clear()
  
 
-dank_header(subtitle="Explore the Archive")
+dank_header(subtitle="Heady Stats")
 
 st.markdown("""
 <style>
@@ -229,7 +229,7 @@ if st.session_state.active_tab == "Song Search":
                 gap_display = "—" if pd.isna(gap) else str(int(gap))
                 rows_html.append(
                     "<tr>"
-                    f'<td><a href="/explore?show={encoded_show}" target="_self">{safe_show}</a></td>'
+                    f'<td><a href="/stats?show={encoded_show}" target="_self">{safe_show}</a></td>'
                     f'<td>{html.escape(str(row["Title"]))}</td>'
                     f'<td>{html.escape(str(row["Duration"]))}</td>'
                     f'<td>{html.escape(gap_display)}</td>'
@@ -494,7 +494,7 @@ elif st.session_state.active_tab == "Setlist Lookup":
             title = row["Title"]
             encoded_title = urllib.parse.quote(title, safe="")
             safe_title = html.escape(title)
-            link = f'<a href="/explore?song={encoded_title}" target="_self">{safe_title}</a>'
+            link = f'<a href="/stats?song={encoded_title}" target="_self">{safe_title}</a>'
             if i in segue_indices:
                 link += " ->"
             rows_html.append(
