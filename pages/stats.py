@@ -86,10 +86,11 @@ tab_groups = [
 ]
 
 for label, names in tab_groups:
-    st.write(label)
-    cols = st.columns(len(names))
+    row_cols = st.columns([2] + [1] * len(names))
+    with row_cols[0]:
+        st.write(label)
     for i, name in enumerate(names):
-        with cols[i]:
+        with row_cols[i + 1]:
             button_type = "primary" if st.session_state.active_tab == name else "secondary"
             if st.button(name, key=f"tabbtn_{name}", width="stretch", type=button_type):
                 st.session_state.active_tab = name
