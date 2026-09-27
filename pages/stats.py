@@ -694,6 +694,8 @@ elif st.session_state.active_tab == "Setlist Stats":
     with col3:
         if st.button("Most Common Segues"):
             st.session_state.active_stat = "segues"
+        if st.button("Graph by Length"):
+            st.session_state.active_stat = "length_graph"
 
     active = st.session_state.get("active_stat")
 
@@ -769,6 +771,62 @@ elif st.session_state.active_tab == "Setlist Stats":
         st.subheader("Activity Heatmap")
         st.altair_chart(heatmap_chart, width='stretch')
 
+    elif active == "length_graph":
+        one_year_ago = pd.Timestamp.now() - pd.DateOffset(years=2)
+        danktuary_df = t3_df[
+            (t3_df["Location"] == "Danktuary Studios") &
+            (t3_df["Date"] >= one_year_ago)
+        ].copy()
+
+        if danktuary_df.empty:
+            st.subheader("Graph by Length")
+            st.info("No Danktuary Studios setlists found in the past year.")
+        else:
+            danktuary_df = danktuary_df.sort_values(["Date", "Track Number"])
+
+            # Drop consecutive rows with identical Duration within each show (e.g. segue rows sharing one duration)
+            is_repeat = (
+                danktuary_df.groupby("Date")["Duration"]
+                .transform(lambda s: s == s.shift())
+            )
+            danktuary_df = danktuary_df[~is_repeat]
+
+            danktuary_df["Duration_Seconds"] = danktuary_df["Duration"].apply(parse_duration)
+
+            length_df = (
+                danktuary_df.groupby("Date")["Duration_Seconds"].sum()
+                .reset_index(name="Total Seconds")
+                .sort_values("Date")
+            )
+            length_df["Total Minutes"] = length_df["Total Seconds"] / 60
+
+            base = alt.Chart(length_df).encode(
+                x=alt.X("Date:T", axis=alt.Axis(title=None)),
+            )
+
+            line = base.mark_line(point=True, color="#4a9eff").encode(
+                y=alt.Y("Total Minutes:Q", axis=alt.Axis(title="Minutes")),
+                tooltip=[
+                    alt.Tooltip("Date:T", title="Date"),
+                    alt.Tooltip("Total Minutes:Q", title="Minutes", format=".1f")
+                ]
+            )
+
+            trend = base.transform_regression(
+                "Date", "Total Minutes"
+            ).mark_line(
+                color="#ff6b6b", strokeDash=[4, 4]
+            ).encode(
+                y="Total Minutes:Q"
+            )
+
+            length_chart = (line + trend).properties(
+                height=250, title=alt.TitleParams("Setlist Length Over Time (Danktuary Studios)", anchor="middle")
+            ).configure_axis(grid=False, labelColor="#888", tickColor="#888").configure_view(strokeWidth=0)
+
+            st.subheader("Graph by Length")
+            st.altair_chart(length_chart, width='stretch')
+            
 else:
     st.write("Select a tab to view its content.")
 

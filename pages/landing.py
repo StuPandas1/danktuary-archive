@@ -90,7 +90,7 @@ if on_this_day_dates:
                     st.session_state.pending_show_selection = label
                     st.session_state.active_tab = "Setlist Lookup"
                     st.query_params["scroll"] = "1"
-                    st.switch_page("pages/explore.py")
+                    st.switch_page("pages/stats.py")
 else:
     st.markdown(f"<div style='text-align: center;'><strong>No recordings found on this day ({today_md})</strong></div>", unsafe_allow_html=True)
 
