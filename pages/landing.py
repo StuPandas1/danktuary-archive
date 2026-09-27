@@ -153,7 +153,7 @@ jam_row = top_jams.iloc[jam_idx]
 jam_title = jam_row["Song(s)"]
 jam_date = jam_row["Date"].strftime("%m/%d/%Y")
 jam_secs = jam_row["Duration_Secs"]
-fun_facts.append(f"At **{jam_secs // 60}:{jam_secs % 60:02d}**, **\"{jam_title}\"** (**{jam_date}**) is the **#{jam_idx + 1}** longest jam in the archive.")
+fun_facts.append(f"At **{jam_secs // 60}:{jam_secs % 60:02d}**, **\"{jam_title}\"** (**{jam_date}**) is the **#{jam_idx + 1}** longest track in the archive.")
  
 busiest_year = df["Year"].value_counts().idxmax()
 fun_facts.append(f"**{busiest_year}** was the most active year, with **{df['Year'].value_counts().max()}** songs played.")
