@@ -673,8 +673,8 @@ def page_menu():
             st.switch_page("pages/watch.py")
         if st.button("Useful Tools", width="stretch"):
             st.switch_page("pages/tools.py")
-        if st.button("Explore the Archive", width="stretch"):
-            st.switch_page("pages/explore.py")
+        if st.button("Heady Stats", width="stretch"):
+            st.switch_page("pages/stats.py")
 
 # -------------------------
 # FORCE HORIZ ROW/PLAYLIST FORMATTING
