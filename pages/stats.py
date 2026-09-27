@@ -5,6 +5,7 @@ import os
 import streamlit.components.v1 as components  # type: ignore
 import html
 import urllib.parse
+import numpy as np
 from shared import ( #type: ignore
     load_data, build_filtered, find_closers, parse_duration,
     make_dead_weight_callback, page_menu, local_path_to_onedrive_url, dank_header, ranked_table,
@@ -772,15 +773,11 @@ elif st.session_state.active_tab == "Setlist Stats":
         st.altair_chart(heatmap_chart, width='stretch')
 
     elif active == "length_graph":
-        one_year_ago = pd.Timestamp.now() - pd.DateOffset(years=2)
-        danktuary_df = t3_df[
-            (t3_df["Location"] == "Danktuary Studios") &
-            (t3_df["Date"] >= one_year_ago)
-        ].copy()
+        danktuary_df = t3_df[t3_df["Location"] == "Danktuary Studios"].copy()
 
         if danktuary_df.empty:
             st.subheader("Graph by Length")
-            st.info("No Danktuary Studios setlists found in the past year.")
+            st.info("No Danktuary Studios setlists found.")
         else:
             danktuary_df = danktuary_df.sort_values(["Date", "Track Number"])
 
@@ -800,32 +797,128 @@ elif st.session_state.active_tab == "Setlist Stats":
             )
             length_df["Total Minutes"] = length_df["Total Seconds"] / 60
 
-            base = alt.Chart(length_df).encode(
-                x=alt.X("Date:T", axis=alt.Axis(title=None)),
-            )
+            # Filter out short practice recordings (< 80 minutes total)
+            length_df = length_df[length_df["Total Minutes"] >= 80].reset_index(drop=True)
 
-            line = base.mark_line(point=True, color="#4a9eff").encode(
-                y=alt.Y("Total Minutes:Q", axis=alt.Axis(title="Minutes")),
-                tooltip=[
-                    alt.Tooltip("Date:T", title="Date"),
-                    alt.Tooltip("Total Minutes:Q", title="Minutes", format=".1f")
-                ]
-            )
+            if length_df.empty:
+                st.info("No qualifying setlists (80+ minutes) found.")
+            else:
+                # --- Linear trendline via numpy, extrapolated to today ---
+                x_ord = length_df["Date"].map(pd.Timestamp.toordinal)
+                slope, intercept = np.polyfit(x_ord, length_df["Total Minutes"], 1)
 
-            trend = base.transform_regression(
-                "Date", "Total Minutes"
-            ).mark_line(
-                color="#ff6b6b", strokeDash=[4, 4]
-            ).encode(
-                y="Total Minutes:Q"
-            )
+                chart_start = length_df["Date"].min()
+                today = pd.Timestamp.now().normalize()
+                chart_end = max(today, length_df["Date"].max())
 
-            length_chart = (line + trend).properties(
-                height=250, title=alt.TitleParams("Setlist Length Over Time (Danktuary Studios)", anchor="middle")
-            ).configure_axis(grid=False, labelColor="#888", tickColor="#888").configure_view(strokeWidth=0)
+                trend_df = pd.DataFrame({
+                    "Date": [chart_start, chart_end],
+                    "Total Minutes": [
+                        slope * chart_start.toordinal() + intercept,
+                        slope * chart_end.toordinal() + intercept,
+                    ]
+                })
 
-            st.subheader("Graph by Length")
-            st.altair_chart(length_chart, width='stretch')
+                y_intercept_value = trend_df.iloc[0]["Total Minutes"]
+                today_trend_value = trend_df.iloc[1]["Total Minutes"]
+
+                longest_row = length_df.loc[length_df["Total Minutes"].idxmax()]
+
+                labels_df = pd.DataFrame([
+                    {
+                        "Date": longest_row["Date"],
+                        "Total Minutes": longest_row["Total Minutes"],
+                        "Label": f"Longest: {longest_row['Total Minutes']:.0f} min ({longest_row['Date'].strftime('%m/%d/%Y')})",
+                        "dy": -12,
+                    },
+                    {
+                        "Date": chart_start,
+                        "Total Minutes": y_intercept_value,
+                        "Label": f"Trend start: {y_intercept_value:.0f} min",
+                        "dy": 15,
+                    },
+                    {
+                        "Date": chart_end,
+                        "Total Minutes": today_trend_value,
+                        "Label": f"Trend today: {today_trend_value:.0f} min",
+                        "dy": -12,
+                    },
+                ])
+
+                # --- Quarter-based x-axis ticks ---
+                quarter_starts = pd.date_range(
+                    start=chart_start.to_period("Q").start_time,
+                    end=chart_end,
+                    freq="QS",
+                )
+
+                x_scale = alt.Scale(domain=[chart_start, chart_end])
+                x_axis = alt.Axis(
+                    title=None,
+                    values=list(quarter_starts),
+                    labelExpr="'Q' + (floor((month(datum.value)-1)/3)+1) + ' ' + year(datum.value)",
+                    labelAngle=0,
+                )
+
+                base = alt.Chart(length_df).encode(
+                    x=alt.X("Date:T", scale=x_scale, axis=x_axis),
+                )
+
+                line = base.mark_line(point=True, color="#4a9eff").encode(
+                    y=alt.Y("Total Minutes:Q", axis=alt.Axis(title="Minutes")),
+                    tooltip=[
+                        alt.Tooltip("Date:T", title="Date"),
+                        alt.Tooltip("Total Minutes:Q", title="Minutes", format=".1f")
+                    ]
+                )
+
+                trend = alt.Chart(trend_df).mark_line(
+                    color="#ff6b6b", strokeDash=[4, 4]
+                ).encode(
+                    x=alt.X("Date:T", scale=x_scale),
+                    y="Total Minutes:Q",
+                )
+                
+                highlight_points = alt.Chart(labels_df).mark_point(
+                    color="#ffd166", size=80, filled=True
+                ).encode(
+                    x=alt.X("Date:T", scale=x_scale),
+                    y="Total Minutes:Q",
+                )
+
+                longest_label = alt.Chart(labels_df[labels_df["Label"].str.startswith("Longest")]).mark_text(
+                    align="center", fontSize=11, color="#eee", dy=-12
+                ).encode(
+                    x=alt.X("Date:T", scale=x_scale),
+                    y="Total Minutes:Q",
+                    text="Label:N",
+                )
+
+                length_chart = (
+                    line + trend + highlight_points + longest_label
+                ).properties(
+                    height=280, title=alt.TitleParams("Danktuary Studios Setlist Duration Over Time", anchor="middle")
+                ).configure_axis(grid=False, labelColor="#888", tickColor="#888").configure_view(strokeWidth=0)
+
+                st.markdown(
+                    f"""
+                    <div style="
+                        display: inline-block;
+                        border: 1px solid #444;
+                        border-radius: 6px;
+                        padding: 10px 16px;
+                        margin-top: 8px;
+                        font-size: 13px;
+                        color: #ccc;
+                    ">
+                        <div style="color:#ff6b6b; font-weight:600; margin-bottom:4px;">Trendline</div>
+                        <div>Start: {y_intercept_value:.0f} min</div>
+                        <div>Today: {today_trend_value:.0f} min</div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
+                st.altair_chart(length_chart, width='stretch')
             
 else:
     st.write("Select a tab to view its content.")
