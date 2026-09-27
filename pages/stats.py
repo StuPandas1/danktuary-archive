@@ -81,12 +81,12 @@ div[data-testid="stHorizontalBlock"] button {
 """, unsafe_allow_html=True)
 
 tab_groups = [
-    ("Search by Show/Setlist:", ["Song Search", "Setlist Lookup"]),
-    ("Poke Around with Stats:", ["Song Stats", "Setlist Stats"]),
+    ("Search by Show/Setlist:", ["Song Lookup", "Setlist Lookup"]),
+    ("Poke Around the Data:", ["Song Stats", "Setlist Stats"]),
 ]
 
 for label, names in tab_groups:
-    row_cols = st.columns([2] + [1] * len(names))
+    row_cols = st.columns([2] + [1] * len(names), vertical_alignment="center")
     with row_cols[0]:
         st.write(label)
     for i, name in enumerate(names):
@@ -113,8 +113,8 @@ def get_stats_df(dw_key):
 # TAB 1: SONG SEARCH
 # -------------------------
 
-if st.session_state.active_tab == "Song Search":
-    st.markdown("#### Song Search")
+if st.session_state.active_tab == "Song Lookup":
+    st.markdown("#### Song Lookup")
 
     with st.expander("Filters", expanded=False):
         st.checkbox(
