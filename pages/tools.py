@@ -111,8 +111,8 @@ if active_tab == "Recently Played":
         rows_html.append(
             "<tr>"
             f'<td>{row["Rank"]}</td>'
-            f'<td><a href="/explore?song={encoded_title}" target="_self">{safe_title}</a></td>'
-            f'<td><a href="/explore?show={encoded_show}" target="_self">{safe_last_played}</a></td>'
+            f'<td><a href="/stats?song={encoded_title}" target="_self">{safe_title}</a></td>'
+            f'<td><a href="/stats?show={encoded_show}" target="_self">{safe_last_played}</a></td>'
             f'<td>{html.escape(str(row["Total Plays"]))}</td>'
             "</tr>"
         )
@@ -227,8 +227,8 @@ elif active_tab == "Bustout Tracker":
         rows_html.append(
             "<tr>"
             f'<td>{row["Rank"]}</td>'
-            f'<td><a href="/explore?song={encoded_title}" target="_self">{safe_title}</a></td>'
-            f'<td><a href="/explore?show={encoded_show}" target="_self">{safe_days}</a></td>'
+            f'<td><a href="/stats?song={encoded_title}" target="_self">{safe_title}</a></td>'
+            f'<td><a href="/stats?show={encoded_show}" target="_self">{safe_days}</a></td>'
             f'<td>{html.escape(str(row["Times Played"]))}</td>'
             f'<td>{html.escape(str(row["Overdue Score"]))}</td>'
             "</tr>"
