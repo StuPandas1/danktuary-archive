@@ -174,7 +174,7 @@ st.divider()
 # STATS DASHBOARD
 # -------------------------
 
-st.markdown("#### **Stats Dashboard**")
+st.markdown("#### **Heady Stats Dashboard**")
 
 total_shows = df["Date"].nunique()
 total_songs_played = len(df2)
