@@ -236,16 +236,14 @@ def card_html(value, label, accent=False):
     return f'<div class="dank-card"><div class="{value_class}">{value}</div><div class="dank-card-label">{label}</div></div>'
 
 cards = [
-    card_html(total_shows, "Total Setlists"),
+    card_html(total_shows, "Total Recordings"),
     card_html(total_unique_songs, "Unique Songs"),
     card_html(total_songs_played, "Songs Played", accent=True),
     card_html(gig_count, "Total Gigs"),
     card_html(f"{total_days}d {total_hours_remainder}h {total_mins_remainder}m", "Total Time Played"),
-    card_html(f"{longest_mins}:{longest_secs:02d}", "Longest Jam", accent=True),
-    card_html(last_show_date, "Last Setlist"),
-    card_html(days_since_last_show, "Days Since Last"),
-    card_html(most_played_song, "Most Played Song"),
-    card_html(most_played_count, f"Times Played \"{most_played_song}\"", accent=True),
+    card_html(f"{longest_mins}:{longest_secs:02d}", "Longest Track", accent=True),
+    card_html(last_show_date, "Last Recording"),
+    card_html(f"{most_played_song} ({most_played_count})", "Most Played Song", accent=True),
 ]
 
 st.markdown(f'<div class="dank-grid">{"".join(cards)}</div>', unsafe_allow_html=True)
