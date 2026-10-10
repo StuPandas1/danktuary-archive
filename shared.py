@@ -874,16 +874,20 @@ def dank_footer(text="Danktuary Archive Version: 3.0 | Believe it if you need it
         position:relative;
     }}
     .dank-footer-line img {{
-        position:absolute;
-        bottom:-4px;
-        left:50%;
-        height:78px;
-        margin-left:-40px;  /* roughly half his width, keeps him centered at the start */
-        animation:dank-walk 50s linear infinite;
+        position:absolute; bottom:-2px; left:50%;
+        height:80px; margin-left:-40px;
+        transform-origin:50% 100%;
+        animation:
+            dank-walk 35s linear infinite,
+            dank-bob .5s ease-in-out infinite alternate;
     }}
     @keyframes dank-walk {{
-        from {{ transform:translateX(55vw); }}
-        to   {{ transform:translateX(-55vw); }}
+        from {{translate:55vw 0; }}
+        to   {{ translate:-55vw 0; }}
+    }}
+    @keyframes dank-bob {{
+        from {{ transform:translateY(0) rotate(-3deg); }}
+        to   {{ transform:translateY(-4px) rotate(3deg); }}
     }}
     @media (prefers-reduced-motion: reduce) {{
         .dank-footer-line img {{ animation:none; }}
