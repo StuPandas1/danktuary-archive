@@ -1,12 +1,20 @@
+import base64
 import streamlit as st  # type: ignore
 import pandas as pd  # type: ignore
 import random
 import os
 import re
 import string
+import html as _html
+import urllib.parse
+import altair as alt
+import numpy as np
 from streamlit_js_eval import streamlit_js_eval
 from urllib.parse import quote
 from supabase import create_client, Client
+from pathlib import Path
+
+STATIC = Path(__file__).parent / "static"
 
 times_played_mult = 1.3  # multiplier for how much weight to give times played in overdue score
 
@@ -391,40 +399,539 @@ def local_path_to_onedrive_url(local_path):
     return f"https://onedrive.live.com/?id={encoded_path}&viewid={viewid}&view=0"
 
 # -------------------------
-# DANK HEADER (shared banner)
+# DANK STYLE
 # -------------------------
 
-def dank_header(subtitle="The Danktuary Archive Explorer", anchor_id="dankapp-top"):
+def img_b64(filename):
+    return base64.b64encode((STATIC / filename).read_bytes()).decode()
+
+def dank_theme():
+    st.markdown("""
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;800&display=swap');
+
+/* =========================================================
+   TOKENS + BASE
+   ========================================================= */
+:root {
+    --dw-ink:#151412; --dw-cream:#f1ead8; --dw-panel:#201e1b;
+    --dw-green:#00FF00; --dw-green-deep:#0a5c0a;
+    --dw-marigold:#ffb81c; --dw-tomato:#ff5a4a; --dw-violet:#8b5cf6;
+}
+html, body, [class*="st-"], .stMarkdown { font-family:'Poppins', sans-serif; }
+
+/* restore Streamlit's icon font */
+[data-testid="stIconMaterial"], .material-symbols-rounded, .material-icons {
+    font-family:"Material Symbols Rounded" !important;
+}
+
+/* =========================================================
+   NATIVE WIDGETS
+   ========================================================= */
+h3, h4 { color:var(--dw-marigold) !important; font-weight:800 !important; letter-spacing:-0.01em; }
+
+[data-testid="stExpander"] {
+    background:var(--dw-panel);
+    border:2px solid rgba(241,234,216,.25) !important;
+    border-radius:8px !important;
+    box-shadow:4px 4px 0 var(--dw-marigold);
+}
+[data-testid="stMetricValue"] { color:var(--dw-green); font-weight:800; }
+[data-testid="stMetricLabel"] p { text-transform:uppercase; letter-spacing:.06em; font-size:12px; }
+
+/* regular buttons */
+.stButton > button { border-radius:6px; font-weight:600; border-width:2px; }
+
+button[data-testid="stBaseButton-primary"], button[kind="primary"] {
+    background:var(--dw-green) !important;
+    border:2px solid var(--dw-ink) !important;
+    box-shadow:3px 3px 0 var(--dw-marigold);
+}
+button[data-testid="stBaseButton-primary"] p, button[kind="primary"] p {
+    color:var(--dw-ink) !important; font-weight:800 !important;
+}
+button[data-testid="stBaseButton-secondary"], button[kind="secondary"] {
+    background:var(--dw-panel) !important;
+    border:2px solid rgba(241,234,216,.35) !important;
+}
+button[data-testid="stBaseButton-secondary"] p, button[kind="secondary"] p {
+    color:var(--dw-cream) !important;
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+.dank-header {
+    position:relative; overflow:hidden;
+    background:var(--dw-ink);
+    border:4px solid var(--dw-green); border-radius:8px;
+    box-shadow:6px 6px 0 var(--dw-marigold);
+    padding:18px 20px; margin-bottom:22px; min-height:100px;
+}
+.dank-header-title { color:var(--dw-green); font-size:34px; font-weight:800;
+                     letter-spacing:-0.02em; line-height:1; }
+.dank-header-subtitle { color:var(--dw-cream); font-size:13px; font-weight:600;
+                        text-transform:uppercase; letter-spacing:.1em; margin-top:6px; }
+.dank-header-mascot {
+    position:absolute; right:16px; top:50%; transform:translateY(-50%);
+    height:calc(100% - 20px); width:auto; max-width:none; object-fit:contain;
+}
+@media (max-width:600px){
+    .dank-header { min-height:110px; }
+    .dank-header-mascot { height:calc(100% - 16px); right:8px; }
+}
+
+/* =========================================================
+   STAT CARDS
+   ========================================================= */
+.dank-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:14px; }
+.dank-card {
+    position:relative;
+    background:var(--dw-cream); color:var(--dw-ink);
+    border:3px solid var(--dw-ink); border-radius:10px;
+    box-shadow:5px 5px 0 var(--dw-green);
+    padding:20px 18px 16px 18px; margin-bottom:14px;
+}
+.dank-card::before {
+    content:""; position:absolute; inset:5px;
+    border:2px solid var(--dw-ink); border-radius:6px; pointer-events:none;
+}
+.dank-card::after {
+    content:""; position:absolute; inset:0; pointer-events:none;
+    background:
+        radial-gradient(circle at 12px 12px, var(--dw-ink) 2px, transparent 2.5px),
+        radial-gradient(circle at calc(100% - 12px) 12px, var(--dw-ink) 2px, transparent 2.5px),
+        radial-gradient(circle at 12px calc(100% - 12px), var(--dw-ink) 2px, transparent 2.5px),
+        radial-gradient(circle at calc(100% - 12px) calc(100% - 12px), var(--dw-ink) 2px, transparent 2.5px);
+}
+.dank-card:nth-child(4n+2) { box-shadow:5px 5px 0 var(--dw-marigold); }
+.dank-card:nth-child(4n+3) { box-shadow:5px 5px 0 var(--dw-tomato); }
+.dank-card:nth-child(4n+4) { box-shadow:5px 5px 0 var(--dw-violet); }
+.dank-card-value { color:var(--dw-ink); font-size:26px; font-weight:800; line-height:1.1; overflow-wrap:anywhere; }
+.dank-card-accent { color:var(--dw-green-deep); }
+.dank-card-label { color:#555; font-size:12px; font-weight:600;
+                   text-transform:uppercase; letter-spacing:.06em; margin-top:4px; }
+
+/* =========================================================
+   CALLOUT
+   ========================================================= */
+.dank-callout {
+    display:flex; align-items:center; gap:14px;
+    background:var(--dw-panel); border:3px solid var(--dw-marigold);
+    border-radius:8px; padding:10px 14px; margin:8px 0;
+    color:var(--dw-cream); font-weight:800; line-height:1.3;
+}
+.dank-callout img { height:64px; width:auto; flex-shrink:0; }
+.dank-callout-sub { font-weight:500; font-size:14px; }
+.dank-callout b { color:var(--dw-green); font-weight:800; }
+
+/* =========================================================
+   ROAD SIGNS: ARROWS
+   ========================================================= */
+.dank-sign { display:inline-block; margin:8px 0 16px; }
+.dank-sign-edge  { background:var(--dw-ink);   padding:4px; }
+.dank-sign-rim   { background:var(--dw-cream); padding:4px; }
+.dank-sign-line  { background:var(--dw-ink);   padding:2px; }
+.dank-sign-inner {
+    position:relative; background:var(--dw-marigold); color:var(--dw-ink);
+    font-weight:800; font-size:20px; line-height:1.1;
+    text-transform:uppercase; letter-spacing:.04em;
+}
+.dank-sign-inner::after { content:""; position:absolute; inset:0; pointer-events:none; }
+.dank-sign-sm .dank-sign-inner { font-size:15px; }
+
+.dank-sign-right :is(.dank-sign-edge,.dank-sign-rim,.dank-sign-line,.dank-sign-inner) {
+    clip-path:polygon(0 0, calc(100% - 22px) 0, 100% 50%, calc(100% - 22px) 100%, 0 100%);
+}
+.dank-sign-left :is(.dank-sign-edge,.dank-sign-rim,.dank-sign-line,.dank-sign-inner) {
+    clip-path:polygon(22px 0, 100% 0, 100% 100%, 22px 100%, 0 50%);
+}
+.dank-sign-right .dank-sign-inner { padding:10px 38px 10px 20px; }
+.dank-sign-left  .dank-sign-inner { padding:10px 20px 10px 38px; }
+.dank-sign-right.dank-sign-sm .dank-sign-inner { padding:8px 32px 8px 18px; }
+.dank-sign-left.dank-sign-sm  .dank-sign-inner { padding:8px 18px 8px 32px; }
+
+.dank-sign-right .dank-sign-inner::after {
+    background:
+        radial-gradient(circle at 9px 9px, var(--dw-ink) 2px, transparent 2.5px),
+        radial-gradient(circle at 9px calc(100% - 9px), var(--dw-ink) 2px, transparent 2.5px),
+        radial-gradient(circle at calc(100% - 12px) 50%, var(--dw-ink) 2px, transparent 2.5px);
+}
+.dank-sign-left .dank-sign-inner::after {
+    background:
+        radial-gradient(circle at calc(100% - 9px) 9px, var(--dw-ink) 2px, transparent 2.5px),
+        radial-gradient(circle at calc(100% - 9px) calc(100% - 9px), var(--dw-ink) 2px, transparent 2.5px),
+        radial-gradient(circle at 12px 50%, var(--dw-ink) 2px, transparent 2.5px);
+}
+.dank-sign-left { float:right; }
+
+/* =========================================================
+   ROAD SIGNS: HEX LABEL (not clickable)
+   ========================================================= */
+.dank-hex { display:block; width:100%; margin:0; }
+.dank-hex :is(.dank-sign-edge,.dank-sign-rim,.dank-sign-line,.dank-sign-inner) {
+    clip-path:polygon(18px 0, calc(100% - 18px) 0, 100% 50%, calc(100% - 18px) 100%, 18px 100%, 0 50%);
+}
+.dank-hex .dank-sign-inner {
+    padding:6px 34px; text-align:center; font-size:14px; font-weight:600;
+    text-transform:none; letter-spacing:.01em;
+}
+.dank-hex .dank-sign-inner b { font-weight:800; }
+.dank-hex .dank-sign-inner::after {
+    background:
+        radial-gradient(circle at 14px 50%, var(--dw-ink) 2px, transparent 2.5px),
+        radial-gradient(circle at calc(100% - 14px) 50%, var(--dw-ink) 2px, transparent 2.5px);
+}
+div[data-testid="stElementContainer"]:has(.dank-hex),
+div[data-testid="stMarkdownContainer"]:has(.dank-hex) { margin:0 !important; padding:0 !important; }
+
+/* =========================================================
+   BUTTONS
+   Default = dark panel with cream text and cream rivets.
+   Primary (selected) = green with ink text and ink rivets.
+   ========================================================= */
+.stButton > button {
+    --rivet: var(--dw-cream);
+    background-color:var(--dw-panel) !important;
+    background-image:
+        radial-gradient(circle at 11px 50%, var(--rivet) 2.5px, transparent 3px),
+        radial-gradient(circle at calc(100% - 11px) 50%, var(--rivet) 2.5px, transparent 3px) !important;
+    border:3px solid rgba(241,234,216,.35) !important;
+    border-radius:8px !important;
+    box-shadow:4px 4px 0 var(--dw-marigold) !important;
+    min-height:44px; padding:6px 28px !important;
+    transition:transform .08s ease, box-shadow .08s ease, filter .08s ease;
+}
+.stButton > button p {
+    color:var(--dw-cream) !important; font-weight:800 !important;
+    font-size:15px; line-height:1.2; margin:0;
+}
+.stButton > button:hover {
+    transform:translate(-1px,-1px);
+    box-shadow:5px 5px 0 var(--dw-marigold) !important;
+    filter:brightness(1.1);
+}
+.stButton > button:active {
+    transform:translate(3px,3px);
+    box-shadow:1px 1px 0 var(--dw-marigold) !important;
+}
+.stButton > button:focus-visible { outline:3px solid var(--dw-green); outline-offset:2px; }
+.stButton > button:disabled {
+    opacity:.45; box-shadow:none !important; transform:none; cursor:not-allowed;
+}
+
+/* selected / primary */
+.stButton > button[kind="primary"],
+.stButton > button[data-testid="stBaseButton-primary"] {
+    --rivet: var(--dw-ink);
+    background-color:var(--dw-green) !important;
+    border-color:var(--dw-ink) !important;
+}
+.stButton > button[kind="primary"] p,
+.stButton > button[data-testid="stBaseButton-primary"] p {
+    color:var(--dw-ink) !important;
+}
+
+/* compact buttons in the playlist draft rows (up / down / remove): no rivets */
+div[class*="st-key-playlist_draft_rows"] .stButton > button {
+    background-image:none !important;
+    min-height:36px; padding:0 !important;
+    box-shadow:2px 2px 0 var(--dw-marigold) !important;
+}
+
+/* tab rows (container key starts with tabs_): 4 across on desktop, 2x2 on phones */
+div[class*="st-key-tabs_"] [data-testid="stHorizontalBlock"] {
+    display:grid !important;
+    grid-template-columns:repeat(auto-fit, minmax(150px, 1fr));
+    gap:0.9rem !important;
+}
+div[class*="st-key-tabs_"] [data-testid="stColumn"] {
+    width:auto !important; min-width:0 !important; flex:none !important;
+}
+div[class*="st-key-tabs_"] .stButton > button { padding:6px 18px !important; min-height:48px; }
+div[class*="st-key-tabs_"] .stButton > button p {
+    font-size:15px; line-height:1.15;
+    white-space:nowrap;
+    overflow-wrap:normal !important; word-break:normal !important; hyphens:none;
+}
+
+/* single-line button rows (container key starts with btnrow_): never wrap, text scales */
+div[class*="st-key-btnrow_"] .stButton > button {
+    padding:6px 22px !important; min-height:44px;
+}
+div[class*="st-key-btnrow_"] .stButton > button > div {
+    width:100%; min-width:0; justify-content:center;
+}
+div[class*="st-key-btnrow_"] .stButton > button p {
+    font-size:clamp(11px, 2.6vw, 14px);
+    line-height:1.15; text-align:center;
+    white-space:normal;                                 /* wrap at spaces instead of clipping */
+    overflow-wrap:normal; word-break:normal; hyphens:none;
+    text-wrap:balance;
+}
+
+@media (max-width:640px) {
+    div[class*="st-key-tabs_"] [data-testid="stColumn"] {
+        flex:0 0 calc(50% - 0.375rem) !important;
+    }
+    div[class*="st-key-tabs_"] .stButton > button p { font-size:14px; }
+}
+
+[data-testid="stLinkButton"] a {
+    --rivet: var(--dw-cream);
+    background-color:var(--dw-panel) !important;
+    background-image:
+        radial-gradient(circle at 11px 50%, var(--rivet) 2.5px, transparent 3px),
+        radial-gradient(circle at calc(100% - 11px) 50%, var(--rivet) 2.5px, transparent 3px) !important;
+    border:3px solid rgba(241,234,216,.35) !important;
+    border-radius:8px !important;
+    box-shadow:4px 4px 0 var(--dw-marigold) !important;
+    min-height:44px; padding:6px 28px !important;
+    text-decoration:none;
+}
+[data-testid="stLinkButton"] a p { color:var(--dw-cream) !important; font-weight:800 !important; margin:0; }
+
+/* =========================================================
+   TABLES + LISTS
+   ========================================================= */
+.linked-table, .song-history-table, .perf-history-table, .setlist-table {
+    width:100%; border-collapse:collapse; font-size:14px;
+}
+:is(.linked-table, .song-history-table, .perf-history-table, .setlist-table) :is(th, td) {
+    text-align:left; padding:6px 10px;
+    border-bottom:1px solid rgba(128,128,128,0.3);
+}
+:is(.linked-table, .song-history-table, .perf-history-table, .setlist-table) a {
+    color:var(--dw-green); text-decoration:none;
+}
+:is(.linked-table, .song-history-table, .perf-history-table, .setlist-table) a:hover {
+    text-decoration:underline;
+}
+
+.table-scroll { max-height:520px; overflow:auto;
+                border:2px solid rgba(241,234,216,.25); border-radius:8px; }
+.table-scroll .linked-table th { position:sticky; top:0; background:var(--dw-panel); color:var(--dw-marigold); }
+
+.song-browse {
+    max-height:320px; overflow-y:auto; overscroll-behavior:contain;
+    background:var(--dw-panel); border:2px solid rgba(241,234,216,.25);
+    border-radius:8px; padding:6px 14px; margin:8px 0;
+    scrollbar-width:thin; scrollbar-color:var(--dw-marigold) transparent;
+    /* fade-out shadows at the top/bottom edges that disappear when you reach the end */
+    background:
+        linear-gradient(var(--dw-panel) 30%, transparent) top / 100% 28px no-repeat local,
+        linear-gradient(transparent, var(--dw-panel) 70%) bottom / 100% 28px no-repeat local,
+        linear-gradient(rgba(255,184,28,.35), transparent) top / 100% 12px no-repeat scroll,
+        linear-gradient(transparent, rgba(255,184,28,.35)) bottom / 100% 12px no-repeat scroll,
+        var(--dw-panel);
+}
+.song-browse::-webkit-scrollbar { width:8px; }
+.song-browse::-webkit-scrollbar-track { background:transparent; }
+.song-browse::-webkit-scrollbar-thumb { background:var(--dw-marigold); border-radius:4px; }
+.song-browse a { display:block; padding:8px 2px; color:var(--dw-green); text-decoration:none;
+                 border-bottom:1px solid rgba(128,128,128,0.2); }
+.song-browse a:hover { text-decoration:underline; }
+.song-browse-hint { color:var(--dw-marigold); font-size:12px; font-weight:600;
+                    text-transform:uppercase; letter-spacing:.06em; margin:4px 0 0; }
+
+/* =========================================================
+   TRACKLIST ROWS (container key starts with trackrow_ / trackon_)
+   ========================================================= */
+div[class*="st-key-trackrow_"] .stButton > button,
+div[class*="st-key-trackon_"] .stButton > button {
+    justify-content:flex-start; text-align:left;
+    min-height:44px; padding:8px 14px !important;
+    border-radius:6px !important; border:2px solid rgba(241,234,216,.25) !important;
+    border-left:6px solid rgba(241,234,216,.25) !important;
+    background:var(--dw-panel) !important; box-shadow:none !important;
+}
+div[class*="st-key-trackrow_"] .stButton > button > div,
+div[class*="st-key-trackon_"] .stButton > button > div { justify-content:flex-start; width:100%; }
+div[class*="st-key-trackrow_"] .stButton > button p,
+div[class*="st-key-trackon_"] .stButton > button p {
+    text-align:left; margin:0; font-size:15px; line-height:1.25;
+    color:var(--dw-cream) !important; font-weight:500 !important;
+}
+div[class*="st-key-trackrow_"] .stButton > button:hover {
+    border-left-color:var(--dw-marigold) !important; background:#2c2926 !important;
+}
+
+/* active row */
+div[class*="st-key-trackon_"] .stButton > button {
+    border-color:var(--dw-green) !important; border-left-color:var(--dw-green) !important;
+    background:#2c2926 !important; box-shadow:3px 3px 0 var(--dw-marigold) !important;
+}
+div[class*="st-key-trackon_"] .stButton > button p {
+    color:var(--dw-green) !important; font-weight:800 !important;
+}
+div[class*="st-key-trackon_"] .stButton > button:disabled { opacity:1; cursor:default; }
+
+/* tighten the gap between rows */
+div[class*="st-key-trackrow_"], div[class*="st-key-trackon_"] { margin-bottom:-0.5rem; }
+
+/* setlist randomizer rows */
+div[class*="st-key-setlist_rows"] [data-testid="stCheckbox"] {
+    background:var(--dw-panel);
+    border:2px solid rgba(241,234,216,.25);
+    border-left:6px solid rgba(241,234,216,.25);
+    border-radius:6px; padding:8px 12px;
+}
+div[class*="st-key-setlist_rows"] [data-testid="stCheckbox"] p {
+    color:var(--dw-cream); font-weight:600; font-size:15px;
+}
+div[class*="st-key-setlist_rows"] [data-testid="stCheckbox"]:has(input:checked) {
+    border-color:var(--dw-green); border-left-color:var(--dw-green);
+    background:#2c2926;
+}
+div[class*="st-key-setlist_rows"] [data-testid="stCheckbox"]:has(input:checked) p {
+    color:var(--dw-green); font-weight:800;
+}
+</style>
+""", unsafe_allow_html=True)
+
+def dank_header(subtitle="The Danktuary Archive Explorer", anchor_id="dankapp-top",
+                  mascot="skel_walk_dark.png"):
+      mascot_html = ""
+      try:
+          mascot_html = f'<img class="dank-header-mascot" src="data:image/png;base64,{img_b64(mascot)}">'
+      except FileNotFoundError:
+          pass
+      st.markdown(f"""
+      <div class="dank-header" id="{anchor_id}">
+          <div class="dank-header-title">DankApp</div>
+          <div class="dank-header-subtitle">{subtitle}</div>
+          {mascot_html}
+      </div>
+      """, unsafe_allow_html=True)
+
+def dank_callout(text, subtext=None, img="skel_walk_dark.png"):
+    def fmt(s):
+        s = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", _html.escape(s))
+        return s.replace("\n", "<br>")
+
+    body = fmt(text)
+    if subtext:
+        body += f'<br><span class="dank-callout-sub">{fmt(subtext)}</span>'
+
+    try:
+        icon = f'<img src="data:image/png;base64,{img_b64(img)}">' if img else ""
+    except FileNotFoundError:
+        icon = ""
+
+    st.markdown(
+        f'<div class="dank-callout">{icon}<div>{body}</div></div>',
+        unsafe_allow_html=True,
+    )
+
+def dank_sign(text, direction="right", size="md"):
+    st.markdown(
+        f'<div class="dank-sign dank-sign-{direction} dank-sign-{size}"><div class="dank-sign-edge">'
+        f'<div class="dank-sign-rim"><div class="dank-sign-line">'
+        f'<div class="dank-sign-inner">{_html.escape(text)}</div>'
+        f'</div></div></div></div>',
+        unsafe_allow_html=True,
+    )
+
+def dank_hex(text, subtext=None):
+    def fmt(s):
+        s = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", _html.escape(s))
+        return s.replace("\n", "<br>")
+    body = fmt(text)
+    if subtext:
+        body += f'<br><span class="dank-hex-sub">{fmt(subtext)}</span>'
+    st.markdown(
+        f'<div class="dank-sign dank-hex"><div class="dank-sign-edge">'
+        f'<div class="dank-sign-rim"><div class="dank-sign-line">'
+        f'<div class="dank-sign-inner">{body}</div>'
+        f'</div></div></div></div>',
+        unsafe_allow_html=True,
+    )
+
+def dank_chart(chart):
+    """Applies the Dead Weight look (fonts, colors) to an Altair chart."""
+    return (
+        chart
+        .configure(font="Poppins")
+        .configure_axis(
+            grid=False, labelColor="#9a9488", tickColor="#9a9488",
+            titleColor="#f1ead8", labelFont="Poppins", titleFont="Poppins",
+            labelFontSize=12, titleFontSize=12, titleFontWeight=600,
+        )
+        .configure_title(
+            font="Poppins", color="#f1ead8", fontSize=15, fontWeight=800,
+        )
+        .configure_view(strokeWidth=0)
+    )
+
+def dank_footer(text="Danktuary Archive Version: 3.0 | Believe it if you need it"):
     st.markdown(f"""
     <style>
-    .dank-header {{
-        background-color: #1c1b1a;
-        border-radius: 10px;
-        border-bottom: 3px solid #d4a24c;
-        padding: 18px 20px 16px 20px;
-        margin-bottom: 20px;
+    .dank-footer {{ text-align:center; margin-top:40px; }}
+    .dank-footer-line {{
+        border-bottom:4px solid #00FF00;
+        height:80px;
+        overflow:hidden;
+        position:relative;
     }}
-    .dank-header-title {{
-        color: #ece7de;
-        font-size: 32px;
-        font-weight: 700;
-        letter-spacing: -0.01em;
-        line-height: 1.1;
-        margin-bottom: 4px;
+    .dank-footer-line img {{
+        position:absolute;
+        bottom:-4px;
+        left:50%;
+        height:78px;
+        margin-left:-40px;  /* roughly half his width, keeps him centered at the start */
+        animation:dank-walk 50s linear infinite;
     }}
-    .dank-header-subtitle {{
-        color: #7a8b6f;
-        font-size: 14px;
-        font-weight: 500;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
+    @keyframes dank-walk {{
+        from {{ transform:translateX(55vw); }}
+        to   {{ transform:translateX(-55vw); }}
     }}
+    @media (prefers-reduced-motion: reduce) {{
+        .dank-footer-line img {{ animation:none; }}
+    }}
+    .dank-footer-text {{ color:#888; font-size:13px; margin-top:10px; }}
     </style>
-    <div class="dank-header" id="{anchor_id}">
-        <div class="dank-header-title">DankApp</div>
-        <div class="dank-header-subtitle">{subtitle}</div>
+    <div class="dank-footer">
+        <div class="dank-footer-line">
+            <img src="data:image/png;base64,{img_b64('skel_walk_dark.png')}">
+        </div>
+        <div class="dank-footer-text">{text}</div>
     </div>
     """, unsafe_allow_html=True)
+
+def linked_table(df, song_col="Title", show_col=None, show_loc_col=None,
+                 show_cols=None, scroll=True):
+    """Themed HTML table. song_col values link to /stats?song=...
+    show_cols maps a date column to the (hidden) column holding that
+    date's location, e.g. {"Last Played": "Last Location"}, and links
+    the date to /stats?show=<date — location>."""
+    links = dict(show_cols or {})
+    if show_col and show_loc_col:
+        links[show_col] = show_loc_col
+    hidden = set(links.values())
+
+    cols = [c for c in df.columns if c not in hidden]
+    head = "".join(f"<th>{_html.escape(str(c))}</th>" for c in cols)
+
+    rows = []
+    for _, r in df.iterrows():
+        tds = []
+        for c in cols:
+            v = str(r[c])
+            cell = _html.escape(v)
+            if c == song_col:
+                cell = f'<a href="/stats?song={urllib.parse.quote(v, safe="")}" target="_self">{cell}</a>'
+            elif c in links:
+                label = f"{v} — {r[links[c]]}"
+                cell = f'<a href="/stats?show={urllib.parse.quote(label, safe="")}" target="_self">{cell}</a>'
+            tds.append(f"<td>{cell}</td>")
+        rows.append(f"<tr>{''.join(tds)}</tr>")
+
+    wrap_open = '<div class="table-scroll">' if scroll else "<div>"
+    st.markdown(
+        f'{wrap_open}<table class="linked-table"><thead><tr>{head}</tr></thead>'
+        f'<tbody>{"".join(rows)}</tbody></table></div>',
+        unsafe_allow_html=True,
+    )
 
 # -------------------------
 # AUDIO PLAYER
@@ -433,40 +940,72 @@ def dank_header(subtitle="The Danktuary Archive Explorer", anchor_id="dankapp-to
 def dank_playlist_player(show_label, tracks):
     """Render a single playlist player with auto-advance.
 
-    tracks: list of dicts, each with keys: label, subtitle, url
+    tracks: list of dicts, each with keys: label, duration, url
     """
     import streamlit.components.v1 as components
     import json
+    import html as _html
 
-    tracks_json = json.dumps(tracks)
-    height = 90 + len(tracks) * 46 + 40
+    # "</" inside the JSON could close the script tag early
+    tracks_json = json.dumps(tracks).replace("</", "<\\/")
+    safe_label = _html.escape(show_label)
+    js_title = json.dumps(show_label).replace("</", "<\\/")
+
+    try:
+        icon_tag = f'<img class="dank-playlist-icon" src="data:image/png;base64,{img_b64("icon.png")}">'
+    except FileNotFoundError:
+        icon_tag = ""
 
     components.html(f"""
     <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;800&display=swap');
     body {{
         margin: 0;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        padding: 0 8px 8px 0;
+        font-family: 'Poppins', sans-serif;
+        background: transparent;
     }}
     .dank-playlist-card {{
-        background-color: #1c1b1a;
-        border-radius: 14px;
-        border-bottom: 3px solid #d4a24c;
-        padding: 20px 20px 14px 20px;
+        position: relative;
+        background: #201e1b;
+        border: 3px solid #00FF00;
+        border-radius: 8px;
+        box-shadow: 5px 5px 0 #ffb81c;
+        padding: 18px 18px 12px 18px;
         box-sizing: border-box;
     }}
+    .dank-playlist-icon {{
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        height: 44px;
+        width: 44px;
+        object-fit: contain;
+    }}
     .dank-playlist-title {{
-        color: #ece7de;
-        font-size: 16px;
-        font-weight: 700;
+        color: #00FF00;
+        font-size: 17px;
+        font-weight: 800;
         letter-spacing: -0.01em;
         margin-bottom: 12px;
+        padding-right: 56px;
     }}
     .dank-playlist-card audio {{
         width: 100%;
         border-radius: 8px;
         outline: none;
-        margin-bottom: 14px;
+        margin-bottom: 6px;
+        color-scheme: dark;
     }}
+    .dank-status {{
+        min-height: 18px;
+        margin-bottom: 8px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #ffb81c;
+    }}
+    .dank-status a {{ color: #00FF00; }}
+    .dank-status.err {{ color: #ff5a4a; }}
     .dank-track-list {{
         display: flex;
         flex-direction: column;
@@ -475,81 +1014,80 @@ def dank_playlist_player(show_label, tracks):
         overflow-y: auto;
         padding-right: 4px;
     }}
-    .dank-track-list::-webkit-scrollbar {{
-        width: 6px;
-    }}
-    .dank-track-list::-webkit-scrollbar-track {{
-        background: transparent;
-    }}
-    .dank-track-list::-webkit-scrollbar-thumb {{
-        background-color: #3a3733;
-        border-radius: 3px;
-    }}
+    .dank-track-list::-webkit-scrollbar {{ width: 6px; }}
+    .dank-track-list::-webkit-scrollbar-track {{ background: transparent; }}
+    .dank-track-list::-webkit-scrollbar-thumb {{ background-color: #ffb81c; border-radius: 3px; }}
     .dank-track {{
         display: flex;
         align-items: baseline;
         gap: 10px;
-        padding: 10px 10px;
+        padding: 10px;
         border-radius: 6px;
         cursor: pointer;
-        border-bottom: 2px solid transparent;
+        border-left: 4px solid transparent;
         transition: background-color 0.15s ease;
     }}
-    .dank-track:hover {{
-        background-color: #2a2826;
-    }}
+    .dank-track:hover {{ background-color: #2c2926; }}
     .dank-track.active {{
-        border-bottom: 2px solid #d4a24c;
-        background-color: #2a2826;
+        border-left: 4px solid #00FF00;
+        background-color: #2c2926;
     }}
     .dank-track-num {{
-        color: #7a8b6f;
+        color: #ffb81c;
         font-size: 12px;
-        font-weight: 600;
+        font-weight: 800;
         min-width: 18px;
     }}
     .dank-track-title {{
-        color: #ece7de;
+        color: #f1ead8;
         font-size: 14px;
         font-weight: 500;
         flex: 1;
     }}
     .dank-track.active .dank-track-title {{
-        color: #d4a24c;
-        font-weight: 700;
+        color: #00FF00;
+        font-weight: 600;
     }}
     .dank-track-duration {{
-        color: #8a857c;
+        color: #9a9488;
         font-size: 12px;
     }}
     .dank-transport-row {{
         display: flex;
         justify-content: center;
+        flex-wrap: wrap;
         gap: 8px;
-        margin-bottom: 14px;
+        margin-bottom: 10px;
     }}
     .dank-skip-btn {{
-        background-color: #2a2826;
-        color: #ece7de;
-        border: 1px solid #3a3733;
-        border-radius: 8px;
-        padding: 6px 14px;
+        background-color: #f1ead8;
+        color: #151412;
+        border: 2px solid #151412;
+        border-radius: 6px;
+        box-shadow: 3px 3px 0 #ffb81c;
+        padding: 6px 12px;
+        font-family: 'Poppins', sans-serif;
         font-size: 13px;
         font-weight: 600;
         cursor: pointer;
-        transition: background-color 0.15s ease;
+        transition: transform 0.08s ease, box-shadow 0.08s ease;
     }}
-    .dank-skip-btn:hover {{
-        background-color: #3a3733;
+    .dank-skip-btn:hover {{ background-color: #fff6df; }}
+    .dank-skip-btn:active {{
+        transform: translate(2px, 2px);
+        box-shadow: 1px 1px 0 #ffb81c;
     }}
     .dank-skip-btn:disabled {{
         opacity: 0.4;
         cursor: not-allowed;
+        box-shadow: none;
     }}
     </style>
     <div class="dank-playlist-card">
-        <div class="dank-playlist-title">{show_label}</div>
-        <audio id="dank-player" controls preload="none"></audio>
+        {icon_tag}
+        <div class="dank-playlist-title">{safe_label}</div>
+        <audio id="dank-player" controls preload="metadata" playsinline></audio>
+        <div class="dank-status" id="dank-status"></div>
         <div class="dank-transport-row">
             <button id="dank-prev" class="dank-skip-btn">⏮ Prev</button>
             <button id="dank-skip-back" class="dank-skip-btn">⏪ 10s</button>
@@ -560,22 +1098,39 @@ def dank_playlist_player(show_label, tracks):
     </div>
     <script>
     const tracks = {tracks_json};
+    const showTitle = {js_title};
     const player = document.getElementById('dank-player');
     const listEl = document.getElementById('dank-track-list');
+    const statusEl = document.getElementById('dank-status');
     const prevBtn = document.getElementById('dank-prev');
     const nextBtn = document.getElementById('dank-next');
     const skipBackBtn = document.getElementById('dank-skip-back');
     const skipFwdBtn = document.getElementById('dank-skip-fwd');
+    let currentIndex = 0;
+    let retries = 0;
+    let lastGoodTime = 0;
+    let preloadedFor = -1;   // index of the track already being preloaded
+
+    function esc(s) {{
+        const d = document.createElement('div');
+        d.textContent = s == null ? '' : s;
+        return d.innerHTML;
+    }}
+
+    function setStatus(msg, isError) {{
+        statusEl.className = 'dank-status' + (isError ? ' err' : '');
+        statusEl.innerHTML = msg || '';
+    }}
 
     function updateTransportButtons() {{
         prevBtn.disabled = currentIndex <= 0;
         nextBtn.disabled = currentIndex >= tracks.length - 1;
     }}
 
+    // ---------- transport ----------
     skipBackBtn.addEventListener('click', () => {{
         player.currentTime = Math.max(0, player.currentTime - 10);
     }});
-
     skipFwdBtn.addEventListener('click', () => {{
         if (!isNaN(player.duration)) {{
             player.currentTime = Math.min(player.duration, player.currentTime + 10);
@@ -583,16 +1138,23 @@ def dank_playlist_player(show_label, tracks):
             player.currentTime += 10;
         }}
     }});
-
     prevBtn.addEventListener('click', () => {{
         if (currentIndex > 0) loadTrack(currentIndex - 1, true);
     }});
-
     nextBtn.addEventListener('click', () => {{
         if (currentIndex + 1 < tracks.length) loadTrack(currentIndex + 1, true);
     }});
-    let currentIndex = 0;
 
+    // ---------- lock-screen / media keys ----------
+    if ('mediaSession' in navigator) {{
+        const ms = navigator.mediaSession;
+        ms.setActionHandler('previoustrack', () => prevBtn.click());
+        ms.setActionHandler('nexttrack', () => nextBtn.click());
+        ms.setActionHandler('seekbackward', () => skipBackBtn.click());
+        ms.setActionHandler('seekforward', () => skipFwdBtn.click());
+    }}
+
+    // ---------- list ----------
     function renderList() {{
         listEl.innerHTML = '';
         tracks.forEach((track, i) => {{
@@ -600,24 +1162,100 @@ def dank_playlist_player(show_label, tracks):
             row.className = 'dank-track' + (i === currentIndex ? ' active' : '');
             row.innerHTML = `
                 <div class="dank-track-num">${{i + 1}}</div>
-                <div class="dank-track-title">${{track.label}}</div>
-                <div class="dank-track-duration">${{track.duration || ''}}</div>
+                <div class="dank-track-title">${{esc(track.label)}}</div>
+                <div class="dank-track-duration">${{esc(track.duration)}}</div>
             `;
             row.addEventListener('click', () => loadTrack(i, true));
             listEl.appendChild(row);
         }});
     }}
 
+    // ---------- preload the next file, but only once the current one is
+    // buffered well ahead, so the two downloads never compete ----------
+    const preloader = new Audio();
+    preloader.preload = 'auto';
+    function preloadNext() {{
+        const nextIdx = currentIndex + 1;
+        const n = tracks[nextIdx];
+        if (!n || !n.url || preloadedFor === nextIdx) return;
+        const b = player.buffered;
+        const ahead = b.length ? b.end(b.length - 1) - player.currentTime : 0;
+        if (ahead > 60) {{
+            preloadedFor = nextIdx;
+            preloader.src = n.url;
+            preloader.load();
+        }}
+    }}
+    player.addEventListener('progress', preloadNext);
+
+    // ---------- loading ----------
     function loadTrack(index, autoplay) {{
         if (index < 0 || index >= tracks.length) return;
         currentIndex = index;
-        player.src = tracks[index].url;
-        if (autoplay) {{
-            player.play().catch(() => {{}});
+        retries = 0;
+        lastGoodTime = 0;
+        setStatus('');
+
+        const t = tracks[index];
+        if (!t.url) {{
+            setStatus('No audio link for this track.', true);
+        }} else {{
+            player.src = t.url;
+            if (autoplay) {{
+                player.play().catch(() => {{}});
+            }}
+        }}
+
+        if ('mediaSession' in navigator) {{
+            navigator.mediaSession.metadata = new MediaMetadata({{
+                title: t.label || '',
+                artist: 'Dead Weight',
+                album: showTitle,
+            }});
         }}
         renderList();
         updateTransportButtons();
     }}
+
+    // ---------- resilience ----------
+    player.addEventListener('timeupdate', () => {{
+        if (player.currentTime > 0) lastGoodTime = player.currentTime;
+    }});
+    player.addEventListener('waiting', () => setStatus('Buffering…'));
+
+    // only warn if we genuinely lack data to keep playing
+    player.addEventListener('stalled', () => {{
+        setTimeout(() => {{
+            if (player.readyState < 3 && !player.paused) setStatus('Slow connection…');
+        }}, 2500);
+    }});
+
+    player.addEventListener('playing', () => {{
+        retries = 0;
+        setStatus('');
+    }});
+
+    player.addEventListener('error', () => {{
+        const t = tracks[currentIndex];
+        if (!t || !t.url) return;
+        if (retries < 3) {{
+            retries++;
+            const resumeAt = lastGoodTime;
+            setStatus('Reconnecting… (' + retries + '/3)');
+            setTimeout(() => {{
+                player.src = t.url;
+                player.load();
+                player.addEventListener('loadedmetadata', () => {{
+                    if (resumeAt) player.currentTime = resumeAt;
+                    player.play().catch(() => {{}});
+                }}, {{ once: true }});
+            }}, 1000 * retries);
+        }} else {{
+            setStatus(
+                "Couldn't load this track. <a target='_blank' rel='noopener' href='" + t.url + "'>Open the file directly</a>"
+            );
+        }}
+    }});
 
     player.addEventListener('ended', () => {{
         if (currentIndex + 1 < tracks.length) {{
@@ -627,7 +1265,16 @@ def dank_playlist_player(show_label, tracks):
 
     loadTrack(0, false);
     </script>
-    """, height = 90 + min(len(tracks), 6) * 46 + 200)
+    """, height=90 + min(len(tracks), 6) * 46 + 232)
+
+def format_playlist_track_label(track, index=None):
+    """Formats a track for display inside a playlist context, including
+    the (date — location) of the show it came from."""
+    show = track.get("show", "")
+    prefix = f"{index + 1}. " if index is not None else ""
+    if show:
+        return f"{prefix}{track['label']} ({show})"
+    return f"{prefix}{track['label']}"
 
 # -------------------------
 # MOBILE KEYBOARD SUPPRESSION FOR SELECTBOX
@@ -669,6 +1316,8 @@ def page_menu():
             st.switch_page("pages/landing.py")
         if st.button("Listen", width="stretch"):
             st.switch_page("pages/listen.py")
+        if st.button("Playlist Creator", width="stretch"):
+            st.switch_page("pages/playlist_creator.py")            
         if st.button("Watch", width="stretch"):
             st.switch_page("pages/watch.py")
         if st.button("Useful Tools", width="stretch"):
@@ -857,6 +1506,50 @@ def ranked_table(display_df, sort_col=None, ascending=False, rename=None, column
     out = out.reset_index(drop=True)
     out.insert(0, "Rank", range(1, len(out) + 1))
     return out
+
+def add_segue_labels(d):
+    """One vectorized pass: rows in the same show with the same Duration
+    are a segue chain, labeled 'A -> B -> C'."""
+    d = d.sort_values(["Date", "Track Number"]).copy()
+    t = d["Title"]
+    same_prev = d["Date"].eq(d["Date"].shift()) & d["Duration"].eq(d["Duration"].shift())
+    same_next = d["Date"].eq(d["Date"].shift(-1)) & d["Duration"].eq(d["Duration"].shift(-1))
+    d["Segue Label"] = np.select(
+        [same_prev & same_next, same_prev, same_next],
+        [t.shift() + " -> " + t + " -> " + t.shift(-1),
+         t.shift() + " -> " + t,
+         t + " -> " + t.shift(-1)],
+        default=t,
+    )
+    return d
+
+
+def card_html(value, label, accent=False):
+    value_class = "dank-card-value dank-card-accent" if accent else "dank-card-value"
+    # size by visible text length (ignoring any HTML tags in the value)
+    n = len(re.sub(r"<[^>]+>", "", str(value)))
+    size = 26 if n <= 10 else 22 if n <= 16 else 18 if n <= 26 else 15
+    return (
+        f'<div class="dank-card">'
+        f'<div class="{value_class}" style="font-size:{size}px">{value}</div>'
+        f'<div class="dank-card-label">{label}</div></div>'
+    )
+
+
+def count_bar(data, x_field, title, sort=None):
+    """Bar chart of 'Times Played' with a sane whole-number y-axis."""
+    max_count = int(data["Times Played"].max())
+    chart = alt.Chart(data).mark_bar(
+        cornerRadiusTopLeft=4, cornerRadiusTopRight=4, color="#ffb81c"
+    ).encode(
+        x=alt.X(f"{x_field}:O", sort=sort, axis=alt.Axis(labelAngle=0, title=None)),
+        y=alt.Y("Times Played:Q",
+                scale=alt.Scale(domain=[0, max_count + 1], nice=False),
+                axis=alt.Axis(tickMinStep=1, tickCount=min(max_count + 1, 6),
+                              format="d", title="Times Played")),
+        tooltip=[x_field, "Times Played"],
+    ).properties(height=250, title=alt.TitleParams(title, anchor="middle"))
+    return dank_chart(chart)
 
 # -------------------------
 # SETLIST RANDOMIZER

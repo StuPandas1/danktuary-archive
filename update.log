@@ -504,3 +504,385 @@
 2026-09-26 18:59:25  INFO     Pushing to GitHub...
 2026-09-26 18:59:28  INFO     Done! Streamlit Cloud will redeploy automatically in a minute or two.
 2026-09-26 18:59:28  INFO     Pipeline finished successfully.
+2026-10-03 08:03:21  INFO     ==================================================
+2026-10-03 08:03:21  INFO       DankApp Database Update
+2026-10-03 08:03:21  INFO     ==================================================
+2026-10-03 08:03:21  INFO     Working directory: C:\Users\Administrator\OneDrive\LoveDeep\danktuary-archive-clean
+2026-10-03 08:03:21  INFO     [1/6] Scanning files to update band_archive.csv...
+2026-10-03 08:03:29  INFO       scanner.py | Let's a-gooooo!
+2026-10-03 08:03:29  INFO       scanner.py | Found extra column(s) in band_archive.csv added by another script: ['OneDrive Share URL']. Preserving them.
+2026-10-03 08:03:29  INFO       scanner.py | Loaded 6535 existing row(s); 5060 file(s) already catalogued and will be skipped.
+2026-10-03 08:03:29  INFO       scanner.py | New folder detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-09-29 _ Jam Session'
+2026-10-03 08:03:29  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-09-29 _ Jam Session\01_ Me And My Uncle _ Big River _ Catfish John _ Franklin's Tower _ Dancin.mp3'
+2026-10-03 08:03:29  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-09-29 _ Jam Session\02_ I Second That Emotion.mp3'
+2026-10-03 08:03:29  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-09-29 _ Jam Session\03_ The Way You Do The Things You Do.mp3'
+2026-10-03 08:03:29  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-09-29 _ Jam Session\04_ Truckin.mp3'
+2026-10-03 08:03:29  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-09-29 _ Jam Session\05_ Jack-A-Roe.mp3'
+2026-10-03 08:03:29  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-09-29 _ Jam Session\06_ They Love Each Other _ I Know You Rider.mp3'
+2026-10-03 08:03:29  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-09-29 _ Jam Session\07_ Across The Great Divide.mp3'
+2026-10-03 08:03:29  INFO       scanner.py | New folder detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-10-02 _ Jam Session'
+2026-10-03 08:03:29  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-10-02 _ Jam Session\01_ I Know You Rider.mp3'
+2026-10-03 08:03:29  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-10-02 _ Jam Session\02_ The Music Never Stopped.mp3'
+2026-10-03 08:03:29  INFO       scanner.py | Added 14 new row(s), removed 0 row(s), flagged 0 row(s) as missing. CSV now has 6549 total row(s).
+2026-10-03 08:03:29  WARNING    scanner.py | 2026-10-03 08:03:26.722 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-10-03 08:03:29  WARNING    scanner.py | 2026-10-03 08:03:28.102 No runtime found, using MemoryCacheStorageManager
+2026-10-03 08:03:29  WARNING    scanner.py | 2026-10-03 08:03:28.120 No runtime found, using MemoryCacheStorageManager
+2026-10-03 08:03:29  WARNING    scanner.py | 2026-10-03 08:03:28.120 No runtime found, using MemoryCacheStorageManager
+2026-10-03 08:03:29  WARNING    scanner.py | 2026-10-03 08:03:28.120 No runtime found, using MemoryCacheStorageManager
+2026-10-03 08:03:29  INFO     [2/6] Uploading new recordings to the Internet Archive...
+2026-10-03 08:07:12  INFO       upload_to_archive.py | 2026-09-29 — Danktuary Studios
+2026-10-03 08:07:12  INFO       upload_to_archive.py |   deadweight-2026-09-29-danktuary-studios: 0 file(s) already confirmed, uploading 7 file(s)...
+2026-10-03 08:07:12  INFO       upload_to_archive.py | 2026-10-02 — Danktuary Studios
+2026-10-03 08:07:12  INFO       upload_to_archive.py |   deadweight-2026-10-02-danktuary-studios: 0 file(s) already confirmed, uploading 2 file(s)...
+2026-10-03 08:07:12  INFO       upload_to_archive.py | Done. band_archive.csv updated with IA URLs.
+2026-10-03 08:07:12  WARNING    upload_to_archive.py | 
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 01_ Me And My Uncle _ Big River _ Catfish John _ Franklin's Tower _ Dancin.mp3:   0%|          | 0/42 [00:00<?, ?MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 01_ Me And My Uncle _ Big River _ Catfish John _ Franklin's Tower _ Dancin.mp3:   2%|▏         | 1/42 [00:00<00:35,  1.16MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 01_ Me And My Uncle _ Big River _ Catfish John _ Franklin's Tower _ Dancin.mp3:   7%|▋         | 3/42 [00:01<00:11,  3.48MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 01_ Me And My Uncle _ Big River _ Catfish John _ Franklin's Tower _ Dancin.mp3:  12%|█▏        | 5/42 [00:01<00:08,  4.61MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 01_ Me And My Uncle _ Big River _ Catfish John _ Franklin's Tower _ Dancin.mp3:  14%|█▍        | 6/42 [00:01<00:07,  4.58MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 01_ Me And My Uncle _ Big River _ Catfish John _ Franklin's Tower _ Dancin.mp3:  17%|█▋        | 7/42 [00:01<00:07,  4.66MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 01_ Me And My Uncle _ Big River _ Catfish John _ Franklin's Tower _ Dancin.mp3:  19%|█▉        | 8/42 [00:02<00:08,  3.95MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 01_ Me And My Uncle _ Big River _ Catfish John _ Franklin's Tower _ Dancin.mp3:  21%|██▏       | 9/42 [00:02<00:09,  3.39MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 01_ Me And My Uncle _ Big River _ Catfish John _ Franklin's Tower _ Dancin.mp3:  24%|██▍       | 10/42 [00:02<00:10,  3.04MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 01_ Me And My Uncle _ Big River _ Catfish John _ Franklin's Tower _ Dancin.mp3:  26%|██▌       | 11/42 [00:03<00:11,  2.81MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 01_ Me And My Uncle _ Big River _ Catfish John _ Franklin's Tower _ Dancin.mp3:  29%|██▊       | 12/42 [00:03<00:10,  2.74MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 01_ Me And My Uncle _ Big River _ Catfish John _ Franklin's Tower _ Dancin.mp3:  31%|███       | 13/42 [00:03<00:09,  2.98MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 01_ Me And My Uncle _ Big River _ Catfish John _ Franklin's Tower _ Dancin.mp3:  33%|███▎      | 14/42 [00:04<00:08,  3.17MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 01_ Me And My Uncle _ Big River _ Catfish John _ Franklin's Tower _ Dancin.mp3:  36%|███▌      | 15/42 [00:04<00:08,  3.31MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 01_ Me And My Uncle _ Big River _ Catfish John _ Franklin's Tower _ Dancin.mp3:  38%|███▊      | 16/42 [00:04<00:07,  3.47MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 01_ Me And My Uncle _ Big River _ Catfish John _ Franklin's Tower _ Dancin.mp3:  40%|████      | 17/42 [00:05<00:06,  3.60MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 01_ Me And My Uncle _ Big River _ Catfish John _ Franklin's Tower _ Dancin.mp3:  43%|████▎     | 18/42 [00:05<00:06,  3.76MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 01_ Me And My Uncle _ Big River _ Catfish John _ Franklin's Tower _ Dancin.mp3:  45%|████▌     | 19/42 [00:05<00:06,  3.74MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 01_ Me And My Uncle _ Big River _ Catfish John _ Franklin's Tower _ Dancin.mp3:  48%|████▊     | 20/42 [00:05<00:05,  3.80MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 01_ Me And My Uncle _ Big River _ Catfish John _ Franklin's Tower _ Dancin.mp3:  50%|█████     | 21/42 [00:06<00:05,  3.92MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 01_ Me And My Uncle _ Big River _ Catfish John _ Franklin's Tower _ Dancin.mp3:  52%|█████▏    | 22/42 [00:06<00:05,  4.00MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 01_ Me And My Uncle _ Big River _ Catfish John _ Franklin's Tower _ Dancin.mp3:  55%|█████▍    | 23/42 [00:06<00:04,  3.98MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 01_ Me And My Uncle _ Big River _ Catfish John _ Franklin's Tower _ Dancin.mp3:  57%|█████▋    | 24/42 [00:06<00:04,  4.05MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 01_ Me And My Uncle _ Big River _ Catfish John _ Franklin's Tower _ Dancin.mp3:  60%|█████▉    | 25/42 [00:07<00:04,  4.01MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 01_ Me And My Uncle _ Big River _ Catfish John _ Franklin's Tower _ Dancin.mp3:  62%|██████▏   | 26/42 [00:07<00:03,  4.07MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 01_ Me And My Uncle _ Big River _ Catfish John _ Franklin's Tower _ Dancin.mp3:  64%|██████▍   | 27/42 [00:07<00:03,  4.11MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 01_ Me And My Uncle _ Big River _ Catfish John _ Franklin's Tower _ Dancin.mp3:  67%|██████▋   | 28/42 [00:07<00:03,  4.06MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 01_ Me And My Uncle _ Big River _ Catfish John _ Franklin's Tower _ Dancin.mp3:  69%|██████▉   | 29/42 [00:08<00:03,  4.02MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 01_ Me And My Uncle _ Big River _ Catfish John _ Franklin's Tower _ Dancin.mp3:  71%|███████▏  | 30/42 [00:08<00:03,  3.87MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 01_ Me And My Uncle _ Big River _ Catfish John _ Franklin's Tower _ Dancin.mp3:  74%|███████▍  | 31/42 [00:08<00:02,  3.96MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 01_ Me And My Uncle _ Big River _ Catfish John _ Franklin's Tower _ Dancin.mp3:  76%|███████▌  | 32/42 [00:08<00:02,  4.03MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 01_ Me And My Uncle _ Big River _ Catfish John _ Franklin's Tower _ Dancin.mp3:  79%|███████▊  | 33/42 [00:09<00:02,  3.94MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 01_ Me And My Uncle _ Big River _ Catfish John _ Franklin's Tower _ Dancin.mp3:  81%|████████  | 34/42 [00:09<00:01,  4.08MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 01_ Me And My Uncle _ Big River _ Catfish John _ Franklin's Tower _ Dancin.mp3:  83%|████████▎ | 35/42 [00:09<00:01,  4.04MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 01_ Me And My Uncle _ Big River _ Catfish John _ Franklin's Tower _ Dancin.mp3:  86%|████████▌ | 36/42 [00:09<00:01,  4.17MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 01_ Me And My Uncle _ Big River _ Catfish John _ Franklin's Tower _ Dancin.mp3:  88%|████████▊ | 37/42 [00:09<00:01,  4.15MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 01_ Me And My Uncle _ Big River _ Catfish John _ Franklin's Tower _ Dancin.mp3:  90%|█████████ | 38/42 [00:10<00:00,  4.27MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 01_ Me And My Uncle _ Big River _ Catfish John _ Franklin's Tower _ Dancin.mp3:  93%|█████████▎| 39/42 [00:10<00:00,  4.35MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 01_ Me And My Uncle _ Big River _ Catfish John _ Franklin's Tower _ Dancin.mp3:  95%|█████████▌| 40/42 [00:10<00:00,  4.39MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 01_ Me And My Uncle _ Big River _ Catfish John _ Franklin's Tower _ Dancin.mp3:  98%|█████████▊| 41/42 [00:10<00:00,  4.41MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 01_ Me And My Uncle _ Big River _ Catfish John _ Franklin's Tower _ Dancin.mp3: 100%|██████████| 42/42 [00:10<00:00,  3.86MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py | 
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 02_ I Second That Emotion.mp3:   0%|          | 0/10 [00:00<?, ?MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 02_ I Second That Emotion.mp3:  10%|█         | 1/10 [00:00<00:07,  1.25MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 02_ I Second That Emotion.mp3:  30%|███       | 3/10 [00:00<00:01,  4.03MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 02_ I Second That Emotion.mp3:  50%|█████     | 5/10 [00:03<00:04,  1.23MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 02_ I Second That Emotion.mp3:  60%|██████    | 6/10 [00:03<00:02,  1.53MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 02_ I Second That Emotion.mp3:  70%|███████   | 7/10 [00:04<00:01,  1.87MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 02_ I Second That Emotion.mp3:  80%|████████  | 8/10 [00:04<00:00,  2.29MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 02_ I Second That Emotion.mp3:  90%|█████████ | 9/10 [00:04<00:00,  2.70MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 02_ I Second That Emotion.mp3: 100%|██████████| 10/10 [00:04<00:00,  2.22MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py | 
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 03_ The Way You Do The Things You Do.mp3:   0%|          | 0/9 [00:00<?, ?MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 03_ The Way You Do The Things You Do.mp3:  11%|█         | 1/9 [00:00<00:05,  1.40MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 03_ The Way You Do The Things You Do.mp3:  33%|███▎      | 3/9 [00:00<00:01,  4.42MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 03_ The Way You Do The Things You Do.mp3:  78%|███████▊  | 7/9 [00:01<00:00,  9.30MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 03_ The Way You Do The Things You Do.mp3: 100%|██████████| 9/9 [00:01<00:00,  8.47MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py | 
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 04_ Truckin.mp3:   0%|          | 0/13 [00:00<?, ?MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 04_ Truckin.mp3:   8%|▊         | 1/13 [00:00<00:08,  1.39MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 04_ Truckin.mp3:  23%|██▎       | 3/13 [00:00<00:02,  4.08MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 04_ Truckin.mp3:  54%|█████▍    | 7/13 [00:00<00:00, 10.27MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 04_ Truckin.mp3:  77%|███████▋  | 10/13 [00:01<00:00, 12.25MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 04_ Truckin.mp3:  92%|█████████▏| 12/13 [00:01<00:00, 10.67MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 04_ Truckin.mp3: 100%|██████████| 13/13 [00:01<00:00,  9.19MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py | 
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 05_ Jack-A-Roe.mp3:   0%|          | 0/6 [00:00<?, ?MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 05_ Jack-A-Roe.mp3:  17%|█▋        | 1/6 [00:00<00:03,  1.40MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 05_ Jack-A-Roe.mp3:  50%|█████     | 3/6 [00:00<00:00,  4.30MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 05_ Jack-A-Roe.mp3:  67%|██████▋   | 4/6 [00:00<00:00,  4.96MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 05_ Jack-A-Roe.mp3:  83%|████████▎ | 5/6 [00:01<00:00,  5.18MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 05_ Jack-A-Roe.mp3: 100%|██████████| 6/6 [00:01<00:00,  4.90MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py | 
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 06_ They Love Each Other _ I Know You Rider.mp3:   0%|          | 0/24 [00:00<?, ?MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 06_ They Love Each Other _ I Know You Rider.mp3:   4%|▍         | 1/24 [00:00<00:18,  1.23MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 06_ They Love Each Other _ I Know You Rider.mp3:   8%|▊         | 2/24 [00:01<00:10,  2.15MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 06_ They Love Each Other _ I Know You Rider.mp3:  12%|█▎        | 3/24 [00:01<00:07,  2.71MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 06_ They Love Each Other _ I Know You Rider.mp3:  17%|█▋        | 4/24 [00:01<00:06,  2.92MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 06_ They Love Each Other _ I Know You Rider.mp3:  21%|██        | 5/24 [00:01<00:06,  2.81MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 06_ They Love Each Other _ I Know You Rider.mp3:  25%|██▌       | 6/24 [00:02<00:06,  2.78MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 06_ They Love Each Other _ I Know You Rider.mp3:  29%|██▉       | 7/24 [00:02<00:07,  2.38MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 06_ They Love Each Other _ I Know You Rider.mp3:  33%|███▎      | 8/24 [00:03<00:07,  2.20MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 06_ They Love Each Other _ I Know You Rider.mp3:  38%|███▊      | 9/24 [00:03<00:06,  2.43MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 06_ They Love Each Other _ I Know You Rider.mp3:  42%|████▏     | 10/24 [00:04<00:05,  2.61MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 06_ They Love Each Other _ I Know You Rider.mp3:  46%|████▌     | 11/24 [00:04<00:04,  2.79MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 06_ They Love Each Other _ I Know You Rider.mp3:  50%|█████     | 12/24 [00:04<00:04,  2.97MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 06_ They Love Each Other _ I Know You Rider.mp3:  54%|█████▍    | 13/24 [00:04<00:03,  3.07MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 06_ They Love Each Other _ I Know You Rider.mp3:  58%|█████▊    | 14/24 [00:05<00:03,  3.23MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 06_ They Love Each Other _ I Know You Rider.mp3:  62%|██████▎   | 15/24 [00:05<00:03,  2.98MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 06_ They Love Each Other _ I Know You Rider.mp3:  67%|██████▋   | 16/24 [00:06<00:02,  2.79MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 06_ They Love Each Other _ I Know You Rider.mp3:  71%|███████   | 17/24 [00:06<00:02,  2.70MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 06_ They Love Each Other _ I Know You Rider.mp3:  75%|███████▌  | 18/24 [00:06<00:02,  2.71MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 06_ They Love Each Other _ I Know You Rider.mp3:  79%|███████▉  | 19/24 [00:07<00:01,  2.64MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 06_ They Love Each Other _ I Know You Rider.mp3:  83%|████████▎ | 20/24 [00:07<00:01,  2.49MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 06_ They Love Each Other _ I Know You Rider.mp3:  88%|████████▊ | 21/24 [00:08<00:01,  2.33MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 06_ They Love Each Other _ I Know You Rider.mp3:  92%|█████████▏| 22/24 [00:08<00:00,  2.23MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 06_ They Love Each Other _ I Know You Rider.mp3:  96%|█████████▌| 23/24 [00:09<00:00,  2.19MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 06_ They Love Each Other _ I Know You Rider.mp3: 100%|██████████| 24/24 [00:09<00:00,  2.63MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py | 
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 07_ Across The Great Divide.mp3:   0%|          | 0/8 [00:00<?, ?MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 07_ Across The Great Divide.mp3:  12%|█▎        | 1/8 [00:00<00:05,  1.25MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 07_ Across The Great Divide.mp3:  50%|█████     | 4/8 [00:00<00:00,  5.11MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 07_ Across The Great Divide.mp3: 100%|██████████| 8/8 [00:01<00:00,  9.76MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 07_ Across The Great Divide.mp3: 100%|██████████| 8/8 [00:01<00:00,  7.07MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py | 
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 01_ I Know You Rider.mp3:   0%|          | 0/10 [00:00<?, ?MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 01_ I Know You Rider.mp3:  10%|█         | 1/10 [00:00<00:06,  1.30MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 01_ I Know You Rider.mp3:  20%|██        | 2/10 [00:00<00:03,  2.62MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 01_ I Know You Rider.mp3:  30%|███       | 3/10 [00:01<00:02,  3.23MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 01_ I Know You Rider.mp3:  40%|████      | 4/10 [00:03<00:06,  1.04s/MiB]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 01_ I Know You Rider.mp3:  50%|█████     | 5/10 [00:03<00:03,  1.43MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 01_ I Know You Rider.mp3:  60%|██████    | 6/10 [00:03<00:01,  2.01MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 01_ I Know You Rider.mp3:  70%|███████   | 7/10 [00:03<00:01,  2.49MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 01_ I Know You Rider.mp3:  80%|████████  | 8/10 [00:03<00:00,  2.85MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 01_ I Know You Rider.mp3:  90%|█████████ | 9/10 [00:04<00:00,  3.13MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 01_ I Know You Rider.mp3: 100%|██████████| 10/10 [00:04<00:00,  3.95MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 01_ I Know You Rider.mp3: 100%|██████████| 10/10 [00:04<00:00,  2.35MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py | 
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 02_ The Music Never Stopped.mp3:   0%|          | 0/8 [00:00<?, ?MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 02_ The Music Never Stopped.mp3:  12%|█▎        | 1/8 [00:00<00:05,  1.38MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 02_ The Music Never Stopped.mp3:  50%|█████     | 4/8 [00:00<00:00,  5.41MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 02_ The Music Never Stopped.mp3:  75%|███████▌  | 6/8 [00:01<00:00,  4.65MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 02_ The Music Never Stopped.mp3:  88%|████████▊ | 7/8 [00:01<00:00,  4.70MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 02_ The Music Never Stopped.mp3: 100%|██████████| 8/8 [00:01<00:00,  4.65MiB/s]
+2026-10-03 08:07:12  WARNING    upload_to_archive.py |  uploading 02_ The Music Never Stopped.mp3: 100%|██████████| 8/8 [00:01<00:00,  4.31MiB/s]
+2026-10-03 08:07:12  INFO     [3/6] Analyzing data...
+2026-10-03 08:07:14  INFO       analyze.py | song_stats.csv created!
+2026-10-03 08:07:14  INFO     [4/6] Building metadata...
+2026-10-03 08:07:15  INFO       build_metadata.py | song_metadata.csv updated!
+2026-10-03 08:07:15  INFO     [5/6] Adding share links...
+2026-10-03 08:07:27  INFO       generate_share_links.py | Found 2 folders to generate share links for.
+2026-10-03 08:07:27  INFO       generate_share_links.py |   Processing: LoveDeep/Audio Recordings/Jam Session Recordings 2021-/2026/2026-09-29 _ Jam Session
+2026-10-03 08:07:27  INFO       generate_share_links.py |     ✓ https://1drv.ms/f/c/436f797b4dd480a3/IgBmBs90JrVzT5qGGL7RYXg5AYioLzAWUKWQ9sT0jyRxrDM
+2026-10-03 08:07:27  INFO       generate_share_links.py |   Processing: LoveDeep/Audio Recordings/Jam Session Recordings 2021-/2026/2026-10-02 _ Jam Session
+2026-10-03 08:07:27  INFO       generate_share_links.py |     ✓ https://1drv.ms/f/c/436f797b4dd480a3/IgAzBxOuaEvoRIF9Egn8YUcHAX-ZN4ozezRMs6GPkmFj5oE
+2026-10-03 08:07:27  INFO       generate_share_links.py | 
+2026-10-03 08:07:27  INFO       generate_share_links.py | Done. 2 share links written to band_archive.csv.
+2026-10-03 08:07:27  INFO     [6/6] Checking for changes...
+2026-10-03 08:07:29  INFO     Changes detected. Committing...
+2026-10-03 08:07:29  INFO     Pushing to GitHub...
+2026-10-03 08:07:32  INFO     Done! Streamlit Cloud will redeploy automatically in a minute or two.
+2026-10-03 08:07:32  INFO     Pipeline finished successfully.
+2026-10-03 21:55:38  INFO     ==================================================
+2026-10-03 21:55:38  INFO       DankApp Database Update
+2026-10-03 21:55:38  INFO     ==================================================
+2026-10-03 21:55:38  INFO     Working directory: C:\Users\Administrator\OneDrive\LoveDeep\danktuary-archive-clean
+2026-10-03 21:55:38  INFO     [1/7] Scanning files to update band_archive.csv...
+2026-10-03 21:55:42  INFO       scanner.py | 2026-10-03 21:55:42.087 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-10-03 21:55:43  INFO       scanner.py | 2026-10-03 21:55:43.245 No runtime found, using MemoryCacheStorageManager
+2026-10-03 21:55:43  INFO       scanner.py | 2026-10-03 21:55:43.245 No runtime found, using MemoryCacheStorageManager
+2026-10-03 21:55:43  INFO       scanner.py | 2026-10-03 21:55:43.245 No runtime found, using MemoryCacheStorageManager
+2026-10-03 21:55:43  INFO       scanner.py | 2026-10-03 21:55:43.245 No runtime found, using MemoryCacheStorageManager
+2026-10-03 21:55:44  INFO       scanner.py | Let's a-gooooo!
+2026-10-03 21:55:44  INFO       scanner.py | Found extra column(s) in band_archive.csv added by another script: ['OneDrive Share URL']. Preserving them.
+2026-10-03 21:55:44  INFO       scanner.py | Loaded 6549 existing row(s); 5069 file(s) already catalogued and will be skipped.
+2026-10-03 21:55:44  INFO       scanner.py | Added 0 new row(s), removed 0 row(s), flagged 0 row(s) as missing. CSV now has 6549 total row(s).
+2026-10-03 21:55:44  INFO     [2/7] Checking what needs uploading to the Internet Archive...
+2026-10-03 21:55:46  INFO       upload_to_archive.py | Wrote upload plan: 0 show(s), 0 file(s) to upload.
+2026-10-03 21:55:46  INFO     Nothing new to upload.
+2026-10-03 21:55:46  INFO     [3/7] Analyzing data...
+2026-10-03 21:55:47  INFO       analyze.py | song_stats.csv created!
+2026-10-03 21:55:47  INFO     [4/7] Building metadata...
+2026-10-03 21:55:48  INFO       build_metadata.py | song_metadata.csv updated!
+2026-10-03 21:55:48  INFO     [5/7] Checking for songs with no artist on file...
+2026-10-03 21:55:48  INFO     8 song(s) have no artist on file.
+2026-10-03 21:56:56  INFO     Filled in 8 of 8 artist name(s).
+2026-10-03 21:56:56  INFO     [6/7] Adding share links...
+2026-10-03 21:56:57  INFO       generate_share_links.py | No new folders to process.
+2026-10-03 21:56:58  INFO     [7/7] Checking for changes...
+2026-10-03 21:56:58  INFO     Changes detected. Committing...
+2026-10-03 21:56:59  INFO     Pushing to GitHub...
+2026-10-03 21:57:02  INFO     Done! Streamlit Cloud will redeploy automatically in a minute or two.
+2026-10-03 21:57:02  INFO     Pipeline finished successfully.
+2026-10-08 07:46:30  INFO     ==================================================
+2026-10-08 07:46:30  INFO       DankApp Database Update
+2026-10-08 07:46:30  INFO     ==================================================
+2026-10-08 07:46:30  INFO     Working directory: C:\Users\Administrator\OneDrive\LoveDeep\danktuary-archive-clean
+2026-10-08 07:46:30  INFO     [1/7] Scanning files to update band_archive.csv...
+2026-10-08 07:46:40  INFO       scanner.py | Let's a-gooooo!
+2026-10-08 07:46:40  INFO       scanner.py | Found extra column(s) in band_archive.csv added by another script: ['OneDrive Share URL']. Preserving them.
+2026-10-08 07:46:40  INFO       scanner.py | Loaded 6549 existing row(s); 5069 file(s) already catalogued and will be skipped.
+2026-10-08 07:46:40  INFO       scanner.py | New folder detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-10-07 _ Jam Session'
+2026-10-08 07:46:40  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-10-07 _ Jam Session\01_ Bertha _ Muncle.mp3'
+2026-10-08 07:46:40  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-10-07 _ Jam Session\02_ Loser.mp3'
+2026-10-08 07:46:40  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-10-07 _ Jam Session\03_ Black Throated Wind _ Scarlet Begonias.mp3'
+2026-10-08 07:46:40  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-10-07 _ Jam Session\04_ It Must Have Been The Roses _ Jack Straw _ Tennessee Jed.mp3'
+2026-10-08 07:46:40  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-10-07 _ Jam Session\05_ Mexicali Blues _ Deal _ Big River _ Brown Eyed Women.mp3'
+2026-10-08 07:46:40  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-10-07 _ Jam Session\06_ Playin In The Band.mp3'
+2026-10-08 07:46:40  INFO       scanner.py | Added 13 new row(s), removed 0 row(s), flagged 0 row(s) as missing. CSV now has 6562 total row(s).
+2026-10-08 07:46:40  INFO     [2/7] Checking what needs uploading to the Internet Archive...
+2026-10-08 07:46:45  INFO       upload_to_archive.py | Wrote upload plan: 1 show(s), 6 file(s) to upload.
+2026-10-08 07:46:45  INFO     6 file(s) across 1 show(s) are ready to upload.
+2026-10-08 07:47:07  INFO     Uploading...
+2026-10-08 07:47:11  INFO       upload_to_archive.py | 2026-10-07 — Danktuary Studios
+2026-10-08 07:47:11  INFO       upload_to_archive.py |   deadweight-2026-10-07-danktuary-studios: 0 file(s) already confirmed, uploading 6 file(s)...
+2026-10-08 07:47:11  INFO       upload_to_archive.py | 
+2026-10-08 07:47:12  INFO       upload_to_archive.py |  uploading 01_ Bertha _ Muncle.mp3:   0%|          | 0/20 [00:00<?, ?MiB/s]
+2026-10-08 07:47:13  INFO       upload_to_archive.py |  uploading 01_ Bertha _ Muncle.mp3:   5%|▌         | 1/20 [00:00<00:16,  1.17MiB/s]
+2026-10-08 07:47:13  INFO       upload_to_archive.py |  uploading 01_ Bertha _ Muncle.mp3:  10%|█         | 2/20 [00:01<00:11,  1.52MiB/s]
+2026-10-08 07:47:14  INFO       upload_to_archive.py |  uploading 01_ Bertha _ Muncle.mp3:  15%|█▌        | 3/20 [00:01<00:10,  1.67MiB/s]
+2026-10-08 07:47:15  INFO       upload_to_archive.py |  uploading 01_ Bertha _ Muncle.mp3:  20%|██        | 4/20 [00:02<00:09,  1.60MiB/s]
+2026-10-08 07:47:16  INFO       upload_to_archive.py |  uploading 01_ Bertha _ Muncle.mp3:  25%|██▌       | 5/20 [00:03<00:10,  1.42MiB/s]
+2026-10-08 07:47:16  INFO       upload_to_archive.py |  uploading 01_ Bertha _ Muncle.mp3:  30%|███       | 6/20 [00:04<00:09,  1.45MiB/s]
+2026-10-08 07:47:17  INFO       upload_to_archive.py |  uploading 01_ Bertha _ Muncle.mp3:  35%|███▌      | 7/20 [00:04<00:08,  1.50MiB/s]
+2026-10-08 07:47:17  INFO       upload_to_archive.py |  uploading 01_ Bertha _ Muncle.mp3:  40%|████      | 8/20 [00:05<00:07,  1.54MiB/s]
+2026-10-08 07:47:18  INFO       upload_to_archive.py |  uploading 01_ Bertha _ Muncle.mp3:  45%|████▌     | 9/20 [00:05<00:06,  1.60MiB/s]
+2026-10-08 07:47:19  INFO       upload_to_archive.py |  uploading 01_ Bertha _ Muncle.mp3:  50%|█████     | 10/20 [00:06<00:06,  1.66MiB/s]
+2026-10-08 07:47:20  INFO       upload_to_archive.py |  uploading 01_ Bertha _ Muncle.mp3:  55%|█████▌    | 11/20 [00:07<00:05,  1.55MiB/s]
+2026-10-08 07:47:21  INFO       upload_to_archive.py |  uploading 01_ Bertha _ Muncle.mp3:  60%|██████    | 12/20 [00:08<00:05,  1.34MiB/s]
+2026-10-08 07:47:22  INFO       upload_to_archive.py |  uploading 01_ Bertha _ Muncle.mp3:  65%|██████▌   | 13/20 [00:09<00:05,  1.22MiB/s]
+2026-10-08 07:47:23  INFO       upload_to_archive.py |  uploading 01_ Bertha _ Muncle.mp3:  70%|███████   | 14/20 [00:10<00:05,  1.11MiB/s]
+2026-10-08 07:47:24  INFO       upload_to_archive.py |  uploading 01_ Bertha _ Muncle.mp3:  75%|███████▌  | 15/20 [00:11<00:04,  1.05MiB/s]
+2026-10-08 07:47:25  INFO       upload_to_archive.py |  uploading 01_ Bertha _ Muncle.mp3:  80%|████████  | 16/20 [00:12<00:04,  1.03s/MiB]
+2026-10-08 07:47:26  INFO       upload_to_archive.py |  uploading 01_ Bertha _ Muncle.mp3:  85%|████████▌ | 17/20 [00:13<00:03,  1.02s/MiB]
+2026-10-08 07:47:27  INFO       upload_to_archive.py |  uploading 01_ Bertha _ Muncle.mp3:  90%|█████████ | 18/20 [00:14<00:01,  1.04MiB/s]
+2026-10-08 07:47:27  INFO       upload_to_archive.py |  uploading 01_ Bertha _ Muncle.mp3:  95%|█████████▌| 19/20 [00:15<00:00,  1.04MiB/s]
+2026-10-08 07:47:27  INFO       upload_to_archive.py |  uploading 01_ Bertha _ Muncle.mp3: 100%|██████████| 20/20 [00:15<00:00,  1.23MiB/s]
+2026-10-08 07:47:27  INFO       upload_to_archive.py |  uploading 01_ Bertha _ Muncle.mp3: 100%|██████████| 20/20 [00:15<00:00,  1.27MiB/s]
+2026-10-08 07:47:50  INFO       upload_to_archive.py | 
+2026-10-08 07:47:50  INFO       upload_to_archive.py |  uploading 02_ Loser.mp3:   0%|          | 0/9 [00:00<?, ?MiB/s]
+2026-10-08 07:47:51  INFO       upload_to_archive.py |  uploading 02_ Loser.mp3:  11%|█         | 1/9 [00:00<00:06,  1.30MiB/s]
+2026-10-08 07:47:51  INFO       upload_to_archive.py |  uploading 02_ Loser.mp3:  33%|███▎      | 3/9 [00:00<00:01,  4.23MiB/s]
+2026-10-08 07:47:51  INFO       upload_to_archive.py |  uploading 02_ Loser.mp3:  56%|█████▌    | 5/9 [00:01<00:00,  4.39MiB/s]
+2026-10-08 07:47:51  INFO       upload_to_archive.py |  uploading 02_ Loser.mp3:  67%|██████▋   | 6/9 [00:01<00:00,  4.67MiB/s]
+2026-10-08 07:47:52  INFO       upload_to_archive.py |  uploading 02_ Loser.mp3:  78%|███████▊  | 7/9 [00:01<00:00,  5.04MiB/s]
+2026-10-08 07:47:52  INFO       upload_to_archive.py |  uploading 02_ Loser.mp3:  89%|████████▉ | 8/9 [00:02<00:00,  3.86MiB/s]
+2026-10-08 07:47:52  INFO       upload_to_archive.py |  uploading 02_ Loser.mp3: 100%|██████████| 9/9 [00:02<00:00,  3.18MiB/s]
+2026-10-08 07:47:52  INFO       upload_to_archive.py |  uploading 02_ Loser.mp3: 100%|██████████| 9/9 [00:02<00:00,  3.59MiB/s]
+2026-10-08 07:47:55  INFO       upload_to_archive.py | 
+2026-10-08 07:47:55  INFO       upload_to_archive.py |  uploading 03_ Black Throated Wind _ Scarlet Begonias.mp3:   0%|          | 0/23 [00:00<?, ?MiB/s]
+2026-10-08 07:47:55  INFO       upload_to_archive.py |  uploading 03_ Black Throated Wind _ Scarlet Begonias.mp3:   4%|▍         | 1/23 [00:00<00:16,  1.30MiB/s]
+2026-10-08 07:47:56  INFO       upload_to_archive.py |  uploading 03_ Black Throated Wind _ Scarlet Begonias.mp3:   9%|▊         | 2/23 [00:00<00:08,  2.62MiB/s]
+2026-10-08 07:47:56  INFO       upload_to_archive.py |  uploading 03_ Black Throated Wind _ Scarlet Begonias.mp3:  13%|█▎        | 3/23 [00:01<00:05,  3.57MiB/s]
+2026-10-08 07:47:59  INFO       upload_to_archive.py |  uploading 03_ Black Throated Wind _ Scarlet Begonias.mp3:  17%|█▋        | 4/23 [00:01<00:04,  4.08MiB/s]
+2026-10-08 07:47:59  INFO       upload_to_archive.py |  uploading 03_ Black Throated Wind _ Scarlet Begonias.mp3:  22%|██▏       | 5/23 [00:04<00:22,  1.23s/MiB]
+2026-10-08 07:47:59  INFO       upload_to_archive.py |  uploading 03_ Black Throated Wind _ Scarlet Begonias.mp3:  26%|██▌       | 6/23 [00:04<00:16,  1.06MiB/s]
+2026-10-08 07:48:00  INFO       upload_to_archive.py |  uploading 03_ Black Throated Wind _ Scarlet Begonias.mp3:  30%|███       | 7/23 [00:04<00:11,  1.33MiB/s]
+2026-10-08 07:48:00  INFO       upload_to_archive.py |  uploading 03_ Black Throated Wind _ Scarlet Begonias.mp3:  35%|███▍      | 8/23 [00:05<00:09,  1.58MiB/s]
+2026-10-08 07:48:01  INFO       upload_to_archive.py |  uploading 03_ Black Throated Wind _ Scarlet Begonias.mp3:  39%|███▉      | 9/23 [00:05<00:08,  1.73MiB/s]
+2026-10-08 07:48:01  INFO       upload_to_archive.py |  uploading 03_ Black Throated Wind _ Scarlet Begonias.mp3:  43%|████▎     | 10/23 [00:06<00:07,  1.79MiB/s]
+2026-10-08 07:48:02  INFO       upload_to_archive.py |  uploading 03_ Black Throated Wind _ Scarlet Begonias.mp3:  48%|████▊     | 11/23 [00:06<00:06,  1.86MiB/s]
+2026-10-08 07:48:03  INFO       upload_to_archive.py |  uploading 03_ Black Throated Wind _ Scarlet Begonias.mp3:  52%|█████▏    | 12/23 [00:07<00:06,  1.74MiB/s]
+2026-10-08 07:48:05  INFO       upload_to_archive.py |  uploading 03_ Black Throated Wind _ Scarlet Begonias.mp3:  57%|█████▋    | 13/23 [00:08<00:08,  1.22MiB/s]
+2026-10-08 07:48:07  INFO       upload_to_archive.py |  uploading 03_ Black Throated Wind _ Scarlet Begonias.mp3:  61%|██████    | 14/23 [00:10<00:09,  1.07s/MiB]
+2026-10-08 07:48:09  INFO       upload_to_archive.py |  uploading 03_ Black Throated Wind _ Scarlet Begonias.mp3:  65%|██████▌   | 15/23 [00:12<00:10,  1.32s/MiB]
+2026-10-08 07:48:11  INFO       upload_to_archive.py |  uploading 03_ Black Throated Wind _ Scarlet Begonias.mp3:  70%|██████▉   | 16/23 [00:14<00:10,  1.50s/MiB]
+2026-10-08 07:48:14  INFO       upload_to_archive.py |  uploading 03_ Black Throated Wind _ Scarlet Begonias.mp3:  74%|███████▍  | 17/23 [00:16<00:10,  1.81s/MiB]
+2026-10-08 07:48:16  INFO       upload_to_archive.py |  uploading 03_ Black Throated Wind _ Scarlet Begonias.mp3:  78%|███████▊  | 18/23 [00:19<00:10,  2.15s/MiB]
+2026-10-08 07:48:18  INFO       upload_to_archive.py |  uploading 03_ Black Throated Wind _ Scarlet Begonias.mp3:  83%|████████▎ | 19/23 [00:21<00:08,  2.14s/MiB]
+2026-10-08 07:48:19  INFO       upload_to_archive.py |  uploading 03_ Black Throated Wind _ Scarlet Begonias.mp3:  87%|████████▋ | 20/23 [00:22<00:05,  1.83s/MiB]
+2026-10-08 07:48:20  INFO       upload_to_archive.py |  uploading 03_ Black Throated Wind _ Scarlet Begonias.mp3:  91%|█████████▏| 21/23 [00:24<00:03,  1.63s/MiB]
+2026-10-08 07:48:20  INFO       upload_to_archive.py |  uploading 03_ Black Throated Wind _ Scarlet Begonias.mp3:  96%|█████████▌| 22/23 [00:25<00:01,  1.45s/MiB]
+2026-10-08 07:48:20  INFO       upload_to_archive.py |  uploading 03_ Black Throated Wind _ Scarlet Begonias.mp3: 100%|██████████| 23/23 [00:25<00:00,  1.12s/MiB]
+2026-10-08 07:48:20  INFO       upload_to_archive.py |  uploading 03_ Black Throated Wind _ Scarlet Begonias.mp3: 100%|██████████| 23/23 [00:25<00:00,  1.11s/MiB]
+2026-10-08 07:48:22  INFO       upload_to_archive.py | 
+2026-10-08 07:48:23  INFO       upload_to_archive.py |  uploading 04_ It Must Have Been The Roses _ Jack Straw _ Tennessee Jed.mp3:   0%|          | 0/32 [00:00<?, ?MiB/s]
+2026-10-08 07:48:23  INFO       upload_to_archive.py |  uploading 04_ It Must Have Been The Roses _ Jack Straw _ Tennessee Jed.mp3:   3%|▎         | 1/32 [00:00<00:24,  1.25MiB/s]
+2026-10-08 07:48:23  INFO       upload_to_archive.py |  uploading 04_ It Must Have Been The Roses _ Jack Straw _ Tennessee Jed.mp3:   9%|▉         | 3/32 [00:00<00:07,  3.93MiB/s]
+2026-10-08 07:48:23  INFO       upload_to_archive.py |  uploading 04_ It Must Have Been The Roses _ Jack Straw _ Tennessee Jed.mp3:  22%|██▏       | 7/32 [00:01<00:02,  8.72MiB/s]
+2026-10-08 07:48:23  INFO       upload_to_archive.py |  uploading 04_ It Must Have Been The Roses _ Jack Straw _ Tennessee Jed.mp3:  31%|███▏      | 10/32 [00:01<00:02,  9.63MiB/s]
+2026-10-08 07:48:24  INFO       upload_to_archive.py |  uploading 04_ It Must Have Been The Roses _ Jack Straw _ Tennessee Jed.mp3:  38%|███▊      | 12/32 [00:01<00:02,  9.64MiB/s]
+2026-10-08 07:48:24  INFO       upload_to_archive.py |  uploading 04_ It Must Have Been The Roses _ Jack Straw _ Tennessee Jed.mp3:  44%|████▍     | 14/32 [00:02<00:02,  7.45MiB/s]
+2026-10-08 07:48:24  INFO       upload_to_archive.py |  uploading 04_ It Must Have Been The Roses _ Jack Straw _ Tennessee Jed.mp3:  47%|████▋     | 15/32 [00:02<00:02,  6.60MiB/s]
+2026-10-08 07:48:25  INFO       upload_to_archive.py |  uploading 04_ It Must Have Been The Roses _ Jack Straw _ Tennessee Jed.mp3:  50%|█████     | 16/32 [00:02<00:02,  5.42MiB/s]
+2026-10-08 07:48:25  INFO       upload_to_archive.py |  uploading 04_ It Must Have Been The Roses _ Jack Straw _ Tennessee Jed.mp3:  53%|█████▎    | 17/32 [00:02<00:03,  4.53MiB/s]
+2026-10-08 07:48:25  INFO       upload_to_archive.py |  uploading 04_ It Must Have Been The Roses _ Jack Straw _ Tennessee Jed.mp3:  56%|█████▋    | 18/32 [00:03<00:03,  4.03MiB/s]
+2026-10-08 07:48:26  INFO       upload_to_archive.py |  uploading 04_ It Must Have Been The Roses _ Jack Straw _ Tennessee Jed.mp3:  59%|█████▉    | 19/32 [00:03<00:03,  3.70MiB/s]
+2026-10-08 07:48:26  INFO       upload_to_archive.py |  uploading 04_ It Must Have Been The Roses _ Jack Straw _ Tennessee Jed.mp3:  62%|██████▎   | 20/32 [00:03<00:03,  3.58MiB/s]
+2026-10-08 07:48:27  INFO       upload_to_archive.py |  uploading 04_ It Must Have Been The Roses _ Jack Straw _ Tennessee Jed.mp3:  66%|██████▌   | 21/32 [00:04<00:04,  2.70MiB/s]
+2026-10-08 07:48:28  INFO       upload_to_archive.py |  uploading 04_ It Must Have Been The Roses _ Jack Straw _ Tennessee Jed.mp3:  69%|██████▉   | 22/32 [00:05<00:04,  2.27MiB/s]
+2026-10-08 07:48:29  INFO       upload_to_archive.py |  uploading 04_ It Must Have Been The Roses _ Jack Straw _ Tennessee Jed.mp3:  72%|███████▏  | 23/32 [00:05<00:04,  1.86MiB/s]
+2026-10-08 07:48:31  INFO       upload_to_archive.py |  uploading 04_ It Must Have Been The Roses _ Jack Straw _ Tennessee Jed.mp3:  75%|███████▌  | 24/32 [00:07<00:05,  1.34MiB/s]
+2026-10-08 07:48:32  INFO       upload_to_archive.py |  uploading 04_ It Must Have Been The Roses _ Jack Straw _ Tennessee Jed.mp3:  78%|███████▊  | 25/32 [00:08<00:06,  1.03MiB/s]
+2026-10-08 07:48:34  INFO       upload_to_archive.py |  uploading 04_ It Must Have Been The Roses _ Jack Straw _ Tennessee Jed.mp3:  81%|████████▏ | 26/32 [00:10<00:06,  1.16s/MiB]
+2026-10-08 07:48:38  INFO       upload_to_archive.py |  uploading 04_ It Must Have Been The Roses _ Jack Straw _ Tennessee Jed.mp3:  84%|████████▍ | 27/32 [00:12<00:06,  1.40s/MiB]
+2026-10-08 07:48:39  INFO       upload_to_archive.py |  uploading 04_ It Must Have Been The Roses _ Jack Straw _ Tennessee Jed.mp3:  88%|████████▊ | 28/32 [00:15<00:08,  2.01s/MiB]
+2026-10-08 07:48:40  INFO       upload_to_archive.py |  uploading 04_ It Must Have Been The Roses _ Jack Straw _ Tennessee Jed.mp3:  91%|█████████ | 29/32 [00:17<00:05,  1.89s/MiB]
+2026-10-08 07:48:42  INFO       upload_to_archive.py |  uploading 04_ It Must Have Been The Roses _ Jack Straw _ Tennessee Jed.mp3:  94%|█████████▍| 30/32 [00:18<00:03,  1.72s/MiB]
+2026-10-08 07:48:42  INFO       upload_to_archive.py |  uploading 04_ It Must Have Been The Roses _ Jack Straw _ Tennessee Jed.mp3:  97%|█████████▋| 31/32 [00:19<00:01,  1.55s/MiB]
+2026-10-08 07:48:42  INFO       upload_to_archive.py |  uploading 04_ It Must Have Been The Roses _ Jack Straw _ Tennessee Jed.mp3: 100%|██████████| 32/32 [00:20<00:00,  1.17s/MiB]
+2026-10-08 07:48:42  INFO       upload_to_archive.py |  uploading 04_ It Must Have Been The Roses _ Jack Straw _ Tennessee Jed.mp3: 100%|██████████| 32/32 [00:20<00:00,  1.60MiB/s]
+2026-10-08 07:48:47  INFO       upload_to_archive.py | 
+2026-10-08 07:48:50  INFO       upload_to_archive.py |  uploading 05_ Mexicali Blues _ Deal _ Big River _ Brown Eyed Women.mp3:   0%|          | 0/26 [00:00<?, ?MiB/s]
+2026-10-08 07:48:52  INFO       upload_to_archive.py |  uploading 05_ Mexicali Blues _ Deal _ Big River _ Brown Eyed Women.mp3:   4%|▍         | 1/26 [00:03<01:18,  3.14s/MiB]
+2026-10-08 07:48:53  INFO       upload_to_archive.py |  uploading 05_ Mexicali Blues _ Deal _ Big River _ Brown Eyed Women.mp3:   8%|▊         | 2/26 [00:04<00:55,  2.30s/MiB]
+2026-10-08 07:48:55  INFO       upload_to_archive.py |  uploading 05_ Mexicali Blues _ Deal _ Big River _ Brown Eyed Women.mp3:  12%|█▏        | 3/26 [00:06<00:45,  1.96s/MiB]
+2026-10-08 07:48:56  INFO       upload_to_archive.py |  uploading 05_ Mexicali Blues _ Deal _ Big River _ Brown Eyed Women.mp3:  15%|█▌        | 4/26 [00:07<00:37,  1.72s/MiB]
+2026-10-08 07:48:57  INFO       upload_to_archive.py |  uploading 05_ Mexicali Blues _ Deal _ Big River _ Brown Eyed Women.mp3:  19%|█▉        | 5/26 [00:09<00:34,  1.64s/MiB]
+2026-10-08 07:48:59  INFO       upload_to_archive.py |  uploading 05_ Mexicali Blues _ Deal _ Big River _ Brown Eyed Women.mp3:  23%|██▎       | 6/26 [00:10<00:30,  1.52s/MiB]
+2026-10-08 07:49:00  INFO       upload_to_archive.py |  uploading 05_ Mexicali Blues _ Deal _ Big River _ Brown Eyed Women.mp3:  27%|██▋       | 7/26 [00:11<00:27,  1.47s/MiB]
+2026-10-08 07:49:01  INFO       upload_to_archive.py |  uploading 05_ Mexicali Blues _ Deal _ Big River _ Brown Eyed Women.mp3:  31%|███       | 8/26 [00:13<00:25,  1.41s/MiB]
+2026-10-08 07:49:02  INFO       upload_to_archive.py |  uploading 05_ Mexicali Blues _ Deal _ Big River _ Brown Eyed Women.mp3:  35%|███▍      | 9/26 [00:14<00:23,  1.36s/MiB]
+2026-10-08 07:49:03  INFO       upload_to_archive.py |  uploading 05_ Mexicali Blues _ Deal _ Big River _ Brown Eyed Women.mp3:  38%|███▊      | 10/26 [00:15<00:20,  1.29s/MiB]
+2026-10-08 07:49:04  INFO       upload_to_archive.py |  uploading 05_ Mexicali Blues _ Deal _ Big River _ Brown Eyed Women.mp3:  42%|████▏     | 11/26 [00:16<00:17,  1.18s/MiB]
+2026-10-08 07:49:05  INFO       upload_to_archive.py |  uploading 05_ Mexicali Blues _ Deal _ Big River _ Brown Eyed Women.mp3:  46%|████▌     | 12/26 [00:17<00:14,  1.04s/MiB]
+2026-10-08 07:49:05  INFO       upload_to_archive.py |  uploading 05_ Mexicali Blues _ Deal _ Big River _ Brown Eyed Women.mp3:  50%|█████     | 13/26 [00:17<00:12,  1.08MiB/s]
+2026-10-08 07:49:06  INFO       upload_to_archive.py |  uploading 05_ Mexicali Blues _ Deal _ Big River _ Brown Eyed Women.mp3:  54%|█████▍    | 14/26 [00:18<00:10,  1.13MiB/s]
+2026-10-08 07:49:07  INFO       upload_to_archive.py |  uploading 05_ Mexicali Blues _ Deal _ Big River _ Brown Eyed Women.mp3:  58%|█████▊    | 15/26 [00:19<00:09,  1.20MiB/s]
+2026-10-08 07:49:10  INFO       upload_to_archive.py |  uploading 05_ Mexicali Blues _ Deal _ Big River _ Brown Eyed Women.mp3:  62%|██████▏   | 16/26 [00:20<00:09,  1.10MiB/s]
+2026-10-08 07:49:12  INFO       upload_to_archive.py |  uploading 05_ Mexicali Blues _ Deal _ Big River _ Brown Eyed Women.mp3:  65%|██████▌   | 17/26 [00:22<00:12,  1.38s/MiB]
+2026-10-08 07:49:13  INFO       upload_to_archive.py |  uploading 05_ Mexicali Blues _ Deal _ Big River _ Brown Eyed Women.mp3:  69%|██████▉   | 18/26 [00:25<00:12,  1.62s/MiB]
+2026-10-08 07:49:14  INFO       upload_to_archive.py |  uploading 05_ Mexicali Blues _ Deal _ Big River _ Brown Eyed Women.mp3:  73%|███████▎  | 19/26 [00:26<00:10,  1.54s/MiB]
+2026-10-08 07:49:16  INFO       upload_to_archive.py |  uploading 05_ Mexicali Blues _ Deal _ Big River _ Brown Eyed Women.mp3:  77%|███████▋  | 20/26 [00:27<00:08,  1.43s/MiB]
+2026-10-08 07:49:18  INFO       upload_to_archive.py |  uploading 05_ Mexicali Blues _ Deal _ Big River _ Brown Eyed Women.mp3:  81%|████████  | 21/26 [00:29<00:07,  1.46s/MiB]
+2026-10-08 07:49:19  INFO       upload_to_archive.py |  uploading 05_ Mexicali Blues _ Deal _ Big River _ Brown Eyed Women.mp3:  85%|████████▍ | 22/26 [00:30<00:06,  1.50s/MiB]
+2026-10-08 07:49:20  INFO       upload_to_archive.py |  uploading 05_ Mexicali Blues _ Deal _ Big River _ Brown Eyed Women.mp3:  88%|████████▊ | 23/26 [00:32<00:04,  1.54s/MiB]
+2026-10-08 07:49:22  INFO       upload_to_archive.py |  uploading 05_ Mexicali Blues _ Deal _ Big River _ Brown Eyed Women.mp3:  92%|█████████▏| 24/26 [00:33<00:02,  1.47s/MiB]
+2026-10-08 07:49:22  INFO       upload_to_archive.py |  uploading 05_ Mexicali Blues _ Deal _ Big River _ Brown Eyed Women.mp3:  96%|█████████▌| 25/26 [00:35<00:01,  1.43s/MiB]
+2026-10-08 07:49:22  INFO       upload_to_archive.py |  uploading 05_ Mexicali Blues _ Deal _ Big River _ Brown Eyed Women.mp3: 100%|██████████| 26/26 [00:35<00:00,  1.18s/MiB]
+2026-10-08 07:49:22  INFO       upload_to_archive.py |  uploading 05_ Mexicali Blues _ Deal _ Big River _ Brown Eyed Women.mp3: 100%|██████████| 26/26 [00:35<00:00,  1.37s/MiB]
+2026-10-08 07:49:24  INFO       upload_to_archive.py | 
+2026-10-08 07:49:24  INFO       upload_to_archive.py |  uploading 06_ Playin In The Band.mp3:   0%|          | 0/18 [00:00<?, ?MiB/s]
+2026-10-08 07:49:25  INFO       upload_to_archive.py |  uploading 06_ Playin In The Band.mp3:   6%|▌         | 1/18 [00:00<00:14,  1.17MiB/s]
+2026-10-08 07:49:25  INFO       upload_to_archive.py |  uploading 06_ Playin In The Band.mp3:  11%|█         | 2/18 [00:01<00:08,  1.89MiB/s]
+2026-10-08 07:49:26  INFO       upload_to_archive.py |  uploading 06_ Playin In The Band.mp3:  17%|█▋        | 3/18 [00:01<00:06,  2.20MiB/s]
+2026-10-08 07:49:26  INFO       upload_to_archive.py |  uploading 06_ Playin In The Band.mp3:  22%|██▏       | 4/18 [00:01<00:06,  2.31MiB/s]
+2026-10-08 07:49:27  INFO       upload_to_archive.py |  uploading 06_ Playin In The Band.mp3:  28%|██▊       | 5/18 [00:02<00:07,  1.85MiB/s]
+2026-10-08 07:49:28  INFO       upload_to_archive.py |  uploading 06_ Playin In The Band.mp3:  33%|███▎      | 6/18 [00:03<00:07,  1.67MiB/s]
+2026-10-08 07:49:28  INFO       upload_to_archive.py |  uploading 06_ Playin In The Band.mp3:  39%|███▉      | 7/18 [00:04<00:06,  1.60MiB/s]
+2026-10-08 07:49:29  INFO       upload_to_archive.py |  uploading 06_ Playin In The Band.mp3:  44%|████▍     | 8/18 [00:04<00:06,  1.60MiB/s]
+2026-10-08 07:49:30  INFO       upload_to_archive.py |  uploading 06_ Playin In The Band.mp3:  50%|█████     | 9/18 [00:05<00:06,  1.43MiB/s]
+2026-10-08 07:49:31  INFO       upload_to_archive.py |  uploading 06_ Playin In The Band.mp3:  56%|█████▌    | 10/18 [00:06<00:05,  1.36MiB/s]
+2026-10-08 07:49:32  INFO       upload_to_archive.py |  uploading 06_ Playin In The Band.mp3:  61%|██████    | 11/18 [00:07<00:05,  1.20MiB/s]
+2026-10-08 07:49:33  INFO       upload_to_archive.py |  uploading 06_ Playin In The Band.mp3:  67%|██████▋   | 12/18 [00:08<00:05,  1.03MiB/s]
+2026-10-08 07:49:35  INFO       upload_to_archive.py |  uploading 06_ Playin In The Band.mp3:  72%|███████▏  | 13/18 [00:09<00:05,  1.01s/MiB]
+2026-10-08 07:49:37  INFO       upload_to_archive.py |  uploading 06_ Playin In The Band.mp3:  78%|███████▊  | 14/18 [00:11<00:04,  1.20s/MiB]
+2026-10-08 07:49:38  INFO       upload_to_archive.py |  uploading 06_ Playin In The Band.mp3:  83%|████████▎ | 15/18 [00:13<00:04,  1.35s/MiB]
+2026-10-08 07:49:39  INFO       upload_to_archive.py |  uploading 06_ Playin In The Band.mp3:  89%|████████▉ | 16/18 [00:14<00:02,  1.32s/MiB]
+2026-10-08 07:49:40  INFO       upload_to_archive.py |  uploading 06_ Playin In The Band.mp3:  94%|█████████▍| 17/18 [00:15<00:01,  1.21s/MiB]
+2026-10-08 07:49:40  INFO       upload_to_archive.py |  uploading 06_ Playin In The Band.mp3: 100%|██████████| 18/18 [00:16<00:00,  1.13s/MiB]
+2026-10-08 07:49:40  INFO       upload_to_archive.py |  uploading 06_ Playin In The Band.mp3: 100%|██████████| 18/18 [00:16<00:00,  1.11MiB/s]
+2026-10-08 07:50:41  INFO       upload_to_archive.py | Done. band_archive.csv updated with IA URLs.
+2026-10-08 07:50:41  INFO     [3/7] Analyzing data...
+2026-10-08 07:50:42  INFO       analyze.py | song_stats.csv created!
+2026-10-08 07:50:42  INFO     [4/7] Building metadata...
+2026-10-08 07:50:43  INFO       build_metadata.py | song_metadata.csv updated!
+2026-10-08 07:50:43  INFO     [5/7] Checking for songs with no artist on file...
+2026-10-08 07:50:43  INFO     No missing artists.
+2026-10-08 07:50:43  INFO     [6/7] Adding share links...
+2026-10-08 07:50:47  INFO       generate_share_links.py | Found 1 folders to generate share links for.
+2026-10-08 07:50:47  INFO       generate_share_links.py |   Processing: LoveDeep/Audio Recordings/Jam Session Recordings 2021-/2026/2026-10-07 _ Jam Session
+2026-10-08 07:50:47  INFO       generate_share_links.py |     [DEBUG] 404: {"error":{"code":"itemNotFound","message":"The resource could not be found.","innerError":{"date":"2026-10-08T11:50:47","request-id":"85a10fd8-f159-424b-8333-ed568443b8a9","client-request-id":"85a10fd8-f159-424b-8333-ed568443b8a9"}}}
+2026-10-08 07:50:47  INFO       generate_share_links.py |     ✗ Folder not found in OneDrive
+2026-10-08 07:50:47  INFO       generate_share_links.py | 
+2026-10-08 07:50:47  INFO       generate_share_links.py | Done. 0 share links written to band_archive.csv.
+2026-10-08 07:50:47  INFO     [7/7] Checking for changes...
+2026-10-08 07:50:48  INFO     Changes detected. Committing...
+2026-10-08 07:50:49  INFO     Pushing to GitHub...
+2026-10-08 07:50:52  INFO     Done! Streamlit Cloud will redeploy automatically in a minute or two.
+2026-10-08 07:50:52  INFO     Pipeline finished successfully.

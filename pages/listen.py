@@ -5,51 +5,45 @@ import urllib.parse
 import html
 import re
 from shared import (
-    load_data, page_menu, dank_header, dank_playlist_player, suppress_selectbox_keyboard, get_supabase_client,
-    group_tracks, save_playlist_to_supabase, load_playlists_from_supabase, delete_playlist_from_supabase,
-    update_playlist_in_supabase, add_tracks_to_playlist,
-    get_show_list, get_playlist_for_show,
-    style_playlist_draft_rows, force_columns_horizontal,
-    load_all_recordings, _data_file_mtimes,
-    parse_duration
-    )
+    page_menu, dank_header, dank_theme, dank_footer, dank_sign, dank_hex, dank_callout, card_html, linked_table,
+    dank_playlist_player, get_supabase_client,
+    load_playlists_from_supabase, delete_playlist_from_supabase,
+    add_tracks_to_playlist, get_show_list, get_playlist_for_show,
+    force_columns_horizontal, load_all_recordings, _data_file_mtimes,
+    parse_duration, format_playlist_track_label,
+)
 
-st.set_page_config(page_title="Listen to DankApp Tunes", page_icon="🎧", layout="wide")
+st.set_page_config(page_title="DankApp | Listen to Dead Weight", page_icon="static/icon.png", layout="wide")
+dank_theme()
 
 df = load_all_recordings(_data_file_mtimes())
 
-page_menu()
-dank_header(subtitle="If you get confused...")
-
 # -------------------------
-# AUTH -- inline, doesn't block the rest of the page
+# TOP ROW + HEADER
 # -------------------------
 
 username = st.user.email if st.user.is_logged_in else None
 name = st.user.name if st.user.is_logged_in else None
 
-if st.user.is_logged_in:
-    force_columns_horizontal(gap="0.5rem", key="login_row")
-    with st.container(key="login_row"):
-        col1, col2 = st.columns([5, 1], vertical_alignment="center")
-        with col1:
-            st.success(f"Logged in as {name}")
-        with col2:
-            if st.button("Logout"):
+force_columns_horizontal(gap="0.75rem", equal_width=True, key="top_row")
+with st.container(key="top_row"):
+    col1, col2 = st.columns(2, vertical_alignment="center")
+    with col1:
+        page_menu()
+    with col2:
+        if st.user.is_logged_in:
+            if st.button("Logout", width="stretch"):
                 st.logout()
-else:
-    with st.expander("🔐 Band Login", expanded=False):
-        st.write("Log in to save playlists and leave notes on shows.")
-        st.button("Log in with Google", on_click=st.login)
+        else:
+            st.button("Log in with Google", on_click=st.login)
+
+dank_header(subtitle="If you get confused...")
 
 # -------------------------
 # NOTES HELPERS
 # -------------------------
-#
 # NOTE ON SCHEMA: replies rely on a nullable "parent_id" column on the
-# show_notes table (uuid/int, FK to show_notes.id, null for top-level
-# notes). If that column doesn't exist yet in Supabase, add it before
-# this goes live -- save_note() will otherwise fail on every reply.
+# show_notes table. Add it in Supabase before this goes live.
 
 def load_notes(show_label):
     try:
@@ -58,7 +52,6 @@ def load_notes(show_label):
         return result.data or []
     except Exception:
         return []
-
 
 def save_note(show_label, username, display_name, note, parent_id=None):
     try:
@@ -75,13 +68,9 @@ def save_note(show_label, username, display_name, note, parent_id=None):
     except Exception:
         return False
 
-
 def build_note_tree(notes):
-    """Organizes a flat list of notes (each possibly carrying a
-    parent_id) into a list of top-level notes, each with its replies
-    nested under a 'replies' key. Falls back gracefully -- a reply whose
-    parent got deleted (or a parent_id pointing nowhere) just surfaces
-    as a top-level note rather than vanishing."""
+    """Nests replies under their parent note. A reply whose parent is
+    missing surfaces as a top-level note rather than vanishing."""
     by_id = {n["id"]: {**n, "replies": []} for n in notes if "id" in n}
     top_level = []
     for n in notes:
@@ -95,10 +84,7 @@ def build_note_tree(notes):
             top_level.append(node)
     return top_level
 
-
 def render_note(entry, show_label, depth=0):
-    """Renders a single note and its replies (recursively). Anyone can
-    read notes; only logged-in users see the reply control."""
     indent_px = depth * 24
     date_str = pd.Timestamp(entry["created_at"]).strftime("%m/%d/%Y")
 
@@ -143,22 +129,17 @@ def render_note(entry, show_label, depth=0):
     if depth == 0:
         st.markdown("---")
 
-
 def render_show_notes(show_label):
-    """Notes are visible to everyone; only logged-in users get the
-    composer for a new top-level note (and the reply controls, handled
-    inside render_note)."""
     st.markdown("---")
-    st.markdown("#### 📝 Show Notes")
+    dank_sign("Show Notes")
 
     show_notes = load_notes(show_label)
 
     if show_notes:
-        note_tree = build_note_tree(show_notes)
-        for entry in note_tree:
+        for entry in build_note_tree(show_notes):
             render_note(entry, show_label)
     else:
-        st.write("No notes yet for this show.")
+        dank_hex("No notes yet for this show.")
 
     if st.user.is_logged_in:
         new_note = st.text_area(
@@ -180,70 +161,10 @@ def render_show_notes(show_label):
         st.info("Log in above to add notes or reply.")
 
 # -------------------------
-# TOP-LEVEL NAVIGATION
+# SETLIST STATS HELPERS
 # -------------------------
-# Session-state-driven, not st.tabs() — st.tabs() has caused content-bleed
-# issues in this app before (especially with the iframe-based audio player),
-# so only the active section's Python runs at all.
-
-if "active_section" not in st.session_state:
-    st.session_state["active_section"] = "Listen to Music"
-
-force_columns_horizontal(equal_width=True, key="nav_row")
-with st.container(key="nav_row"):
-    nav_col1, nav_col2 = st.columns(2)
-    with nav_col1:
-        if st.button(
-            "🎧 Listen to Music",
-            width="stretch",
-            type="primary" if st.session_state["active_section"] == "Listen to Music" else "secondary",
-        ):
-            st.session_state["active_section"] = "Listen to Music"
-            st.rerun()
-    with nav_col2:
-        if st.button(
-            "🎶 Playlist Creator",
-            width="stretch",
-            type="primary" if st.session_state["active_section"] == "Create a Playlist" else "secondary",
-        ):
-            st.session_state["active_section"] = "Create a Playlist"
-            st.session_state.pop("editing_playlist_id", None)
-            st.session_state.pop("editing_playlist_name", None)
-            st.session_state["playlist_draft"] = []
-            st.session_state["new_playlist_name"] = ""
-            st.session_state["editor_load_select"] = None
-            st.rerun()
-
-st.markdown("---")
-
-# -------------------------
-# SHARED SHOW LIST (used across sections, cached)
-# -------------------------
-
-if "IA URL" not in df.columns:
-    st.write("No streaming links found yet — run upload_to_archive.py to generate them.")
-    st.stop()
-
-performances, unique_shows = get_show_list(_data_file_mtimes(), "All")
-
-if not unique_shows:
-    st.write("No shows match this filter.")
-    st.stop()
-
-
-def format_playlist_track_label(track, index=None):
-    """Formats a track for display inside a playlist context, including
-    the (date — location) of the show it came from, since a playlist can
-    span multiple shows."""
-    show = track.get("show", "")
-    prefix = f"{index + 1}. " if index is not None else ""
-    if show:
-        return f"{prefix}{track['label']} ({show})"
-    return f"{prefix}{track['label']}"
-
 
 def _format_seconds(total_seconds):
-    """Formats a duration in seconds as H:MM:SS (or MM:SS if under an hour)."""
     total_seconds = int(round(total_seconds))
     hours, remainder = divmod(total_seconds, 3600)
     minutes, seconds = divmod(remainder, 60)
@@ -251,10 +172,7 @@ def _format_seconds(total_seconds):
         return f"{hours}:{minutes:02d}:{seconds:02d}"
     return f"{minutes}:{seconds:02d}"
 
-
 def compute_setlist_stats(playlist):
-    """Crunches basic stats for a setlist's tracks. Skips any track whose
-    duration can't be parsed rather than blowing up the page."""
     parsed = []
     for track in playlist:
         try:
@@ -273,43 +191,25 @@ def compute_setlist_stats(playlist):
         "shortest": min(parsed, key=lambda x: x[1]) if parsed else None,
     }
 
-
 def _normalize_song_title(title):
-    """Normalizes casing/whitespace for matching a setlist track's label
-    back to the archive's Title column. Scanner.py already splits segues
-    out into their own rows before this point, so no segue-marker
-    stripping is needed here."""
     if not isinstance(title, str):
         return ""
     return title.strip().lower()
 
-
 def _extract_show_date(show_label):
-    """Best-effort extraction of a show's date from its display label,
-    assumed to lead with the date (e.g. 'MM/DD/YYYY - Location'). Returns
-    a pandas Timestamp, or None if it can't be parsed -- flag this if
-    show labels turn out to be formatted differently."""
     if not isinstance(show_label, str):
         return None
     candidate = re.split(r"\s[-–—]\s", show_label, maxsplit=1)[0].strip()
     parsed = pd.to_datetime(candidate, errors="coerce")
     return None if pd.isna(parsed) else parsed
 
-
 def _extract_show_location(show_label):
-    """Best-effort extraction of the location half of a show's display
-    label (e.g. 'MM/DD/YYYY - Location' -> 'Location')."""
     if not isinstance(show_label, str):
         return None
     parts = re.split(r"\s[-–—]\s", show_label, maxsplit=1)
     return parts[1].strip() if len(parts) == 2 else None
 
-
 def _get_show_setlist_titles(show_label, archive_df):
-    """Pulls the canonical list of songs played at a show directly from
-    the archive CSV (matched by Date + Location, Take=1 only), in
-    archive order. This sidesteps any mismatch between a playlist
-    track's display label and the archive's Title column."""
     show_date = _extract_show_date(show_label)
     if show_date is None or "Title" not in archive_df.columns or "Date" not in archive_df.columns:
         return []
@@ -325,12 +225,10 @@ def _get_show_setlist_titles(show_label, archive_df):
         rows = archive_df[date_match & take_one & location_match]
 
     if rows.empty:
-        # No location match (or none extracted) -- fall back to date-only.
         rows = archive_df[date_match & take_one]
 
-    sort_col = "Track Number" if "Track Number" in rows.columns else None
-    if sort_col:
-        rows = rows.sort_values(by=sort_col)
+    if "Track Number" in rows.columns:
+        rows = rows.sort_values(by="Track Number")
 
     titles = []
     seen = set()
@@ -341,13 +239,7 @@ def _get_show_setlist_titles(show_label, archive_df):
             titles.append(title)
     return titles
 
-
 def get_song_history(title, archive_df, before_date=None):
-    """Looks up every performance of a song across the whole archive,
-    counting only Take=1 rows so multiple takes recorded in a single
-    session don't inflate the play count. "Last played" excludes the
-    current show -- it's the most recent performance strictly before
-    before_date. Returns (times_played, last_played_date_or_None)."""
     target = _normalize_song_title(title)
     if not target or "Title" not in archive_df.columns or "Take" not in archive_df.columns:
         return 0, None
@@ -364,443 +256,259 @@ def get_song_history(title, archive_df, before_date=None):
     if before_date is not None:
         prior_dates = dates[dates < before_date]
     else:
-        # Can't determine the current show's date from its label -- fall
-        # back to excluding just the single most recent date so today's
-        # show (if it's the latest) doesn't count as "last played."
         prior_dates = dates[dates < dates.max()] if not dates.empty else dates
 
     last_played = prior_dates.max() if not prior_dates.empty else None
     return times_played, last_played
 
-
 def render_setlist_stats(playlist, archive_df, show_label):
-    """Renders the setlist stats dropdown contents: quick metrics, a
-    longest/shortest callout, and per-song play history (one row per
-    unique song, regardless of segues or repeated plays within the set)."""
     stats = compute_setlist_stats(playlist)
-
-    stat_col1, stat_col2, stat_col3 = st.columns(3)
-    stat_col1.metric("Tracks", stats["track_count"])
-    stat_col2.metric("Total Runtime", _format_seconds(stats["total_seconds"]))
-    stat_col3.metric("Avg Track Length", _format_seconds(stats["avg_seconds"]))
-
-    if stats["longest"] and stats["shortest"]:
-        longest_track, longest_secs = stats["longest"]
-        shortest_track, shortest_secs = stats["shortest"]
-        st.caption(
-            f"🏆 Longest: **{longest_track['label']}** ({_format_seconds(longest_secs)})  ·  "
-            f"⚡ Shortest: **{shortest_track['label']}** ({_format_seconds(shortest_secs)})"
-        )
 
     current_show_date = _extract_show_date(show_label)
     setlist_titles = _get_show_setlist_titles(show_label, archive_df)
 
-    st.markdown("**Song History**")
-    if not setlist_titles:
-        st.caption("Couldn't match this show back to a date/location in the archive CSV to pull song titles.")
+    # one pass over the songs: history rows + biggest bustout
+    rows = []
+    bustout = None  # (title, days)
+    for title in setlist_titles:
+        count, last_played = get_song_history(title, archive_df, before_date=current_show_date)
+        rows.append({
+            "Song": title,
+            "Total Plays": count if count else "First time!",
+            "Previous Play": last_played.strftime("%m/%d/%Y") if last_played is not None else "First time!",
+        })
+        if last_played is not None and current_show_date is not None:
+            days = (current_show_date - last_played).days
+            if bustout is None or days > bustout[1]:
+                bustout = (title, days)
+
+    if bustout:
+        bustout_value = f"{html.escape(bustout[0])} ({bustout[1]:,} days)"
     else:
-        rows_html = []
-        for title in setlist_titles:
-            count, last_played = get_song_history(title, archive_df, before_date=current_show_date)
-            times_played = count if count else "First time!"
-            prev_played = last_played.strftime("%m/%d/%Y") if last_played is not None else "First time!"
+        bustout_value = "None"
 
-            encoded_title = urllib.parse.quote(title, safe="")
-            safe_title = html.escape(title)
+    cards = [
+        card_html(stats["track_count"], "Tracks", accent=True),
+        card_html(_format_seconds(stats["total_seconds"]), "Total Runtime"),
+        card_html(_format_seconds(stats["avg_seconds"]), "Avg Track"),
+        card_html(bustout_value, "Biggest Bustout"),
+    ]
+    st.markdown(f'<div class="dank-grid">{"".join(cards)}</div>', unsafe_allow_html=True)
 
-            rows_html.append(
-                "<tr>"
-                f'<td><a href="/explore?song={encoded_title}" target="_self">{safe_title}</a></td>'
-                f"<td>{html.escape(str(times_played))}</td>"
-                f"<td>{html.escape(str(prev_played))}</td>"
-                "</tr>"
-            )
+    if stats["longest"] and stats["shortest"]:
+        longest_track, longest_secs = stats["longest"]
+        shortest_track, shortest_secs = stats["shortest"]
+        dank_callout(
+            f"🏆 Longest: **{longest_track['label']}** ({_format_seconds(longest_secs)})",
+            f"⚡ Shortest: **{shortest_track['label']}** ({_format_seconds(shortest_secs)})",
+            img=None,
+        )
 
-        table_html = f"""
-        <style>
-        .song-history-table {{
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 14px;
-        }}
-        .song-history-table th, .song-history-table td {{
-            text-align: left;
-            padding: 6px 10px;
-            border-bottom: 1px solid rgba(128,128,128,0.3);
-        }}
-        .song-history-table a {{
-            color: #4a9eff;
-            text-decoration: none;
-        }}
-        .song-history-table a:hover {{
-            text-decoration: underline;
-        }}
-        </style>
-        <table class="song-history-table">
-            <thead>
-                <tr>
-                    <th>Song</th>
-                    <th>Total Times Played</th>
-                    <th>Previous Time Played</th>
-                </tr>
-            </thead>
-            <tbody>
-                {''.join(rows_html)}
-            </tbody>
-        </table>
-        """
-        st.markdown(table_html, unsafe_allow_html=True)
+    dank_hex("Song History")
+    if not setlist_titles:
+        dank_hex("Couldn't match this show to the archive")
+    else:
+        linked_table(pd.DataFrame(rows), song_col="Song")
+
+# -------------------------
+# SELECTION CALLBACKS
+# -------------------------
 
 def on_setlist_select_change():
-    """Selecting a setlist deactivates any chosen saved playlist, so only
-    one player is ever active at a time."""
+    """Selecting a setlist deactivates any chosen saved playlist."""
     st.session_state["player_mode"] = "setlist"
     st.session_state["listen_playlist_select"] = None
-
 
 def on_playlist_select_change():
     """Selecting a saved playlist deactivates any chosen setlist."""
     st.session_state["player_mode"] = "playlist"
     st.session_state["listen_show_select"] = None
 
+# -------------------------
+# SHOW LIST
+# -------------------------
 
-def on_load_playlist_change():
-    """Loads a chosen saved playlist into the Create/Edit draft — re-fetches
-    fresh from Supabase rather than relying on closures over an earlier
-    render's data."""
-    chosen = st.session_state.get("editor_load_select")
-    if not chosen:
-        return
-    try:
-        playlists = load_playlists_from_supabase(username)
-    except Exception:
-        return
-    match = next((p for p in playlists if p["playlist_name"] == chosen), None)
-    if match:
-        st.session_state["playlist_draft"] = list(match["tracks"])
-        st.session_state["editing_playlist_id"] = match["id"]
-        st.session_state["editing_playlist_name"] = match["playlist_name"]
-        st.session_state["new_playlist_name"] = match["playlist_name"]
+if "IA URL" not in df.columns:
+    st.write("No streaming links found yet — run upload_to_archive.py to generate them.")
+    st.stop()
 
+performances, unique_shows = get_show_list(_data_file_mtimes(), "All")
 
-# =========================================================
-# LISTEN TO MUSIC SECTION
-# =========================================================
+if not unique_shows:
+    st.write("No shows match this filter.")
+    st.stop()
 
-if st.session_state["active_section"] == "Listen to Music":
+# -------------------------
+# PICKERS
+# -------------------------
 
-    force_columns_horizontal(equal_width=True, key="pick_row")
-    with st.container(key="pick_row"):
-        col_setlist, col_playlist = st.columns(2)
+force_columns_horizontal(equal_width=True, key="pick_row")
+with st.container(key="pick_row"):
+    col_setlist, col_playlist = st.columns(2)
 
-        with col_setlist:
-            st.markdown("#### 🎧 Pick a Setlist")
-            selected_show = st.selectbox(
-                "Choose a show",
-                unique_shows,
-                index=None,
-                placeholder="Type to search...",
-                key="listen_show_select",
-                on_change=on_setlist_select_change,
-            )
-
-        my_playlists = None
-        playlist_labels = {}
-
-        with col_playlist:
-            st.markdown("#### 🎶 Pick a Saved Playlist")
-
-            if not st.user.is_logged_in:
-                st.info("Log in above to view saved playlists.")
-            else:
-                try:
-                    my_playlists = load_playlists_from_supabase(username)
-                except Exception:
-                    st.error("Couldn't load your playlists right now.")
-
-                if my_playlists is not None:
-                    playlist_labels = {p["playlist_name"]: p for p in my_playlists}
-
-                if playlist_labels:
-                    st.selectbox(
-                        "Choose a playlist",
-                        list(playlist_labels.keys()),
-                        index=None,
-                        placeholder="Type to search...",
-                        key="listen_playlist_select",
-                        on_change=on_playlist_select_change,
-                    )
-                elif my_playlists is not None:
-                    st.write("No saved playlists! Use the 🎶 Playlist Creator button above.")
-
-    st.markdown("---")
-
-    player_mode = st.session_state.get("player_mode")
-
-    # ---- Setlist playback (with setlist-only extras) ----
-    if player_mode == "setlist" and selected_show:
-        playlist = get_playlist_for_show(_data_file_mtimes(), selected_show)
-
-        if playlist:
-            dank_playlist_player(selected_show, playlist)
-
-            with st.expander("📊 Setlist Stats"):
-                render_setlist_stats(playlist, df, selected_show)
-        else:
-            st.write("No playable tracks found for this show.")
-
-        if st.user.is_logged_in and playlist:
-            with st.expander("➕ Add tracks from this show to a playlist"):
-                show_checked = []
-                for i, track in enumerate(playlist):
-                    label = f"{track['label']}  ·  {track['duration']}"
-                    if st.checkbox(label, key=f"addshow_check_{selected_show}_{i}"):
-                        show_checked.append(track)
-
-                add_target_options = list(playlist_labels.keys()) if playlist_labels else []
-                if not add_target_options:
-                    st.caption("No saved playlists yet — create one first with the button above.")
-                else:
-                    target_choice = st.selectbox(
-                        "Add checked tracks to:",
-                        add_target_options,
-                        index=None,
-                        placeholder="Choose a playlist...",
-                        key=f"add_target_{selected_show}",
-                    )
-                    if st.button("➕ Add checked tracks", key=f"add_confirm_{selected_show}"):
-                        if not show_checked:
-                            st.warning("Check at least one track first.")
-                        elif not target_choice:
-                            st.warning("Pick a playlist to add to.")
-                        else:
-                            target_playlist = playlist_labels[target_choice]
-                            tracks_to_add = [{**t, "show": selected_show} for t in show_checked]
-                            try:
-                                add_tracks_to_playlist(target_playlist["id"], tracks_to_add)
-                                st.success(f"Added to '{target_choice}'.")
-                                for i in range(len(playlist)):
-                                    st.session_state.pop(f"addshow_check_{selected_show}_{i}", None)
-                                st.rerun()
-                            except Exception:
-                                st.error("Couldn't add right now — the account database is unreachable.")
-
-        # Notes are now always rendered here -- render_show_notes() handles
-        # the logged-out vs logged-in split internally (read access for
-        # everyone, composer/reply controls gated to logged-in users).
-        render_show_notes(selected_show)
-
-    # ---- Saved playlist playback (no extras) ----
-    elif player_mode == "playlist" and playlist_labels and st.session_state.get("listen_playlist_select"):
-        chosen_playlist_name = st.session_state["listen_playlist_select"]
-        chosen_playlist = playlist_labels[chosen_playlist_name]
-
-        display_tracks = [
-            {
-                "label": format_playlist_track_label(t),
-                "duration": t.get("duration", ""),
-                "url": t.get("url", ""),
-            }
-            for t in chosen_playlist["tracks"]
-        ]
-        dank_playlist_player(chosen_playlist_name, display_tracks)
-
-        force_columns_horizontal(equal_width=True, key="edit_delete_row")
-        with st.container(key="edit_delete_row"):
-            col_edit, col_delete = st.columns(2)
-            with col_edit:
-                if st.button("✏️ Edit this playlist", width="stretch"):
-                    st.session_state["playlist_draft"] = list(chosen_playlist["tracks"])
-                    st.session_state["editing_playlist_id"] = chosen_playlist["id"]
-                    st.session_state["editing_playlist_name"] = chosen_playlist_name
-                    st.session_state["active_section"] = "Create a Playlist"
-                    st.rerun()
-            with col_delete:
-                if st.button("🗑️ Delete this playlist", width="stretch"):
-                    try:
-                        delete_playlist_from_supabase(chosen_playlist["id"])
-                        st.success(f"Deleted '{chosen_playlist_name}'.")
-                        st.session_state["listen_playlist_select"] = None
-                        st.session_state["player_mode"] = None
-                        st.rerun()
-                    except Exception:
-                        st.error("Couldn't delete right now — the account database is unreachable.")
-
-# =========================================================
-# CREATE / EDIT PLAYLIST SECTION
-# =========================================================
-
-if st.session_state["active_section"] == "Create a Playlist":
-
-    st.markdown("#### 🎶 Create/Edit a Playlist")
-
-    editing_id = st.session_state.get("editing_playlist_id")
-    editing_name = st.session_state.get("editing_playlist_name")
-
-    if not st.user.is_logged_in:
-        st.info("Log in above to create or edit playlists.")
-    else:
-        if "playlist_draft" not in st.session_state:
-            st.session_state["playlist_draft"] = []
-
-        if "playlist_edit_mode" not in st.session_state:
-            st.session_state["playlist_edit_mode"] = "edit" if editing_id else "new"
-
-        try:
-            existing_playlists = load_playlists_from_supabase(username)
-        except Exception:
-            existing_playlists = None
-            st.error("Couldn't load your playlists right now.")
-
-        # ---- Mode toggle: only one panel shows at a time ----
-        force_columns_horizontal(equal_width=True, key="mode_toggle_row")
-        with st.container(key="mode_toggle_row"):
-            mode_col1, mode_col2 = st.columns(2)
-            with mode_col1:
-                if st.button(
-                    "🆕 Start a New Playlist",
-                    width="stretch",
-                    type="primary" if st.session_state["playlist_edit_mode"] == "new" else "secondary",
-                ):
-                    if st.session_state["playlist_edit_mode"] != "new":
-                        st.session_state["playlist_edit_mode"] = "new"
-                        st.session_state["playlist_draft"] = []
-                        st.session_state.pop("editing_playlist_id", None)
-                        st.session_state.pop("editing_playlist_name", None)
-                        st.session_state["editor_load_select"] = None
-                        st.session_state["new_playlist_name"] = ""
-                        st.rerun()
-            with mode_col2:
-                if st.button(
-                    "📂 Load Existing Playlist",
-                    width="stretch",
-                    type="primary" if st.session_state["playlist_edit_mode"] == "edit" else "secondary",
-                    disabled=not existing_playlists,
-                ):
-                    if st.session_state["playlist_edit_mode"] != "edit":
-                        st.session_state["playlist_edit_mode"] = "edit"
-                        st.session_state["playlist_draft"] = []
-                        st.session_state.pop("editing_playlist_id", None)
-                        st.session_state.pop("editing_playlist_name", None)
-                        st.session_state["editor_load_select"] = None
-                        st.session_state["new_playlist_name"] = ""
-                        st.rerun()
-
-        st.markdown("---")
-
-        # ---- Only the active mode's panel renders ----
-        if st.session_state["playlist_edit_mode"] == "edit":
-            if not existing_playlists:
-                st.caption("No saved playlists yet — start a new one instead.")
-            else:
-                st.selectbox(
-                    "Choose a playlist to edit",
-                    [p["playlist_name"] for p in existing_playlists],
-                    index=None,
-                    placeholder="Choose a playlist...",
-                    key="editor_load_select",
-                    on_change=on_load_playlist_change,
-                )
-                editing_id = st.session_state.get("editing_playlist_id")
-                editing_name = st.session_state.get("editing_playlist_name")
-                if editing_name:
-                    st.caption(f"✏️ Currently editing: **{editing_name}**")
-        else:
-            editing_id = None
-
-        builder_show = st.selectbox(
-            "Pick a show to grab tracks from",
+    with col_setlist:
+        dank_sign("Choose a Setlist", size="md")
+        selected_show = st.selectbox(
+            "Choose a setlist",
             unique_shows,
             index=None,
             placeholder="Type to search...",
-            key="playlist_builder_show",
+            key="listen_show_select",
+            on_change=on_setlist_select_change,
+            label_visibility="collapsed",
         )
 
-        if builder_show:
-            builder_grouped = get_playlist_for_show(_data_file_mtimes(), builder_show)
+    my_playlists = None
+    playlist_labels = {}
 
-            st.write("Select tracks to add:")
-            checked_tracks = []
-            for i, track in enumerate(builder_grouped):
-                label = f"{track['label']}  ·  {track['duration']}"
-                is_checked = st.checkbox(label, key=f"track_check_{builder_show}_{i}")
-                if is_checked:
-                    checked_tracks.append(track)
+    with col_playlist:
+        dank_sign("Or a Playlist", direction="left", size="md")
 
-            if st.button("➕ Add selected to playlist"):
-                for track in checked_tracks:
-                    track_with_show = {**track, "show": builder_show}
-                    if track_with_show not in st.session_state["playlist_draft"]:
-                        st.session_state["playlist_draft"].append(track_with_show)
-                for i in range(len(builder_grouped)):
-                    st.session_state.pop(f"track_check_{builder_show}_{i}", None)
-                st.rerun()
-
-        if st.session_state["playlist_draft"]:
-            st.write("**Current draft:**")
-            draft = st.session_state["playlist_draft"]
-            style_playlist_draft_rows()
-
-            force_columns_horizontal(min_col_width="28px", key="playlist_draft_rows")
-            with st.container(key="playlist_draft_rows"):
-                for i, track in enumerate(draft):
-                    full_label = format_playlist_track_label(track, index=i)
-                    col_label, col_up, col_down, col_remove = st.columns([6, 1, 1, 1])
-                    with col_label:
-                        st.markdown(
-                            f'<div class="dank-track-label">{full_label}</div>',
-                            unsafe_allow_html=True,
-                        )
-                    with col_up:
-                        if st.button("↑", key=f"move_up_{i}", disabled=(i == 0)):
-                            draft[i - 1], draft[i] = draft[i], draft[i - 1]
-                            st.rerun()
-                    with col_down:
-                        if st.button("↓", key=f"move_down_{i}", disabled=(i == len(draft) - 1)):
-                            draft[i + 1], draft[i] = draft[i], draft[i + 1]
-                            st.rerun()
-                    with col_remove:
-                        if st.button("✕", key=f"remove_draft_{i}"):
-                            draft.pop(i)
-                            st.rerun()
-
-            if "new_playlist_name" not in st.session_state:
-                st.session_state["new_playlist_name"] = editing_name if editing_name else ""
-
-            playlist_name = st.text_input("Playlist name", key="new_playlist_name")
-
-            if st.button("💾 Save Playlist"):
-                if not playlist_name.strip():
-                    st.warning("Give your playlist a name first.")
-                else:
-                    try:
-                        if editing_id:
-                            success, message = update_playlist_in_supabase(
-                                editing_id, playlist_name.strip(), st.session_state["playlist_draft"]
-                            )
-                        else:
-                            success, message = save_playlist_to_supabase(
-                                username, playlist_name.strip(), st.session_state["playlist_draft"]
-                            )
-                        if success:
-                            st.success(message)
-                            st.session_state["playlist_draft"] = []
-                            st.session_state.pop("editing_playlist_id", None)
-                            st.session_state.pop("editing_playlist_name", None)
-                            st.session_state["active_section"] = "Listen to Music"
-                            st.session_state["player_mode"] = None
-                            st.rerun()
-                        else:
-                            st.warning(message)
-                    except Exception:
-                        st.error("Couldn't save right now — the account database is unreachable. Your draft is still here, try again shortly.")
+        if not st.user.is_logged_in:
+            st.info("Log in above to view saved playlists.")
         else:
-            st.caption("Pick a show above and add some tracks to get started.")
+            try:
+                my_playlists = load_playlists_from_supabase(username)
+            except Exception:
+                st.error("Couldn't load your playlists right now.")
+
+            if my_playlists is not None:
+                playlist_labels = {p["playlist_name"]: p for p in my_playlists}
+
+            if playlist_labels:
+                st.selectbox(
+                    "Or a saved playlist",
+                    list(playlist_labels.keys()),
+                    index=None,
+                    placeholder="Type to search...",
+                    key="listen_playlist_select",
+                    on_change=on_playlist_select_change,
+                    label_visibility="collapsed",
+                )
+            elif my_playlists is not None:
+                dank_hex("No saved playlists yet")
+
+player_mode = st.session_state.get("player_mode")
+
+# ---- Setlist playback ----
+if player_mode == "setlist" and selected_show:
+    st.divider()
+    playlist = get_playlist_for_show(_data_file_mtimes(), selected_show)
+
+    if playlist:
+        dank_playlist_player(selected_show, playlist)
+
+        with st.expander("📊 Setlist Stats", True):
+            render_setlist_stats(playlist, df, selected_show)
+    else:
+        dank_hex("No playable tracks found for this show")
+
+    if st.user.is_logged_in and playlist:
+        with st.expander("➕ Add tracks from this show to a playlist"):
+            show_checked = []
+            for i, track in enumerate(playlist):
+                label = f"{track['label']}  ·  {track['duration']}"
+                if st.checkbox(label, key=f"addshow_check_{selected_show}_{i}"):
+                    show_checked.append(track)
+
+            add_target_options = list(playlist_labels.keys()) if playlist_labels else []
+            if not add_target_options:
+                st.caption("No saved playlists yet — create one first with the Playlist Creator button above.")
+            else:
+                target_choice = st.selectbox(
+                    "Add checked tracks to:",
+                    add_target_options,
+                    index=None,
+                    placeholder="Choose a playlist...",
+                    key=f"add_target_{selected_show}",
+                )
+                if st.button("➕ Add checked tracks", key=f"add_confirm_{selected_show}"):
+                    if not show_checked:
+                        st.warning("Check at least one track first.")
+                    elif not target_choice:
+                        st.warning("Pick a playlist to add to.")
+                    else:
+                        target_playlist = playlist_labels[target_choice]
+                        tracks_to_add = [{**t, "show": selected_show} for t in show_checked]
+                        try:
+                            add_tracks_to_playlist(target_playlist["id"], tracks_to_add)
+                            st.success(f"Added to '{target_choice}'.")
+                            for i in range(len(playlist)):
+                                st.session_state.pop(f"addshow_check_{selected_show}_{i}", None)
+                            st.rerun()
+                        except Exception:
+                            st.error("Couldn't add right now — the account database is unreachable.")
+
+    render_show_notes(selected_show)
+
+# ---- Saved playlist playback ----
+elif player_mode == "playlist" and playlist_labels and st.session_state.get("listen_playlist_select"):
+    chosen_playlist_name = st.session_state["listen_playlist_select"]
+    chosen_playlist = playlist_labels[chosen_playlist_name]
+
+    display_tracks = [
+        {
+            "label": format_playlist_track_label(t),
+            "duration": t.get("duration", ""),
+            "url": t.get("url", ""),
+        }
+        for t in chosen_playlist["tracks"]
+    ]
+    dank_playlist_player(chosen_playlist_name, display_tracks)
+
+    force_columns_horizontal(equal_width=True, key="edit_delete_row")
+    with st.container(key="edit_delete_row"):
+        col_edit, col_delete = st.columns(2)
+        with col_edit:
+            if st.button("✏️ Edit this playlist", width="stretch"):
+                # hand the playlist to the creator page, then go there
+                st.session_state["playlist_draft"] = list(chosen_playlist["tracks"])
+                st.session_state["editing_playlist_id"] = chosen_playlist["id"]
+                st.session_state["editing_playlist_name"] = chosen_playlist_name
+                st.session_state["playlist_edit_mode"] = "edit"
+                st.session_state["new_playlist_name"] = chosen_playlist_name
+                st.session_state["editor_load_select"] = chosen_playlist_name
+                st.switch_page("pages/playlist_creator.py")
+        with col_delete:
+            if st.button("🗑️ Delete this playlist", width="stretch"):
+                try:
+                    delete_playlist_from_supabase(chosen_playlist["id"])
+                    st.success(f"Deleted '{chosen_playlist_name}'.")
+                    st.session_state["listen_playlist_select"] = None
+                    st.session_state["player_mode"] = None
+                    st.rerun()
+                except Exception:
+                    st.error("Couldn't delete right now — the account database is unreachable.")
 
 st.divider()
 
-st.markdown(
-    "<div style='text-align: center; color: grey; font-size: 13px;'>Danktuary Archive Version: 2.0 | Believe it if you need it</div>",
-    unsafe_allow_html=True
-)
-st.markdown("")
+if st.user.is_logged_in:
+    dank_callout("Skip the bathroom songs, man.")
+    with st.container(key="hex_to_creator"):
+        if st.button("🎶 Click to Create a Playlist", key="to_creator_btn",
+                     width="stretch"):
+            st.switch_page("pages/playlist_creator.py")
+else:
+    dank_callout("Gotta login if you want playlists, man.")
+# -------------------------
+# FOOTER
+# -------------------------
+st.divider()
+
+if st.button("⬆ Back to top"):
+    components.html("""
+        <script>
+        var doc = window.parent.document;
+        var selectors = ['section.main', '.main', '[data-testid="stAppViewContainer"]',
+            '[data-testid="stMain"]', '.stApp', 'div[data-testid="stAppViewBlockContainer"]'];
+        selectors.forEach(function(sel) {
+            var el = doc.querySelector(sel);
+            if (el) { el.scrollTo(0, 0); el.scrollTop = 0; }
+        });
+        doc.documentElement.scrollTop = 0;
+        doc.body.scrollTop = 0;
+        window.parent.scrollTo(0, 0);
+        </script>
+    """, height=0)
+
+dank_footer()

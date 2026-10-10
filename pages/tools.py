@@ -11,32 +11,15 @@ today_md = today.strftime("%m/%d")
 today_naive = today.tz_localize(None)
 
 from shared import ( #type: ignore
-    load_data, build_filtered, weighted_pick, find_closers,
+    load_data, build_filtered, weighted_pick, find_closers, dank_theme, dank_footer, dank_sign, dank_hex, dank_callout, force_columns_horizontal, linked_table,
     times_played_mult, page_menu, dank_header, build_randomizer_pools, apply_segue_boost, pick_by_kind, generate_setlist, ranked_table,
     dead_weight_artists, dead_weight_year,
     clean_title, manual_fixes
 )
 
-st.set_page_config(page_title="Useful DankApp Tools", page_icon="🛠️", layout="wide")
+st.set_page_config(page_title="DankApp | Useful Tools", page_icon="static/icon.png", layout="wide")
+dank_theme()
 
-st.markdown("""
-<style>
-div[data-testid="stHorizontalBlock"] {
-    flex-wrap: nowrap !important;
-    gap: 8px !important;
-}
-div[data-testid="stHorizontalBlock"] > div {
-    min-width: 60px !important;
-    flex: 1 1 0 !important;
-}
-div[data-testid="stHorizontalBlock"] button {
-    font-size: 13px !important;
-    padding: 4px 6px !important;
-    white-space: normal !important;
-    word-break: break-word !important;
-}
-</style>
-""", unsafe_allow_html=True)
 
 df, song_stats, metadata, jam_metadata = load_data()
 df = df[df["Take"] == 1]
@@ -55,13 +38,14 @@ if "active_tab" not in st.session_state:
 dank_header(subtitle="Useful Tools for the Dank")
 
 tab_names = ["Recently Played", "Bustout Tracker", "Setlist Randomizer", "Unplayed Songs"]
-tab_cols = st.columns(len(tab_names))
-for i, name in enumerate(tab_names):
-    with tab_cols[i]:
-        button_type = "primary" if st.session_state.active_tab == name else "secondary"
-        if st.button(name, key=f"tabbtn_{name}", width="stretch", type=button_type):
-            st.session_state.active_tab = name
-            st.rerun()
+with st.container(key="tabs_main"):
+    tab_cols = st.columns(len(tab_names))
+    for i, name in enumerate(tab_names):
+        with tab_cols[i]:
+            button_type = "primary" if st.session_state.active_tab == name else "secondary"
+            if st.button(name, key=f"tabbtn_{name}", width="stretch", type=button_type):
+                st.session_state.active_tab = name
+                st.rerun()
 
 st.divider()
 
@@ -75,7 +59,17 @@ if active_tab in ("Recently Played", "Bustout Tracker", "Song Streak"):
     full_df, full_stats = build_filtered(df, metadata, [], (min_year, max_year))
 
 if active_tab == "Recently Played":
-    st.subheader("Most Recently Played")
+    col_sign, col_right = st.columns([4, 2], vertical_alignment="center")
+    with col_sign:
+        dank_sign("Most Recently Played")
+    with col_right:
+        recent_sort = st.radio(
+            "Sort by:",
+            ["Date", "Title"],
+            index=0,
+            horizontal=True,
+            key="recent_sort_by",
+        )
 
     # get track number from each song's most recent appearance
     most_recent_rows = (
@@ -97,7 +91,16 @@ if active_tab == "Recently Played":
         [["Title", "Last Played", "Total Plays", "Location"]]
         .reset_index(drop=True)
     )
+    # rank always reflects recency, even when the table is sorted by title
     recent_display.insert(0, "Rank", range(1, len(recent_display) + 1))
+
+    if recent_sort == "Title":
+        recent_display = (
+            recent_display
+            .assign(_t=lambda x: x["Title"].str.lower())
+            .sort_values("_t")
+            .drop(columns="_t")
+        )
 
     rows_html = []
     for _, row in recent_display.iterrows():
@@ -118,25 +121,6 @@ if active_tab == "Recently Played":
         )
 
     table_html = f"""
-    <style>
-    .linked-table {{
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 14px;
-    }}
-    .linked-table th, .linked-table td {{
-        text-align: left;
-        padding: 6px 10px;
-        border-bottom: 1px solid rgba(128,128,128,0.3);
-    }}
-    .linked-table a {{
-        color: #4a9eff;
-        text-decoration: none;
-    }}
-    .linked-table a:hover {{
-        text-decoration: underline;
-    }}
-    </style>
     <table class="linked-table">
         <thead>
             <tr>
@@ -158,7 +142,7 @@ if active_tab == "Recently Played":
 # -------------------------
 
 elif active_tab == "Bustout Tracker":
-    st.subheader("Most Overdue Songs")
+    dank_sign("Most Overdue Songs")
     dead_weight_only = st.checkbox("Dead Weight Only", value=True, key="bustout_dead_weight")
 
     col_label, col_radio = st.columns([1, 6], vertical_alignment="center")
@@ -235,25 +219,6 @@ elif active_tab == "Bustout Tracker":
         )
 
     table_html = f"""
-    <style>
-    .linked-table {{
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 14px;
-    }}
-    .linked-table th, .linked-table td {{
-        text-align: left;
-        padding: 6px 10px;
-        border-bottom: 1px solid rgba(128,128,128,0.3);
-    }}
-    .linked-table a {{
-        color: #4a9eff;
-        text-decoration: none;
-    }}
-    .linked-table a:hover {{
-        text-decoration: underline;
-    }}
-    </style>
     <table class="linked-table">
         <thead>
             <tr>
@@ -277,7 +242,7 @@ elif active_tab == "Bustout Tracker":
 
 elif active_tab == "Setlist Randomizer":
 
-    st.markdown("#### Dead Weight Setlist Randomizer")
+    dank_sign("Setlist Randomizer")
 
     jam_titles = set(jam_metadata["Title"])
 
@@ -301,27 +266,35 @@ elif active_tab == "Setlist Randomizer":
         "The one thing we need is a left handed monkey wrench."
     ]
 
-    col1, col2 = st.columns([1, 1])
+    # copy checkbox states into the dataframe BEFORE any button logic runs,
+    # so a re-roll always sees the latest locks
+    setlist = st.session_state.get("random_setlist")
+    version = st.session_state.get("setlist_version", 0)
+    if setlist is not None:
+        locked_col = setlist.columns.get_loc("Locked")
+        for i in range(len(setlist)):
+            key = f"lock_{version}_{i}"
+            if key in st.session_state:
+                setlist.iloc[i, locked_col] = bool(st.session_state[key])
 
+    col1, col2 = st.columns(2, vertical_alignment="bottom")
     with col1:
         num_songs = st.slider("Number of Songs:", 4, 15, 10)
-
     with col2:
-        st.markdown("&nbsp;", unsafe_allow_html=True)
-        if st.button("Create New Setlist", width='stretch'):
+        if st.button("Create New Setlist", width="stretch"):
             st.session_state.random_setlist = generate_setlist(
                 num_songs, randomizer_df, jam_titles, today_naive
             )
-            st.session_state.setlist_version = st.session_state.get("setlist_version", 0) + 1
+            st.session_state.setlist_version = version + 1
             st.session_state.random_message = random.choice(random_messages)
+            st.rerun()
 
     if st.session_state.get("random_setlist") is not None:
+        current = st.session_state.random_setlist
 
         col1, col2 = st.columns(2)
-
         with col1:
-            if st.button("Re-Roll Those Laughing Bones", width='stretch'):
-                current = st.session_state.random_setlist.copy()
+            if st.button("Re-Roll Those Laughing Bones", width="stretch"):
                 locked_songs = set(current[current["Locked"] == True]["Title"].tolist())
                 new = generate_setlist(num_songs, randomizer_df, jam_titles, today_naive)
 
@@ -342,53 +315,39 @@ elif active_tab == "Setlist Randomizer":
                         new_idx += 1
 
                 st.session_state.random_setlist = pd.DataFrame(merged)
-                st.session_state.setlist_version = st.session_state.get("setlist_version", 0) + 1
+                st.session_state.setlist_version = version + 1
                 st.session_state.random_message = random.choice(random_messages)
-
+                st.rerun()
         with col2:
-            if st.button("Clear Setlist", width='stretch', key="clear_setlists2"):
+            if st.button("Clear Setlist", width="stretch", key="clear_setlists2"):
                 st.session_state.random_setlist = None
-                st.session_state.setlist_version = 0
                 st.rerun()
 
+        # ---- the setlist ----
+        st.caption("Check a song to retain it for the next re-roll.")
+        with st.container(key="setlist_rows"):
+            for i, row in enumerate(current.itertuples()):
+                st.checkbox(
+                    f"{row[current.columns.get_loc('#') + 1]}. {row.Title}",
+                    value=bool(row.Locked),
+                    key=f"lock_{version}_{i}",
+                )
+
         if st.session_state.get("random_message"):
-            st.write(st.session_state.random_message)
-
-        editor_key = f"setlist_editor_{st.session_state.get('setlist_version', 0)}"
-
-        if editor_key in st.session_state:
-            edited_state = st.session_state[editor_key].get("edited_rows", {})
-            for row_idx, changes in edited_state.items():
-                if "Locked" in changes:
-                    st.session_state.random_setlist.at[
-                        st.session_state.random_setlist.index[row_idx], "Locked"
-                    ] = changes["Locked"]
-
-        st.data_editor(
-            st.session_state.random_setlist[["#", "Title", "Locked"]],
-            hide_index=True,
-            width="stretch",
-            column_config={
-                "#": st.column_config.NumberColumn(),
-                "Title": st.column_config.TextColumn(),
-                "Locked": st.column_config.CheckboxColumn("🔒")
-            },
-            disabled=["#", "Title"],
-            key=editor_key
-        )
-
+            st.divider()
+            dank_callout(st.session_state.random_message)
 # -------------------------
 # TAB: UNPLAYED SONGS
 # -------------------------
 
 elif active_tab == "Unplayed Songs":
-    st.subheader("Songs We Haven't Played")
+    dank_sign("Songs We Haven't Played")
 
     try:
         total_songs = pd.read_csv("total_songs.csv").dropna(subset=["Title"])
         total_songs["Title"] = total_songs["Title"].apply(clean_title)
     except FileNotFoundError:
-        st.write("total_songs.csv not found.")
+        dank_hex("total_songs.csv not found")
         st.stop()
 
     played_titles = set(df["Title"].unique())
@@ -398,18 +357,22 @@ elif active_tab == "Unplayed Songs":
         .reset_index(drop=True)
     )
 
-    st.write(f"**{len(unplayed)}** {'song' if len(unplayed) == 1 else 'songs'} to learn...")
-    st.dataframe(
-        unplayed[["Title", "Artist"]].rename(columns={"Title": "Song Title", "Artist": "Artist"}),
-        hide_index=True,
-        width="stretch"
-    )
+    n = len(unplayed)
+    dank_hex(f"**{n}** {'song' if n == 1 else 'songs'} to learn...")
 
-else: st.write("Select a tab to view its content.")
+    if n:
+        linked_table(
+            unplayed[["Title", "Artist"]].rename(columns={"Title": "Song Title"}),
+            song_col=None,
+        )
+
+else: dank_hex("Select a tab to view its content.")
 
 # -------------------------
 # FOOTER
 # -------------------------
+st.divider()
+
 if st.button("⬆ Back to top"):
     components.html("""
         <script>
@@ -432,13 +395,7 @@ if st.button("⬆ Back to top"):
         </script>
     """, height=0)
 
-st.divider()
-
-st.markdown(
-    "<div style='text-align: center; color: grey; font-size: 13px;'>Danktuary Archive Version: 2.0 | Believe it if you need it</div>",
-    unsafe_allow_html=True
-)
-st.markdown("")
+dank_footer()
 
 
 #LEGACY TOOLS (commented out for now)

@@ -28,12 +28,14 @@ Integration notes:
 
 import os
 import re
-
 import pandas as pd
 import streamlit as st
+import streamlit.components.v1 as components
 import yt_dlp
+from shared import dank_theme, dank_footer, dank_header, dank_hex, dank_sign, card_html
 
-st.set_page_config(page_title="Watch DankApp Videos", page_icon="🎬", layout="wide")
+st.set_page_config(page_title="DankApp | Dead Weight Videos", page_icon="static/icon.png", layout="wide")
+dank_theme()
 
 try:
     from shared import dank_header, page_menu
@@ -43,7 +45,6 @@ except ImportError:
 
 VIDEO_CSV_PATH = "video_links.csv"  # adjust if your CSV lives elsewhere
 TRACKLIST_CACHE_TTL = 60 * 60 * 6  # 6 hours
-
 
 @st.cache_data
 def load_video_links(path: str, _mtime: float) -> pd.DataFrame:
@@ -175,28 +176,32 @@ def render_video_embed(video_id: str):
 
 
 def render_tracklist(tracks, active_video_id, clickable=True, key_prefix="watch_track"):
-    """Render a list of numbered track rows. Used for both the full playlist
-    tracklist and the single-track row under a lone watch link, so the two
-    always stay visually identical. When clickable=False (single-video case),
-    the row still renders with the same formatting but as a disabled button --
-    there's only one track, so clicking it wouldn't do anything."""
+    """Numbered track rows. The active row (or the lone row when
+    clickable=False) gets the green 'now playing' look. If no valid
+    active ID is given, the first track is treated as active."""
+    if not tracks:
+        return
+
+    valid_ids = {t["video_id"] for t in tracks}
+    if active_video_id not in valid_ids:
+        active_video_id = tracks[0]["video_id"]
+
     for i, track in enumerate(tracks):
-        is_active = clickable and track["video_id"] == active_video_id
-        row_class = "track-row-active" if (is_active or not clickable) else "track-row"
+        is_active = (not clickable) or track["video_id"] == active_video_id
         dur = format_duration(track["duration"])
         label = f"{i + 1}. {track['title']}" + (f"  ·  {dur}" if dur else "")
-        st.markdown(f'<div class="{row_class}">', unsafe_allow_html=True)
-        clicked = st.button(
-            label,
-            key=f"{key_prefix}_{i}",
-            use_container_width=True,
-            disabled=not clickable,
-        )
-        st.markdown("</div>", unsafe_allow_html=True)
+
+        row_key = f"{'trackon' if is_active else 'trackrow'}_{key_prefix}_{i}"
+        with st.container(key=row_key):
+            clicked = st.button(
+                label,
+                key=f"{key_prefix}_{i}",
+                width="stretch",
+                disabled=not clickable,
+            )
         if clickable and clicked:
             st.session_state.watch_selected_video_id = track["video_id"]
             st.rerun()
-
 
 def _inject_base_theme_fallback():
     """Fallback dark background only -- skip this once shared.py's real
@@ -255,7 +260,7 @@ def _inject_track_list_css():
 def main():
     if HAVE_SHARED:
         page_menu()
-        dank_header("See the man with the stage fright...")
+        dank_header("See me, feel me")
     else:
         _inject_base_theme_fallback()
         st.title("🎬 Watch")
@@ -306,7 +311,7 @@ def main():
         else:
             render_tracklist([result["track"]], active_video_id=link_id, clickable=False)
         return
-
+    
     # link_type == "playlist" from here on
     playlist_id = link_id
 
@@ -320,15 +325,44 @@ def main():
     else:
         tracks = result["tracks"]
 
-        with st.container():
-            st.markdown("---")
-            st.write(f"**{selected_row['Title']}**  |  Jump to another track:")
-            render_tracklist(tracks, active_video_id=st.session_state.watch_selected_video_id)
-    
-        if st.button("🔄", help="Refresh tracklist", key="watch_refresh_tracks"):
-            fetch_playlist_tracks.clear()
-            st.rerun()
+        st.divider()
+        dank_hex(f"**{selected_row['Title']}**", "🎶 Jump to a Track 🎶")
+        render_tracklist(tracks, active_video_id=st.session_state.watch_selected_video_id)
+
+        with st.container(key="hex_watch_refresh"):
+            if st.button("🔄 Refresh tracklist", key="watch_refresh_tracks", width="stretch"):
+                fetch_playlist_tracks.clear()
+                st.rerun()
 
 
 if __name__ == "__main__":
     main()
+
+# -------------------------
+# FOOTER 
+# -------------------------
+st.divider()
+
+if st.button("⬆ Back to top"):
+    components.html("""
+        <script>
+        var doc = window.parent.document;
+        var selectors = [
+            'section.main',
+            '.main',
+            '[data-testid="stAppViewContainer"]',
+            '[data-testid="stMain"]',
+            '.stApp',
+            'div[data-testid="stAppViewBlockContainer"]'
+        ];
+        selectors.forEach(function(sel) {
+            var el = doc.querySelector(sel);
+            if (el) { el.scrollTo(0, 0); el.scrollTop = 0; }
+        });
+        doc.documentElement.scrollTop = 0;
+        doc.body.scrollTop = 0;
+        window.parent.scrollTo(0, 0);
+        </script>
+    """, height=0)
+
+dank_footer()

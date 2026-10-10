@@ -9,6 +9,7 @@ pg = st.navigation(
         st.Page("pages/stats.py", title="Heady Stats", icon="📊"),
         st.Page("pages/watch.py", title="Watch", icon="🎬"),
         st.Page("pages/listen.py", title="Listen", icon="🎧"),
+        st.Page("pages/playlist_creator.py", title="Playlist Creator", icon="🎶")
     ],
     position="hidden"
 )
