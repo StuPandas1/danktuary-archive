@@ -512,6 +512,10 @@ button[data-testid="stBaseButton-secondary"] p, button[kind="secondary"] p {
 .dank-card-label { color:#555; font-size:12px; font-weight:600;
                    text-transform:uppercase; letter-spacing:.06em; margin-top:4px; }
 
+                   .dank-card-nowrap .dank-card-value,
+.dank-card-nowrap .dank-card-label {
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
 /* =========================================================
    CALLOUT
    ========================================================= */
@@ -935,6 +939,21 @@ def linked_table(df, song_col="Title", show_col=None, show_loc_col=None,
         f'{wrap_open}<table class="linked-table"><thead><tr>{head}</tr></thead>'
         f'<tbody>{"".join(rows)}</tbody></table></div>',
         unsafe_allow_html=True,
+    )
+
+def card_html(value, label, accent=False, nowrap=False):
+    value_class = "dank-card-value dank-card-accent" if accent else "dank-card-value"
+    # size by visible text length (ignoring any HTML tags in the value)
+    n = len(re.sub(r"<[^>]+>", "", str(value)))
+    size = 26 if n <= 10 else 22 if n <= 16 else 18 if n <= 26 else 15
+    card_class = "dank-card"
+    if nowrap:
+        size = min(size, 22)          # keep short values like dates inside the card
+        card_class += " dank-card-nowrap"
+    return (
+        f'<div class="{card_class}">'
+        f'<div class="{value_class}" style="font-size:{size}px">{value}</div>'
+        f'<div class="dank-card-label">{label}</div></div>'
     )
 
 # -------------------------
@@ -1528,7 +1547,7 @@ def add_segue_labels(d):
     return d
 
 
-def card_html(value, label, accent=False):
+
     value_class = "dank-card-value dank-card-accent" if accent else "dank-card-value"
     # size by visible text length (ignoring any HTML tags in the value)
     n = len(re.sub(r"<[^>]+>", "", str(value)))

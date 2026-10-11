@@ -316,10 +316,10 @@ if st.session_state.active_tab == "Song Lookup":
             st.divider()
             dank_sign(f"{selected_song}: Song Info", direction="right")    
             cards = [
-                card_html(int(s["Times_Played"]), "Times Played", accent=True),
-                card_html(s["First_Played"].strftime("%m/%d/%Y"), "First Played"),
-                card_html(s["Last_Played"].strftime("%m/%d/%Y"), "Last Played"),
-                card_html(f"{days_ago:,}", "Day Ago" if days_ago == 1 else "Days Ago"),
+                card_html(int(s["Times_Played"]), "Times Played", accent=True, nowrap=True),
+                card_html(s["First_Played"].strftime("%m/%d/%y"), "First Played", nowrap=True),
+                card_html(s["Last_Played"].strftime("%m/%d/%y"), "Last Played", nowrap=True),
+                card_html(f"{days_ago:,}", "Day Ago" if days_ago == 1 else "Days Ago", nowrap=True),
             ]
             st.markdown(f'<div class="dank-grid">{"".join(cards)}</div>', unsafe_allow_html=True)
 
