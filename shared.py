@@ -65,7 +65,6 @@ def get_show_list(_mtimes, type_filter):
     )
     return performances, unique_shows
 
-
 @st.cache_data
 def get_playlist_for_show(_mtimes, show_label):
     """Cached per show — grouping only runs once per show, not once per rerun."""
@@ -74,6 +73,10 @@ def get_playlist_for_show(_mtimes, show_label):
         performances["Show_Label"] == show_label
     ].sort_values("Track Number").reset_index(drop=True)
     return group_tracks(show_tracks)
+
+@st.cache_data(show_spinner=False)
+def img_b64(filename):
+    return base64.b64encode((STATIC / filename).read_bytes()).decode()
 
 # -------------------------
 # LOGIN INFO
@@ -499,9 +502,6 @@ def local_path_to_onedrive_url(local_path):
 # DANK STYLE
 # -------------------------
 
-def img_b64(filename):
-    return base64.b64encode((STATIC / filename).read_bytes()).decode()
-
 def dank_theme():
     st.markdown("""
 <style>
@@ -790,7 +790,56 @@ div[class*="st-key-btnrow_"] .stButton > button p {
     min-height:44px; padding:6px 28px !important;
     text-decoration:none;
 }
+
 [data-testid="stLinkButton"] a p { color:var(--dw-cream) !important; font-weight:800 !important; margin:0; }
+
+/* =========================================================
+   WALKING SKELETON (footer)
+   ========================================================= */
+.dank-footer { text-align:center; margin-top:40px; }
+.dank-footer-text { color:#888; font-size:13px; margin-top:10px; }
+.dank-footer-line {
+    position:relative; height:96px; overflow:hidden;
+    border-bottom:4px solid var(--dw-green);
+}
+
+.dw-walker {
+    --dw-ar: 0.775;                 /* canvas width / height */
+    --hip-a: 47% 63%;               /* leg_a pivot */
+    --hip-b: 60% 60%;               /* leg_b pivot */
+    --shoulder: 63% 32%;            /* hanging arm pivot */
+    --stride: 1s;                   /* one full step; set to 6s only to debug in slow motion */
+
+    position:absolute; bottom:-2px; left:50%;
+    height:80px; aspect-ratio:var(--dw-ar);
+    animation:dw-cross 40s linear infinite;
+}
+.dw-bob { position:absolute; inset:0; animation:dw-bob calc(var(--stride) / 2) ease-in-out infinite; }
+.dw-bob img { position:absolute; inset:0; width:100%; height:100%; max-width:none; }
+
+/* each limb starts in its drawn pose and swings to --to at the halfway point */
+.dw-leg_a, .dw-leg_b, .dw-arm {
+    animation:dw-limb var(--stride) ease-in-out infinite;
+}
+.dw-leg_b { transform-origin:var(--hip-b);    --from:0deg; --to:64deg;  }
+.dw-leg_a { transform-origin:var(--hip-a);    --from:0deg; --to:-64deg; }
+.dw-arm   { transform-origin:var(--shoulder); --from:0deg; --to:-24deg; }
+
+@keyframes dw-cross {
+    from { translate:calc(55vw - 50%) 0; }
+    to   { translate:calc(-55vw - 50%) 0; }
+}
+@keyframes dw-bob {
+    0%, 100% { translate:0 0; }
+    50%      { translate:0 -2%; }
+}
+@keyframes dw-limb {
+    0%, 100% { rotate:var(--from); }
+    50%      { rotate:var(--to); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .dw-walker, .dw-bob, .dw-bob img { animation:none; }
+}
 
 /* =========================================================
    TABLES + LISTS
@@ -965,43 +1014,21 @@ def dank_chart(chart):
     )
 
 def dank_footer(text="Danktuary Archive Version: 3.0 | Believe it if you need it"):
-    st.markdown(f"""
-    <style>
-    .dank-footer {{ text-align:center; margin-top:40px; }}
-    .dank-footer-line {{
-        border-bottom:4px solid #00FF00;
-        height:80px;
-        overflow:hidden;
-        position:relative;
-    }}
-    .dank-footer-line img {{
-        position:absolute; bottom:-2px; left:50%;
-        height:80px; margin-left:-40px;
-        transform-origin:50% 100%;
-        animation:
-            dank-walk 35s linear infinite,
-            dank-bob .5s ease-in-out infinite alternate;
-    }}
-    @keyframes dank-walk {{
-        from {{translate:55vw 0; }}
-        to   {{ translate:-55vw 0; }}
-    }}
-    @keyframes dank-bob {{
-        from {{ transform:translateY(0) rotate(-3deg); }}
-        to   {{ transform:translateY(-4px) rotate(3deg); }}
-    }}
-    @media (prefers-reduced-motion: reduce) {{
-        .dank-footer-line img {{ animation:none; }}
-    }}
-    .dank-footer-text {{ color:#888; font-size:13px; margin-top:10px; }}
-    </style>
-    <div class="dank-footer">
-        <div class="dank-footer-line">
-            <img src="data:image/png;base64,{img_b64('skel_walk_dark.png')}">
-        </div>
-        <div class="dank-footer-text">{text}</div>
-    </div>
-    """, unsafe_allow_html=True)
+    try:
+        imgs = "".join(
+            '<img class="dw-%s" src="data:image/png;base64,%s">' % (p, img_b64("walk_%s.png" % p))
+            for p in ("leg_a", "leg_b", "body", "arm")
+        )
+    except FileNotFoundError:
+        # fallback: the old static skeleton
+        imgs = '<img src="data:image/png;base64,%s" style="height:80px">' % img_b64("skel_walk_dark.png")
+
+    st.markdown(
+        f'<div class="dank-footer">'
+        f'<div class="dank-footer-line"><div class="dw-walker"><div class="dw-bob">{imgs}</div></div></div>'
+        f'<div class="dank-footer-text">{text}</div></div>',
+        unsafe_allow_html=True,
+    )
 
 def linked_table(df, song_col="Title", show_col=None, show_loc_col=None,
                  show_cols=None, scroll=True):
