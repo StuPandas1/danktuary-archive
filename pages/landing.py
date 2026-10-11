@@ -7,6 +7,58 @@ today_md = pd.Timestamp.now(tz=ZoneInfo("America/New_York")).strftime("%m/%d")
 from shared import load_data, parse_duration, page_menu, dank_header, force_columns_horizontal, dank_theme, dank_footer, dank_sign, dank_hex, dank_callout, card_html #type: ignore
 
 st.set_page_config(page_title="DankApp | The Dead Weight Hub", page_icon="static/icon.png", layout="wide")
+
+@st.cache_data(show_spinner=False)
+def landing_stats(d_all, d):
+    """Everything the dashboard cards need. d_all = all takes, d = Take 1 only."""
+    counts = d["Title"].value_counts()
+
+    # unique durations only (a segue chain shares one Duration)
+    dur_all = d_all["Duration"].ne(d_all["Duration"].shift())
+    total_secs = int(d_all.loc[dur_all, "Duration"].apply(parse_duration).sum())
+    longest_secs = int(d["Duration"].apply(parse_duration).max())
+
+    return {
+        "total_shows": d["Date"].nunique(),
+        "gig_count": d[d["Type"] == "live"]["Date"].nunique(),
+        "last_show": d["Date"].max(),
+        "total_secs": total_secs,
+        "songs_played": len(d_all),
+        "unique_songs": d["Title"].nunique(),
+        "longest_secs": longest_secs,
+        "top_song": counts.idxmax(),
+        "top_count": int(counts.max()),
+    }
+
+
+@st.cache_data(show_spinner=False)
+def landing_fact_data(d):
+    """Pools the random fun facts draw from."""
+    counts = d["Title"].value_counts()
+
+    # segue chains: same show + same Duration = one jam
+    s = d.sort_values(["Date", "Track Number"])
+    chain = (s["Date"].ne(s["Date"].shift()) | s["Duration"].ne(s["Duration"].shift())).cumsum()
+    jams = (
+        s.assign(_g=chain).groupby("_g")
+        .agg(Date=("Date", "first"), Songs=("Title", " -> ".join), Duration=("Duration", "first"))
+    )
+    jams["secs"] = jams["Duration"].apply(parse_duration)
+    top_jams = jams.nlargest(10, "secs")
+
+    first_day = d["Date"].min()
+    years = d["Year"].value_counts()
+    return {
+        "top_played": counts.head(10),
+        "one_timers": counts[counts == 1].index.tolist(),
+        "openers": d[d["Track Number"] == 1]["Title"].value_counts().head(10),
+        "top_jams": top_jams,
+        "busiest_year": years.idxmax(),
+        "busiest_count": int(years.max()),
+        "earliest_date": first_day,
+        "earliest_title": d[d["Date"] == first_day]["Title"].iloc[0],
+    }
+
 dank_theme()
 
 df, song_stats, metadata, jam_metadata = load_data()
@@ -80,67 +132,41 @@ st.write("")
 # -------------------------
 st.divider()
 
+fd = landing_fact_data(df)
 fun_facts = []
- 
-# most played: top 10, pick one at random, show its rank
-most_played_counts = df["Title"].value_counts().head(10)
-mp_idx = random.randrange(len(most_played_counts))
-mp_title = most_played_counts.index[mp_idx]
-mp_n = most_played_counts.iloc[mp_idx]
-fun_facts.append(f"**\"{mp_title}\"** is the **#{mp_idx + 1}** most played song in the archive (**{mp_n}** plays).")
- 
-rare_songs = df["Title"].value_counts()
-one_timers = rare_songs[rare_songs == 1]
-if not one_timers.empty:
-    rare_pick = random.choice(one_timers.index.tolist())
-    rare_date = df[df["Title"] == rare_pick]["Date"].iloc[0].strftime("%m/%d/%Y")
-    fun_facts.append(f"**\"{rare_pick}\"** has only been played once, on **{rare_date}**.")
- 
-# most common opener: top 10, pick one at random, show its rank
-opener_counts = df[df["Track Number"] == 1]["Title"].value_counts().head(10)
-if not opener_counts.empty:
-    op_idx = random.randrange(len(opener_counts))
-    op_title = opener_counts.index[op_idx]
-    op_n = opener_counts.iloc[op_idx]
-    fun_facts.append(f"**\"{op_title}\"** is the **#{op_idx + 1}** most common opener (**{op_n}** times).")
- 
-# longest jams: group segued tracks (same date + consecutive same duration = one jam), then top 10, pick one at random, show its rank
-jam_records = []
-for date in df["Date"].unique():
-    session = df[df["Date"] == date].sort_values("Track Number").reset_index(drop=True)
-    i = 0
-    while i < len(session):
-        current = session.iloc[i]
-        duration = current["Duration"]
-        group_titles = [current["Title"]]
- 
-        j = i + 1
-        while j < len(session) and session.iloc[j]["Duration"] == duration:
-            group_titles.append(session.iloc[j]["Title"])
-            j += 1
- 
-        jam_records.append({
-            "Date": pd.Timestamp(date),
-            "Song(s)": " -> ".join(group_titles),
-            "Duration_Secs": parse_duration(duration)
-        })
-        i = j
- 
-jam_groups_df = pd.DataFrame(jam_records)
-top_jams = jam_groups_df.sort_values("Duration_Secs", ascending=False).head(10).reset_index(drop=True)
-jam_idx = random.randrange(len(top_jams))
-jam_row = top_jams.iloc[jam_idx]
-jam_title = jam_row["Song(s)"]
-jam_date = jam_row["Date"].strftime("%m/%d/%Y")
-jam_secs = jam_row["Duration_Secs"]
-fun_facts.append(f"At **{jam_secs // 60}:{jam_secs % 60:02d}**, **\"{jam_title}\"** (**{jam_date}**) is the **#{jam_idx + 1}** longest track in the archive.")
- 
-busiest_year = df["Year"].value_counts().idxmax()
-fun_facts.append(f"**{busiest_year}** was the most active year, with **{df['Year'].value_counts().max()}** songs played.")
- 
-oldest_song_date = df["Date"].min().strftime("%m/%d/%Y") 
-oldest_song_title = df[df["Date"] == df["Date"].min()]["Title"].iloc[0]
-fun_facts.append(f"The earliest recording in the archive is **\"{oldest_song_title}\"** from **{oldest_song_date}**.")
+
+i = random.randrange(len(fd["top_played"]))
+fun_facts.append(
+    f"**\"{fd['top_played'].index[i]}\"** is the **#{i + 1}** most played song in the archive "
+    f"(**{fd['top_played'].iloc[i]}** plays)."
+)
+
+if fd["one_timers"]:
+    pick = random.choice(fd["one_timers"])
+    pick_date = df[df["Title"] == pick]["Date"].iloc[0].strftime("%m/%d/%Y")
+    fun_facts.append(f"**\"{pick}\"** has only been played once, on **{pick_date}**.")
+
+if not fd["openers"].empty:
+    i = random.randrange(len(fd["openers"]))
+    fun_facts.append(
+        f"**\"{fd['openers'].index[i]}\"** is the **#{i + 1}** most common opener "
+        f"(**{fd['openers'].iloc[i]}** times)."
+    )
+
+if not fd["top_jams"].empty:
+    i = random.randrange(len(fd["top_jams"]))
+    j = fd["top_jams"].iloc[i]
+    secs = int(j["secs"])
+    fun_facts.append(
+        f"At **{secs // 60}:{secs % 60:02d}**, **\"{j['Songs']}\"** (**{j['Date']:%m/%d/%Y}**) "
+        f"is the **#{i + 1}** longest track in the archive."
+    )
+
+fun_facts.append(f"**{fd['busiest_year']}** was the most active year, with **{fd['busiest_count']}** songs played.")
+fun_facts.append(
+    f"The earliest recording in the archive is **\"{fd['earliest_title']}\"** "
+    f"from **{fd['earliest_date']:%m/%d/%Y}**."
+)
 
 dank_callout("How 'bout a random fact, man?", random.choice(fun_facts))
  
@@ -151,37 +177,19 @@ st.divider()
 # -------------------------
 
 dank_sign("Heady Stats Dashboard")
-total_shows = df["Date"].nunique()
-total_songs_played = len(df2)
-total_unique_songs = df["Title"].nunique()
-days_since_last_show = (pd.Timestamp.now() - df["Date"].max()).days
-last_show_date = df["Date"].max().strftime("%m/%d/%y")
-
-total_secs_all = df_durationfiltered["Duration"].apply(parse_duration).sum()
-total_days = total_secs_all // 86400
-total_hours_remainder = (total_secs_all % 86400) // 3600
-total_mins_remainder = (total_secs_all % 3600) // 60
-
-most_played_song = df["Title"].value_counts().idxmax()
-most_played_count = df["Title"].value_counts().max()
-
-longest_jam_secs = df["Duration"].apply(parse_duration).max()
-longest_mins = longest_jam_secs // 60
-longest_secs = longest_jam_secs % 60
-
-gig_count = df[df["Type"] == "live"]["Date"].nunique()
+stats = landing_stats(df2, df)
+ts = stats["total_secs"]
 
 cards = [
-    card_html(total_shows, "Total Recordings", accent=True),
-    card_html(gig_count, "Gig Recordings"),
-    card_html(last_show_date, "Last Recording"),
-    card_html(f"{total_days}d {total_hours_remainder}h {total_mins_remainder}m", "Total Time Played"),
-    card_html(total_songs_played, "Songs Played", accent=True),
-    card_html(total_unique_songs, "Unique Songs"),
-    card_html(f"{longest_mins}:{longest_secs:02d}", "Longest Track", accent=True),
-    card_html(f"{most_played_song} ({most_played_count})", "Most Played Song", accent=True),
+    card_html(stats["total_shows"], "Total Recordings", accent=True),
+    card_html(stats["gig_count"], "Gig Recordings"),
+    card_html(stats["last_show"].strftime("%m/%d/%y"), "Last Recording"),
+    card_html(f"{ts // 86400}d {(ts % 86400) // 3600}h {(ts % 3600) // 60}m", "Total Time Played"),
+    card_html(stats["songs_played"], "Songs Played", accent=True),
+    card_html(stats["unique_songs"], "Unique Songs"),
+    card_html(f"{stats['longest_secs'] // 60}:{stats['longest_secs'] % 60:02d}", "Longest Track", accent=True),
+    card_html(f"{stats['top_song']} ({stats['top_count']})", "Most Played Song", accent=True),
 ]
-
 st.markdown(f'<div class="dank-grid">{"".join(cards)}</div>', unsafe_allow_html=True)
 
 # -------------------------
