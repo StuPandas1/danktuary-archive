@@ -13,6 +13,9 @@ from streamlit_js_eval import streamlit_js_eval
 from urllib.parse import quote
 from supabase import create_client, Client
 from pathlib import Path
+import msal
+import requests
+from urllib.parse import quote
 
 STATIC = Path(__file__).parent / "static"
 
@@ -98,6 +101,100 @@ def set_display_name(email, display_name):
 
 def get_supabase_client() -> Client:
     return create_client(st.secrets["supabase"]["url"], st.secrets["supabase"]["key"])
+
+
+import msal
+import requests
+from urllib.parse import quote
+
+_GRAPH_SCOPES = ["https://graph.microsoft.com/Files.ReadWrite"]  # same scope the cache was made with
+
+
+def _service_client():
+    from supabase import create_client
+    return create_client(st.secrets["supabase"]["url"], st.secrets["supabase"]["service_key"])
+
+
+def _graph_token():
+    """Logs in with the cached Microsoft token (stored in Supabase) and
+    saves the refreshed token back."""
+    sb = _service_client()
+    rows = sb.table("msal_cache").select("cache").eq("id", 1).execute().data
+    cache = msal.SerializableTokenCache()
+    if rows:
+        cache.deserialize(rows[0]["cache"])
+
+    app = msal.PublicClientApplication(
+        st.secrets["microsoft"]["client_id"],
+        authority="https://login.microsoftonline.com/consumers",
+        token_cache=cache,
+    )
+    accounts = app.get_accounts()
+    result = app.acquire_token_silent(_GRAPH_SCOPES, account=accounts[0]) if accounts else None
+
+    if cache.has_state_changed:
+        sb.table("msal_cache").upsert({"id": 1, "cache": cache.serialize()}).execute()
+
+    if not result or "access_token" not in result:
+        raise RuntimeError("Microsoft login expired; re-run the share-link script and the seed script.")
+    return result["access_token"]
+
+
+def onedrive_rel_path(local_path):
+    """'C:\\...\\OneDrive\\LoveDeep\\X\\y.mp3' -> 'LoveDeep/X/y.mp3'"""
+    if not isinstance(local_path, str):
+        return None
+    marker = "OneDrive\\LoveDeep"
+    idx = local_path.find(marker)
+    if idx == -1:
+        return None
+    return local_path[idx + len("OneDrive\\"):].replace("\\", "/")
+
+
+@st.cache_data(ttl=1500, show_spinner=False)   # download links last ~1 hour; refresh every 25 min
+def _onedrive_download_urls(paths):
+    """paths: tuple of Documents-relative paths -> {path: temporary direct URL}.
+    Raises on failure, so failures are never cached."""
+    token = _graph_token()
+    headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
+    out = {}
+    for i in range(0, len(paths), 20):                 # $batch allows 20 per call
+        chunk = paths[i:i + 20]
+        body = {"requests": [
+            {"id": str(n), "method": "GET",
+             "url": f"/me/drive/root:/{quote(p, safe='/')}:?select=id,@microsoft.graph.downloadUrl"}
+            for n, p in enumerate(chunk)
+        ]}
+        r = requests.post("https://graph.microsoft.com/v1.0/$batch",
+                          headers=headers, json=body, timeout=15)
+        r.raise_for_status()
+        for resp in r.json()["responses"]:
+            if resp["status"] == 200:
+                u = resp["body"].get("@microsoft.graph.downloadUrl")
+                if u:
+                    out[chunk[int(resp["id"])]] = u
+    return out
+
+
+def with_onedrive_urls(tracks, archive_df):
+    """Returns player-ready copies of tracks: OneDrive as 'url', the original
+    archive.org link as 'alt_url'. Falls back to the originals on any failure.
+    Don't save the result into playlists; the links expire."""
+    try:
+        known = archive_df.dropna(subset=["IA URL", "File Path"]).drop_duplicates("IA URL")
+        path_by_ia = dict(zip(known["IA URL"], known["File Path"]))
+        rel = {t["url"]: onedrive_rel_path(path_by_ia.get(t["url"])) for t in tracks}
+        wanted = tuple(sorted({p for p in rel.values() if p}))
+        urls = _onedrive_download_urls(wanted) if wanted else {}
+    except Exception as e:
+        st.session_state["od_error"] = repr(e)    # st.write(st.session_state.get("od_error")) to debug
+        return tracks
+
+    out = []
+    for t in tracks:
+        od = urls.get(rel.get(t["url"]))
+        out.append({**t, "url": od, "alt_url": t["url"]} if od else t)
+    return out
 
 # ------------------------
 # PLAYLIST GENERATOR

@@ -1,7 +1,6 @@
 import streamlit as st  # type: ignore
 import streamlit.components.v1 as components
 import pandas as pd  # type: ignore
-import urllib.parse
 import html
 import re
 from shared import (
@@ -11,6 +10,7 @@ from shared import (
     add_tracks_to_playlist, get_show_list, get_playlist_for_show,
     force_columns_horizontal, load_all_recordings, _data_file_mtimes,
     parse_duration, format_playlist_track_label,
+    with_onedrive_urls,
 )
 
 st.set_page_config(page_title="DankApp | Listen to Dead Weight", page_icon="static/icon.png", layout="wide")
@@ -396,7 +396,9 @@ if player_mode == "setlist" and selected_show:
     playlist = get_playlist_for_show(_data_file_mtimes(), selected_show)
 
     if playlist:
-        dank_playlist_player(selected_show, playlist)
+        # OneDrive links for fast streaming; archive.org stays as the backup.
+        # `playlist` itself is left untouched so playlists save permanent links.
+        dank_playlist_player(selected_show, with_onedrive_urls(playlist, df))
 
         with st.expander("📊 Setlist Stats", True):
             render_setlist_stats(playlist, df, selected_show)
@@ -413,7 +415,7 @@ if player_mode == "setlist" and selected_show:
 
             add_target_options = list(playlist_labels.keys()) if playlist_labels else []
             if not add_target_options:
-                st.caption("No saved playlists yet — create one first with the Playlist Creator button above.")
+                st.caption("No saved playlists yet — create one first with the Playlist Creator button below.")
             else:
                 target_choice = st.selectbox(
                     "Add checked tracks to:",
@@ -454,7 +456,7 @@ elif player_mode == "playlist" and playlist_labels and st.session_state.get("lis
         }
         for t in chosen_playlist["tracks"]
     ]
-    dank_playlist_player(chosen_playlist_name, display_tracks)
+    dank_playlist_player(chosen_playlist_name, with_onedrive_urls(display_tracks, df))
 
     force_columns_horizontal(equal_width=True, key="edit_delete_row")
     with st.container(key="edit_delete_row"):
@@ -485,11 +487,11 @@ st.divider()
 if st.user.is_logged_in:
     dank_callout("Skip the bathroom songs, man.")
     with st.container(key="hex_to_creator"):
-        if st.button("🎶 Click to Create a Playlist", key="to_creator_btn",
-                     width="stretch"):
+        if st.button("🎶 Click to Create a Playlist", key="to_creator_btn", width="stretch"):
             st.switch_page("pages/playlist_creator.py")
 else:
     dank_callout("Gotta login if you want playlists, man.")
+
 # -------------------------
 # FOOTER
 # -------------------------
