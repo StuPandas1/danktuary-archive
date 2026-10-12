@@ -831,7 +831,7 @@ div[class*="st-key-btnrow_"] .stButton > button p {
 }
 @keyframes dw-bob {
     0%, 100% { translate:0 0; }
-    50%      { translate:0 -2%; }
+    50%      { translate:0 -3%; }
 }
 @keyframes dw-limb {
     0%, 100% { rotate:var(--from); }
@@ -883,6 +883,34 @@ div[class*="st-key-btnrow_"] .stButton > button p {
 .song-browse a:hover { text-decoration:underline; }
 .song-browse-hint { color:var(--dw-marigold); font-size:12px; font-weight:600;
                     text-transform:uppercase; letter-spacing:.06em; margin:4px 0 0; }
+
+                    /* =========================================================
+   CHART TOOLTIPS (Vega draws these outside Streamlit's containers)
+   ========================================================= */
+#vg-tooltip-element,
+#vg-tooltip-element.vg-tooltip {
+    font-family:'Poppins', sans-serif !important;
+    font-size:13px !important;
+    background:var(--dw-panel) !important;
+    color:var(--dw-cream) !important;
+    border:2px solid var(--dw-green) !important;
+    border-radius:6px !important;
+    box-shadow:3px 3px 0 var(--dw-marigold) !important;
+    padding:8px 12px !important;
+}
+#vg-tooltip-element h2 {
+    color:var(--dw-green) !important;
+    font-size:14px !important; font-weight:800 !important;
+    margin:0 0 4px !important;
+}
+#vg-tooltip-element table tr td.key {
+    color:var(--dw-marigold) !important;
+    font-weight:600 !important;
+}
+#vg-tooltip-element table tr td.value {
+    color:var(--dw-cream) !important;
+    font-weight:500 !important;
+}
 
 /* =========================================================
    TRACKLIST ROWS (container key starts with trackrow_ / trackon_)
