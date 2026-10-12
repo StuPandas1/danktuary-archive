@@ -9,7 +9,7 @@ import urllib.parse
 import numpy as np
 from shared import ( #type: ignore
     load_data, build_filtered, find_closers, parse_duration, dank_theme, dank_footer, dank_sign, force_columns_horizontal, dank_chart, card_html, add_segue_labels, count_bar, dank_hex,
-    dank_callout, make_dead_weight_callback, page_menu, local_path_to_onedrive_url, dank_header, ranked_table, linked_table,
+    dank_callout, make_dead_weight_callback, page_menu, local_path_to_onedrive_url, dank_header, ranked_table, linked_table, show_index,
     dead_weight_artists, dead_weight_year
 )
 
@@ -486,15 +486,11 @@ elif st.session_state.active_tab == "Setlist Lookup":
         st.markdown(f'<div class="dank-grid">{"".join(cards)}</div>', unsafe_allow_html=True)
 
         # listen
-        if "IA URL" in hist.columns and hist["IA URL"].notna().any():
+        if selected_show in set(show_index(df2)["Show_Label"]):
             if st.button("🎧 Listen on DankApp", key=f"listen_btn_{selected_show}", width="stretch"):
-                st.session_state["listen_show_select"] = selected_show
-                st.session_state["listen_playlist_select"] = None
-                st.session_state["player_mode"] = "setlist"
+                st.session_state["listen_mode"] = "Setlists"
+                st.session_state["pending_listen_show"] = selected_show
                 st.switch_page("pages/listen.py")
-        elif "OneDrive Share URL" in hist.columns and hist["OneDrive Share URL"].notna().any():
-            st.link_button("☁️ Listen in OneDrive ↗",
-                           hist["OneDrive Share URL"].dropna().iloc[0], width="stretch")
 
         # setlist table
         durations = hist["Duration"].where(~segue, "--")

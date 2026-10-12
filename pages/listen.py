@@ -10,7 +10,7 @@ from shared import (
     add_tracks_to_playlist, get_show_list, get_playlist_for_show,
     force_columns_horizontal, load_all_recordings, _data_file_mtimes,
     parse_duration, format_playlist_track_label,
-    with_onedrive_urls,
+    with_onedrive_urls, show_index, tracks_for_show
 )
 
 st.set_page_config(page_title="DankApp | Listen to Dead Weight", page_icon="static/icon.png", layout="wide")
@@ -37,7 +37,7 @@ with st.container(key="top_row"):
         else:
             st.button("Log in with Google", on_click=st.login)
 
-dank_header(subtitle="If you get confused...")
+dank_header(subtitle="Listen to the music play!")
 
 # -------------------------
 # NOTES HELPERS
@@ -310,95 +310,98 @@ def render_setlist_stats(playlist, archive_df, show_label):
     else:
         linked_table(pd.DataFrame(rows), song_col="Song")
 
-# -------------------------
-# SELECTION CALLBACKS
-# -------------------------
-
-def on_setlist_select_change():
-    """Selecting a setlist deactivates any chosen saved playlist."""
-    st.session_state["player_mode"] = "setlist"
-    st.session_state["listen_playlist_select"] = None
-
-def on_playlist_select_change():
-    """Selecting a saved playlist deactivates any chosen setlist."""
-    st.session_state["player_mode"] = "playlist"
-    st.session_state["listen_show_select"] = None
-
-# -------------------------
-# SHOW LIST
-# -------------------------
-
-if "IA URL" not in df.columns:
-    st.write("No streaming links found yet — run upload_to_archive.py to generate them.")
+shows = show_index(df)
+if shows.empty:
+    dank_hex("No playable recordings found")
     st.stop()
 
-performances, unique_shows = get_show_list(_data_file_mtimes(), "All")
+# playlists load in either mode (the "add tracks" expander needs them)
+my_playlists, playlist_labels = None, {}
+if st.user.is_logged_in:
+    try:
+        my_playlists = load_playlists_from_supabase(username)
+        playlist_labels = {p["playlist_name"]: p for p in my_playlists}
+    except Exception:
+        st.error("Couldn't load your playlists right now.")
 
-if not unique_shows:
-    st.write("No shows match this filter.")
-    st.stop()
+mode = st.segmented_control(
+    "Browse", ["Setlists", "Playlists"], default="Setlists",
+    key="listen_mode", label_visibility="collapsed",
+) or "Setlists"
 
-# -------------------------
-# PICKERS
-# -------------------------
+selected_show = None
+selected_playlist = None
 
-force_columns_horizontal(equal_width=True, key="pick_row")
-with st.container(key="pick_row"):
-    col_setlist, col_playlist = st.columns(2)
+if mode == "Setlists":
+    with st.expander("Filter shows", expanded=False):
+        c1, c2 = st.columns(2)
+        with c1:
+            years = ["All"] + sorted(shows["Date"].dt.year.unique().tolist(), reverse=True)
+            year_pick = st.selectbox("Year", years, key="listen_year")
+        with c2:
+            type_pick = st.selectbox("Type", ["All", "Gigs", "Practice"], key="listen_type")
 
-    with col_setlist:
-        dank_sign("Choose a Setlist", size="md")
-        selected_show = st.selectbox(
-            "Choose a setlist",
-            unique_shows,
-            index=None,
-            placeholder="Type to search...",
-            key="listen_show_select",
-            on_change=on_setlist_select_change,
+    f = shows
+    if year_pick != "All":
+        f = f[f["Date"].dt.year == year_pick]
+    if type_pick == "Gigs":
+        f = f[f["Type"] == "live"]
+    elif type_pick == "Practice":
+        f = f[f["Type"] != "live"]
+    labels = f["Show_Label"].tolist()
+
+    # buttons stash a pick here; it's applied before the selectbox is created
+    if "pending_listen_show" in st.session_state:
+        st.session_state["listen_show_select"] = st.session_state.pop("pending_listen_show")
+    if st.session_state.get("listen_show_select") not in labels:
+        st.session_state["listen_show_select"] = None
+
+    selected_show = st.selectbox(
+        "Choose a recording", labels, index=None,
+        placeholder=f"Search {len(labels)} recordings...",
+        key="listen_show_select", label_visibility="collapsed",
+    )
+
+    cur = labels.index(selected_show) if selected_show in labels else None
+    with st.container(key="btnrow_listen"):
+        b1, b2, b3 = st.columns(3)
+        with b1:   # list is newest-first, so "newer" is the previous index
+            if st.button("◀ Newer", width="stretch", disabled=cur is None or cur == 0):
+                st.session_state["pending_listen_show"] = labels[cur - 1]
+                st.rerun()
+        with b2:
+            if st.button("Latest", width="stretch", disabled=not labels):
+                st.session_state["pending_listen_show"] = labels[0]
+                st.rerun()
+        with b3:
+            if st.button("Older ▶", width="stretch",
+                         disabled=cur is None or cur >= len(labels) - 1):
+                st.session_state["pending_listen_show"] = labels[cur + 1]
+                st.rerun()
+
+else:
+    if not st.user.is_logged_in:
+        dank_hex("Log in to use playlists")
+    elif not playlist_labels:
+        dank_hex("No saved playlists yet")
+    else:
+        selected_playlist = st.selectbox(
+            "Choose a playlist", list(playlist_labels.keys()), index=None,
+            placeholder="Pick a playlist...", key="listen_playlist_select",
             label_visibility="collapsed",
         )
 
-    my_playlists = None
-    playlist_labels = {}
-
-    with col_playlist:
-        dank_sign("Or a Playlist", direction="left", size="md")
-
-        if not st.user.is_logged_in:
-            st.info("Log in above to view saved playlists.")
-        else:
-            try:
-                my_playlists = load_playlists_from_supabase(username)
-            except Exception:
-                st.error("Couldn't load your playlists right now.")
-
-            if my_playlists is not None:
-                playlist_labels = {p["playlist_name"]: p for p in my_playlists}
-
-            if playlist_labels:
-                st.selectbox(
-                    "Or a saved playlist",
-                    list(playlist_labels.keys()),
-                    index=None,
-                    placeholder="Type to search...",
-                    key="listen_playlist_select",
-                    on_change=on_playlist_select_change,
-                    label_visibility="collapsed",
-                )
-            elif my_playlists is not None:
-                dank_hex("No saved playlists yet")
-
-player_mode = st.session_state.get("player_mode")
+player_mode = "setlist" if mode == "Setlists" else "playlist"
 
 # ---- Setlist playback ----
 if player_mode == "setlist" and selected_show:
     st.divider()
-    playlist = get_playlist_for_show(_data_file_mtimes(), selected_show)
-
+    playlist = tracks_for_show(df, selected_show)
     if playlist:
-        # OneDrive links for fast streaming; archive.org stays as the backup.
-        # `playlist` itself is left untouched so playlists save permanent links.
-        dank_playlist_player(selected_show, with_onedrive_urls(playlist, df))
+        playable = with_onedrive_urls(playlist, df)
+        dank_playlist_player(selected_show, playable)
+        if len(playable) < len(playlist):
+            st.caption(f"{len(playlist) - len(playable)} track(s) couldn't be loaded right now.")
 
         with st.expander("📊 Setlist Stats", True):
             render_setlist_stats(playlist, df, selected_show)
@@ -444,8 +447,8 @@ if player_mode == "setlist" and selected_show:
     render_show_notes(selected_show)
 
 # ---- Saved playlist playback ----
-elif player_mode == "playlist" and playlist_labels and st.session_state.get("listen_playlist_select"):
-    chosen_playlist_name = st.session_state["listen_playlist_select"]
+elif player_mode == "playlist" and selected_playlist:
+    chosen_playlist_name = selected_playlist
     chosen_playlist = playlist_labels[chosen_playlist_name]
 
     display_tracks = [

@@ -94,9 +94,8 @@ last_show_label = f"{last_show_date_str} — {last_show_location}"
 
 with st.container(key="hex_recent"):
     if st.button(f"{last_show_label}", key="most_recent_setlist_btn", width="stretch"):
-        st.session_state["listen_show_select"] = last_show_label
-        st.session_state["listen_playlist_select"] = None
-        st.session_state["player_mode"] = "setlist"
+        st.session_state["listen_mode"] = "Setlists"
+        st.session_state["pending_listen_show"] = last_show_label
         st.switch_page("pages/listen.py")
 
 # -------------------------

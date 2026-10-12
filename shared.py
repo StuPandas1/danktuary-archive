@@ -34,6 +34,11 @@ dead_weight_artists = ["Grateful Dead", "David Bowie", "Jerry Garcia Band",
                        ]
 dead_weight_year = 2022
 
+AUDIO_EXTS = (".mp3", ".m4a", ".wav", ".flac", ".ogg")
+
+def is_audio_path(p):
+    return isinstance(p, str) and p.lower().endswith(AUDIO_EXTS)
+    
 @st.cache_data
 def load_all_recordings(_mtimes):
     """Load band_archive.csv including all takes, for the Listen page."""
@@ -78,6 +83,42 @@ def get_playlist_for_show(_mtimes, show_label):
 def img_b64(filename):
     return base64.b64encode((STATIC / filename).read_bytes()).decode()
 
+@st.cache_data(show_spinner=False)
+def show_index(d):
+    """One row per playable show (has a file path, not flagged missing), newest first."""
+    s = d[d["File Path"].map(is_audio_path)].copy()    
+    if "Status" in s.columns:
+        s = s[s["Status"] != "missing"]
+    s["Date"] = pd.to_datetime(s["Date"], errors="coerce")
+    s = s.dropna(subset=["Date"])
+    s["Show_Label"] = s["Date"].dt.strftime("%m/%d/%Y") + " — " + s["Location"]
+    s = s.drop_duplicates("Show_Label")[["Show_Label", "Date", "Type"]]
+    return s.sort_values("Date", ascending=False).reset_index(drop=True)
+
+
+def tracks_for_show(d, show_label):
+    """Player-ready tracks for a show. A segue chain (rows sharing one file)
+    becomes one track. 'url' is the archive.org link when one exists, and
+    'path' is the OneDrive-relative path."""
+    date_s, loc = show_label.split(" — ", 1)
+    dt = pd.to_datetime(d["Date"], errors="coerce")
+    rows = d[(dt.dt.strftime("%m/%d/%Y") == date_s) & (d["Location"] == loc)]
+    rows = rows[pd.to_numeric(rows["Take"], errors="coerce") == 1].dropna(subset=["File Path"])
+    rows = rows[rows["File Path"].map(is_audio_path)]
+    if "Status" in rows.columns:
+        rows = rows[rows["Status"] != "missing"]
+    rows = rows.sort_values("Track Number")
+
+    tracks = []
+    for path, g in rows.groupby("File Path", sort=False):
+        ia = g["IA URL"].dropna() if "IA URL" in g.columns else []
+        tracks.append({
+            "label": " -> ".join(g["Title"]),
+            "duration": g["Duration"].iloc[0],
+            "url": ia.iloc[0] if len(ia) else "",
+            "path": onedrive_rel_path(path),      # relative, so no local paths get saved
+        })
+    return tracks
 # -------------------------
 # LOGIN INFO
 # -------------------------
@@ -180,23 +221,25 @@ def _onedrive_download_urls(paths):
 
 
 def with_onedrive_urls(tracks, archive_df):
-    """Returns player-ready copies of tracks: OneDrive as 'url', the original
-    archive.org link as 'alt_url'. Falls back to the originals on any failure.
-    Don't save the result into playlists; the links expire."""
+    """OneDrive link as 'url', archive.org (if any) as 'alt_url'. Tracks with
+    neither are dropped. Don't save the result into playlists; links expire."""
     try:
         known = archive_df.dropna(subset=["IA URL", "File Path"]).drop_duplicates("IA URL")
-        path_by_ia = dict(zip(known["IA URL"], known["File Path"]))
-        rel = {t["url"]: onedrive_rel_path(path_by_ia.get(t["url"])) for t in tracks}
-        wanted = tuple(sorted({p for p in rel.values() if p}))
+        rel_by_ia = {u: onedrive_rel_path(p) for u, p in zip(known["IA URL"], known["File Path"])}
+        rel = [t.get("path") or rel_by_ia.get(t.get("url")) for t in tracks]
+        wanted = tuple(sorted({p for p in rel if p}))
         urls = _onedrive_download_urls(wanted) if wanted else {}
     except Exception as e:
-        st.session_state["od_error"] = repr(e)    # st.write(st.session_state.get("od_error")) to debug
-        return tracks
+        st.session_state["od_error"] = repr(e)
+        return [t for t in tracks if t.get("url")]
 
     out = []
-    for t in tracks:
-        od = urls.get(rel.get(t["url"]))
-        out.append({**t, "url": od, "alt_url": t["url"]} if od else t)
+    for t, r in zip(tracks, rel):
+        od = urls.get(r)
+        if od:
+            out.append({**t, "url": od, "alt_url": t.get("url") or ""})
+        elif t.get("url"):
+            out.append(t)
     return out
 
 # ------------------------
