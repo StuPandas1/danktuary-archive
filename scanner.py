@@ -2,6 +2,8 @@ import re
 import os
 import csv
 import string
+import sys
+import json
 import pandas as pd  # type: ignore
 from mutagen import File as MutagenFile
 from shared import manual_fixes, junk_terms, segue_fixes, local_path_to_onedrive_url
@@ -29,6 +31,7 @@ BASE_FIELDNAMES = [
     "Type", "Duration", "Raw Title", "File Path", "Take", "IA URL", "OneDrive URL", "Status"
 ]
 FIELDNAMES = list(BASE_FIELDNAMES)
+PROMPT_PREFIX = "@PROMPT@"
 
 
 def get_duration(filepath):
@@ -45,7 +48,32 @@ def get_duration(filepath):
         pass
     return "N/A"
 
+def ask_which_to_remove(paths):
+    """Return the set of missing paths the user wants dropped from the CSV."""
+    # Launched by update.py: ask through the pipe so the GUI can show a dialog.
+    if os.environ.get("DANKAPP_PROMPT_VIA_PIPE") == "1":
+        print(PROMPT_PREFIX + json.dumps({"kind": "missing_files", "paths": paths}), flush=True)
+        try:
+            return set(json.loads(sys.stdin.readline()))
+        except ValueError:
+            return set()  # no usable answer -> keep everything, flagged missing
 
+    # Run by hand in a terminal: plain prompts.
+    remove = set()
+    for fp in paths:
+        answer = ""
+        while answer not in ("yes", "no"):
+            try:
+                answer = input(
+                    f"File '{fp}' no longer exists on disk.\n"
+                    f"  Type 'yes' to remove it from the CSV, or 'no' to keep it "
+                    f"labeled as Status: missing: "
+                ).strip().lower()
+            except EOFError:
+                return remove  # no stdin at all: keep the rest, don't crash
+        if answer == "yes":
+            remove.add(fp)
+    return remove
 # -------------------------
 # LOAD EXISTING CSV (rows to preserve + per-folder state to resume from)
 # -------------------------
@@ -115,27 +143,25 @@ for folder in sorted(known_folders):
 
 removed_file_count = 0
 missing_flagged_count = 0
+
+missing_paths = [
+    row["File Path"] for row in existing_rows
+    if isinstance(row.get("File Path"), str) and not os.path.exists(row["File Path"])
+]
+missing_set = set(missing_paths)
+to_remove = ask_which_to_remove(missing_paths) if missing_paths else set()
+
 kept_rows = []
 for row in existing_rows:
     fp = row.get("File Path")
-    if fp and not os.path.exists(fp):
-        answer = ""
-        while answer not in ("yes", "no"):
-            answer = input(
-                f"File '{fp}' no longer exists on disk.\n"
-                f"  Type 'yes' to remove it from the CSV, or 'no' to keep it "
-                f"labeled as Status: missing: "
-            ).strip().lower()
-
-        if answer == "yes":
+    if fp in missing_set:
+        if fp in to_remove:
             print(f"File removed: '{fp}' dropped from CSV.")
             removed_file_count += 1
             continue
-        else:
-            row["Status"] = "missing"
-            missing_flagged_count += 1
-            print(f"File kept in CSV, labeled Status: missing -> '{fp}'")
-
+        row["Status"] = "missing"
+        missing_flagged_count += 1
+        print(f"File kept in CSV, labeled Status: missing -> '{fp}'")
     kept_rows.append(row)
 existing_rows = kept_rows
 

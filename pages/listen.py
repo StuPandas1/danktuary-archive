@@ -3,20 +3,25 @@ import streamlit.components.v1 as components
 import pandas as pd  # type: ignore
 import html
 import re
+import random
 from shared import (
     page_menu, dank_header, dank_theme, dank_footer, dank_sign, dank_hex, dank_callout, card_html, linked_table,
     dank_playlist_player, get_supabase_client,
     load_playlists_from_supabase, delete_playlist_from_supabase,
-    add_tracks_to_playlist, get_show_list, get_playlist_for_show,
+    add_tracks_to_playlist, song_show_map,
     force_columns_horizontal, load_all_recordings, _data_file_mtimes,
     parse_duration, format_playlist_track_label,
-    with_onedrive_urls, show_index, tracks_for_show
+    with_onedrive_urls, show_index, tracks_for_show,
 )
 
 st.set_page_config(page_title="DankApp | Listen to Dead Weight", page_icon="static/icon.png", layout="wide")
 dank_theme()
 
+# one place for the mode names, so a typo can't silently break the toggle
+MODE_SET, MODE_SONG, MODE_PL = "By Setlist", "By Song", "Playlists"
+
 df = load_all_recordings(_data_file_mtimes())
+MT = _data_file_mtimes()
 
 # -------------------------
 # TOP ROW + HEADER
@@ -37,7 +42,7 @@ with st.container(key="top_row"):
         else:
             st.button("Log in with Google", on_click=st.login)
 
-dank_header(subtitle="Listen to the music play!")
+dank_header(subtitle="Listen to the music play")
 
 # -------------------------
 # NOTES HELPERS
@@ -45,6 +50,7 @@ dank_header(subtitle="Listen to the music play!")
 # NOTE ON SCHEMA: replies rely on a nullable "parent_id" column on the
 # show_notes table. Add it in Supabase before this goes live.
 
+@st.cache_data(ttl=60, show_spinner=False)
 def load_notes(show_label):
     try:
         supabase = get_supabase_client()
@@ -64,6 +70,7 @@ def save_note(show_label, username, display_name, note, parent_id=None):
             "parent_id": parent_id,
         }
         supabase.table("show_notes").insert(payload).execute()
+        load_notes.clear()          # so the new note shows up immediately
         return True
     except Exception:
         return False
@@ -239,53 +246,42 @@ def _get_show_setlist_titles(show_label, archive_df):
             titles.append(title)
     return titles
 
-def get_song_history(title, archive_df, before_date=None):
-    target = _normalize_song_title(title)
-    if not target or "Title" not in archive_df.columns or "Take" not in archive_df.columns:
-        return 0, None
+@st.cache_data(show_spinner=False)
+def song_date_index(_archive_df, mtimes):
+    """{normalized title: [Take-1 play dates]}, built once per data change."""
+    a = _archive_df[pd.to_numeric(_archive_df["Take"], errors="coerce") == 1]
+    t = pd.DataFrame({
+        "k": a["Title"].map(_normalize_song_title),
+        "d": pd.to_datetime(a["Date"], errors="coerce"),
+    }).dropna()
+    return t.groupby("k")["d"].apply(list).to_dict()
 
-    take_one = pd.to_numeric(archive_df["Take"], errors="coerce") == 1
-    title_match = archive_df["Title"].apply(_normalize_song_title) == target
-    matches = archive_df[take_one & title_match]
-    if matches.empty:
-        return 0, None
-
-    dates = pd.to_datetime(matches["Date"], errors="coerce").dropna()
-    times_played = len(dates)
-
-    if before_date is not None:
-        prior_dates = dates[dates < before_date]
-    else:
-        prior_dates = dates[dates < dates.max()] if not dates.empty else dates
-
-    last_played = prior_dates.max() if not prior_dates.empty else None
-    return times_played, last_played
+@st.cache_data(show_spinner=False)
+def history_for_show(_archive_df, show_label, mtimes):
+    """History table rows + biggest bustout for one show."""
+    idx = song_date_index(_archive_df, mtimes)
+    show_date = _extract_show_date(show_label)
+    titles = _get_show_setlist_titles(show_label, _archive_df)
+    rows, bustout = [], None
+    for title in titles:
+        dates = idx.get(_normalize_song_title(title), [])
+        prior = [d for d in dates if show_date is None or d < show_date]
+        last = max(prior) if prior else None
+        rows.append({
+            "Song": title,
+            "Total Plays": len(dates) if dates else "First time!",
+            "Previous Play": last.strftime("%m/%d/%Y") if last is not None else "First time!",
+        })
+        if last is not None and show_date is not None:
+            days = (show_date - last).days
+            if bustout is None or days > bustout[1]:
+                bustout = (title, days)
+    return rows, bustout, bool(titles)
 
 def render_setlist_stats(playlist, archive_df, show_label):
     stats = compute_setlist_stats(playlist)
-
-    current_show_date = _extract_show_date(show_label)
-    setlist_titles = _get_show_setlist_titles(show_label, archive_df)
-
-    # one pass over the songs: history rows + biggest bustout
-    rows = []
-    bustout = None  # (title, days)
-    for title in setlist_titles:
-        count, last_played = get_song_history(title, archive_df, before_date=current_show_date)
-        rows.append({
-            "Song": title,
-            "Total Plays": count if count else "First time!",
-            "Previous Play": last_played.strftime("%m/%d/%Y") if last_played is not None else "First time!",
-        })
-        if last_played is not None and current_show_date is not None:
-            days = (current_show_date - last_played).days
-            if bustout is None or days > bustout[1]:
-                bustout = (title, days)
-
-    if bustout:
-        bustout_value = f"{html.escape(bustout[0])} ({bustout[1]:,} days)"
-    else:
-        bustout_value = "None"
+    rows, bustout, matched = history_for_show(archive_df, show_label, MT)
+    bustout_value = f"{html.escape(bustout[0])} ({bustout[1]:,} days)" if bustout else "None"
 
     cards = [
         card_html(stats["track_count"], "Tracks", accent=True),
@@ -305,17 +301,21 @@ def render_setlist_stats(playlist, archive_df, show_label):
         )
 
     dank_hex("Song History")
-    if not setlist_titles:
+    if not matched:
         dank_hex("Couldn't match this show to the archive")
     else:
         linked_table(pd.DataFrame(rows), song_col="Song")
 
-shows = show_index(df)
+# -------------------------
+# BROWSE DATA
+# -------------------------
+
+shows = show_index(df, MT)
 if shows.empty:
     dank_hex("No playable recordings found")
     st.stop()
 
-# playlists load in either mode (the "add tracks" expander needs them)
+# playlists load in every mode (the "add tracks" expander needs them)
 my_playlists, playlist_labels = None, {}
 if st.user.is_logged_in:
     try:
@@ -324,96 +324,260 @@ if st.user.is_logged_in:
     except Exception:
         st.error("Couldn't load your playlists right now.")
 
-mode = st.segmented_control(
-    "Browse", ["Setlists", "Playlists"], default="Setlists",
-    key="listen_mode", label_visibility="collapsed",
-) or "Setlists"
+# ---------- arriving from another page (landing / stats) ----------
+if "pending_listen_show" in st.session_state:
+    label = st.session_state.pop("pending_listen_show")
+    st.session_state["listen_sel"] = label
+    st.session_state["now_playing"] = ("show", label)
+    st.session_state["listen_mode"] = MODE_SET
+    st.session_state["listen_list_open"] = False
 
-selected_show = None
-selected_playlist = None
+st.session_state.setdefault("now_playing", ("show", shows.iloc[0]["Show_Label"]))
 
-if mode == "Setlists":
-    with st.expander("Filter shows", expanded=False):
-        c1, c2 = st.columns(2)
-        with c1:
-            years = ["All"] + sorted(shows["Date"].dt.year.unique().tolist(), reverse=True)
-            year_pick = st.selectbox("Year", years, key="listen_year")
-        with c2:
-            type_pick = st.selectbox("Type", ["All", "Gigs", "Practice"], key="listen_type")
+# defaults: open on the latest show, lists visible
+if st.session_state.get("listen_mode") not in (MODE_SET, MODE_SONG, MODE_PL):
+    st.session_state["listen_mode"] = MODE_SET       # also fixes stale values from old sessions
+st.session_state.setdefault("listen_sel", shows.iloc[0]["Show_Label"])
+st.session_state.setdefault("listen_sel_song", None)
+for k in ("listen_list_open", "listen_songs_open", "listen_hits_open"):
+    st.session_state.setdefault(k, True)
 
-    f = shows
-    if year_pick != "All":
-        f = f[f["Date"].dt.year == year_pick]
-    if type_pick == "Gigs":
-        f = f[f["Type"] == "live"]
-    elif type_pick == "Practice":
-        f = f[f["Type"] != "live"]
-    labels = f["Show_Label"].tolist()
+# ---------- callbacks (run before the rerun, so setting widget keys is legal) ----------
+def toggle(key):
+    st.session_state[key] = not st.session_state.get(key, True)
 
-    # buttons stash a pick here; it's applied before the selectbox is created
-    if "pending_listen_show" in st.session_state:
-        st.session_state["listen_show_select"] = st.session_state.pop("pending_listen_show")
-    if st.session_state.get("listen_show_select") not in labels:
-        st.session_state["listen_show_select"] = None
+def play_show(label):
+    st.session_state["now_playing"] = ("show", label)
 
-    selected_show = st.selectbox(
-        "Choose a recording", labels, index=None,
-        placeholder=f"Search {len(labels)} recordings...",
-        key="listen_show_select", label_visibility="collapsed",
-    )
+def play_playlist():
+    name = st.session_state.get("listen_playlist_select")
+    if name:
+        st.session_state["now_playing"] = ("playlist", name)
 
-    cur = labels.index(selected_show) if selected_show in labels else None
-    with st.container(key="btnrow_listen"):
-        b1, b2, b3 = st.columns(3)
-        with b1:   # list is newest-first, so "newer" is the previous index
-            if st.button("◀ Newer", width="stretch", disabled=cur is None or cur == 0):
-                st.session_state["pending_listen_show"] = labels[cur - 1]
-                st.rerun()
-        with b2:
-            if st.button("Latest", width="stretch", disabled=not labels):
-                st.session_state["pending_listen_show"] = labels[0]
-                st.rerun()
-        with b3:
-            if st.button("Older ▶", width="stretch",
-                         disabled=cur is None or cur >= len(labels) - 1):
-                st.session_state["pending_listen_show"] = labels[cur + 1]
-                st.rerun()
+def pick_show(label):
+    st.session_state["listen_sel"] = label
+    st.session_state["listen_list_open"] = False        # picking a show hides the list
+    play_show(label)
 
-else:
-    if not st.user.is_logged_in:
-        dank_hex("Log in to use playlists")
-    elif not playlist_labels:
-        dank_hex("No saved playlists yet")
-    else:
-        selected_playlist = st.selectbox(
-            "Choose a playlist", list(playlist_labels.keys()), index=None,
-            placeholder="Pick a playlist...", key="listen_playlist_select",
-            label_visibility="collapsed",
+def pick_random_show(labels):
+    if labels:
+        pick_show(random.choice(labels))
+
+def on_song_change():
+    st.session_state["listen_sel_song"] = None          # new song: nothing loaded yet
+    st.session_state["listen_songs_open"] = False
+    st.session_state["listen_hits_open"] = True
+
+def pick_song(title):
+    st.session_state["listen_song"] = title
+    on_song_change()
+
+def pick_random_song(titles):
+    if titles:
+        pick_song(random.choice(titles))
+
+def pick_hit(label):
+    st.session_state["listen_sel_song"] = label
+    st.session_state["listen_hits_open"] = False        # picking a recording hides its list
+    play_show(label)
+
+def delete_playlist_cb(playlist_id, playlist_name):
+    try:
+        delete_playlist_from_supabase(playlist_id)
+        st.session_state["listen_playlist_select"] = None
+        st.session_state["pl_flash"] = f"Deleted '{playlist_name}'."
+    except Exception:
+        st.session_state["pl_flash"] = "Couldn't delete right now — the account database is unreachable."
+    if st.session_state.get("now_playing") == ("playlist", playlist_name):
+        st.session_state["now_playing"] = None
+
+def render_show_buttons(frame, sel, prefix, hint=True):
+    """Scrollable button rows: date · venue · total duration. The playing show is highlighted."""
+    if hint:
+        st.markdown(f'<div class="song-browse-hint"> Select from {len(frame)} recordings</div>',
+                    unsafe_allow_html=True)
+    with st.container(height=320, key=f"listen_scroll_{prefix}"):
+        for i, r in enumerate(frame.itertuples()):
+            dur = _format_seconds(r.Secs) if r.Secs else "—"
+            kind_cls = "trackon" if r.Show_Label == sel else "trackrow"
+            with st.container(key=f"{kind_cls}_{prefix}_{i}"):
+                st.button(
+                    f"{r.Date:%m/%d/%Y}  ·  {r.Location}  ·  {dur}",
+                    key=f"{prefix}_row_{i}", width="stretch",
+                    on_click=(pick_show if prefix == "set" else pick_hit), args=(r.Show_Label,),
+                )
+
+def playing_show_label():
+    state = st.session_state.get("now_playing")
+    return state[1] if state and state[0] == "show" else None
+
+# -------------------------
+# BROWSE AREA
+# -------------------------
+
+dank_hex("Search for Recordings")
+with st.container(key="browse_area"):
+    mode = st.segmented_control(
+        "Browse", [MODE_SET, MODE_SONG, MODE_PL],
+        key="listen_mode", label_visibility="collapsed",
+    ) or MODE_SET
+
+    # ===================== BY SETLIST =====================
+    if mode == MODE_SET:
+        recent = sorted(shows["Date"].dt.year.unique(), reverse=True)
+        year_opts = ["All"] + [str(y) for y in recent[:5]] + (["Older"] if len(recent) > 5 else [])
+
+        with st.expander("Filters"):
+            type_pick = st.pills("Type", ["All", "Gigs", "Practice"], default="All",
+                                 key="listen_type", label_visibility="collapsed") or "All"
+            year_pick = st.pills("Year", year_opts, default="All",
+                                 key="listen_year", label_visibility="collapsed") or "All"
+
+        f = shows
+        if type_pick == "Gigs":
+            f = f[f["Type"] == "live"]
+        elif type_pick == "Practice":
+            f = f[f["Type"] != "live"]
+        if year_pick == "Older":
+            f = f[f["Date"].dt.year < recent[4]]
+        elif year_pick != "All":
+            f = f[f["Date"].dt.year == int(year_pick)]
+        labels = f["Show_Label"].tolist()
+
+        today_md = pd.Timestamp.now(tz="America/New_York").strftime("%m/%d")
+        on_this_day = shows.loc[shows["Date"].dt.strftime("%m/%d") == today_md, "Show_Label"].tolist()
+        list_open = st.session_state["listen_list_open"]
+
+        force_columns_horizontal(equal_width=True, gap="0.5rem", key="btnrow_listen")
+        with st.container(key="btnrow_listen"):
+            b1, b2, b3 = st.columns(3)
+            with b1:
+                st.button("Close List" if list_open else "Open List", key="listen_list_toggle",
+                          width="stretch", type="primary" if list_open else "secondary",
+                          on_click=toggle, args=("listen_list_open",))
+            with b2:
+                st.button("Random", key="listen_rand_show", width="stretch",
+                          disabled=not labels, on_click=pick_random_show, args=(labels,))
+            with b3:
+                st.button("On This Day", key="listen_rand_otd", width="stretch",
+                          disabled=not on_this_day, on_click=pick_random_show, args=(on_this_day,))
+
+        if f.empty:
+            dank_hex("No recordings match those filters")
+        elif list_open:
+            render_show_buttons(f, playing_show_label(), "set")
+
+    # ===================== BY SONG =====================
+    elif mode == MODE_SONG:
+        sm = song_show_map(df, MT)
+        titles = sorted(sm["Title"].unique(), key=str.lower)
+        if st.session_state.get("listen_song") not in titles:
+            st.session_state["listen_song"] = None
+
+        # search bar first
+        st.selectbox(
+            "Search songs", titles, index=None,
+            placeholder=f"Search from {len(titles)} songs...",
+            key="listen_song", on_change=on_song_change, label_visibility="collapsed",
         )
+        song = st.session_state["listen_song"]
 
-player_mode = "setlist" if mode == "Setlists" else "playlist"
+        songs_open = st.session_state["listen_songs_open"]
+        force_columns_horizontal(equal_width=True, gap="0.5rem", key="btnrow_listen_song")
+        with st.container(key="btnrow_listen_song"):
+            b1, b2 = st.columns(2)
+            with b1:
+                st.button("Hide songs" if songs_open else "Show songs", key="listen_songs_toggle",
+                          width="stretch", type="primary" if songs_open else "secondary",
+                          on_click=toggle, args=("listen_songs_open",))
+            with b2:
+                st.button("🎲 Random Song", key="listen_rand_song", width="stretch",
+                          on_click=pick_random_song, args=(titles,))
 
-# ---- Setlist playback ----
-if player_mode == "setlist" and selected_show:
-    st.divider()
-    playlist = tracks_for_show(df, selected_show)
-    if playlist:
-        playable = with_onedrive_urls(playlist, df)
-        dank_playlist_player(selected_show, playable)
-        if len(playable) < len(playlist):
-            st.caption(f"{len(playlist) - len(playable)} track(s) couldn't be loaded right now.")
+        if songs_open:
+            st.markdown(f'<div class="song-browse-hint"> Select from {len(titles)} songs</div>',
+                        unsafe_allow_html=True)
+            with st.container(height=320, key="listen_scroll_songs"):
+                for i, t in enumerate(titles):
+                    kind_cls = "trackon" if t == song else "trackrow"
+                    with st.container(key=f"{kind_cls}_song_{i}"):
+                        st.button(t, key=f"song_row_{i}", width="stretch",
+                                  on_click=pick_song, args=(t,))
 
-        with st.expander("📊 Setlist Stats", True):
-            render_setlist_stats(playlist, df, selected_show)
+        if song:
+            hits = shows[shows["Show_Label"].isin(sm.loc[sm["Title"] == song, "Show_Label"])]
+            n = len(hits)
+            if st.session_state["listen_hits_open"]:
+                dank_hex(f"**{song}**", f"Select from {n} recording{'' if n == 1 else 's'}")
+                render_show_buttons(hits, playing_show_label(), "hit", hint=False)
+                st.button("Hide this list", key="listen_hits_hide", width="stretch",
+                          type="primary", on_click=toggle, args=("listen_hits_open",))
+            else:
+                st.button(f"Show recordings of {song}", key="listen_hits_show", width="stretch",
+                          on_click=toggle, args=("listen_hits_open",))
+        else:
+            dank_hex("Pick a song to see every recording of it")
+            
+    # ===================== PLAYLISTS =====================
     else:
-        dank_hex("No playable tracks found for this show")
+        flash = st.session_state.pop("pl_flash", None)
+        if flash:
+            st.success(flash)
+        if not st.user.is_logged_in:
+            dank_hex("Log in to use playlists")
+        elif not playlist_labels:
+            dank_hex("No saved playlists yet")
+        else:
+            if st.session_state.get("listen_playlist_select") not in playlist_labels:
+                st.session_state["listen_playlist_select"] = None
+            st.selectbox(
+                "Choose a playlist", list(playlist_labels.keys()), index=None,
+                placeholder="Pick a playlist...", key="listen_playlist_select",
+                label_visibility="collapsed", on_change=play_playlist,
+            )
 
-    if st.user.is_logged_in and playlist:
+st.divider()
+
+# ---------- what's playing ----------
+np_now = st.session_state.get("now_playing")
+kind, ident = np_now if np_now else (None, None)
+if kind == "playlist" and ident not in playlist_labels:
+    kind = None                                   # deleted, or logged out
+
+# ---------- player (own container, survives mode switches) ----------
+player_slot = st.container(key="player_slot")
+playlist = []
+with player_slot:
+    if kind == "show":
+        playlist = tracks_for_show(df, ident, MT)
+        if playlist:
+            playable = with_onedrive_urls(playlist, df)
+            dank_playlist_player(ident, playable)
+            if len(playable) < len(playlist):
+                st.caption(f"{len(playlist) - len(playable)} track(s) couldn't be loaded right now.")
+        else:
+            dank_hex("No playable tracks found for this show")
+    elif kind == "playlist":
+        chosen_playlist = playlist_labels[ident]
+        display_tracks = [
+            {"label": format_playlist_track_label(t), "duration": t.get("duration", ""),
+             "url": t.get("url", ""), "path": t.get("path", "")}
+            for t in chosen_playlist["tracks"]
+        ]
+        dank_playlist_player(ident, with_onedrive_urls(display_tracks, df))
+
+# ---------- details for whatever is playing ----------
+if kind == "show" and playlist:
+    st.divider()
+    with st.expander("📊 Setlist Stats", True):
+        render_setlist_stats(playlist, df, ident)
+
+    if st.user.is_logged_in:
         with st.expander("➕ Add tracks from this show to a playlist"):
             show_checked = []
             for i, track in enumerate(playlist):
                 label = f"{track['label']}  ·  {track['duration']}"
-                if st.checkbox(label, key=f"addshow_check_{selected_show}_{i}"):
+                if st.checkbox(label, key=f"addshow_check_{ident}_{i}"):
                     show_checked.append(track)
 
             add_target_options = list(playlist_labels.keys()) if playlist_labels else []
@@ -421,69 +585,47 @@ if player_mode == "setlist" and selected_show:
                 st.caption("No saved playlists yet — create one first with the Playlist Creator button below.")
             else:
                 target_choice = st.selectbox(
-                    "Add checked tracks to:",
-                    add_target_options,
-                    index=None,
-                    placeholder="Choose a playlist...",
-                    key=f"add_target_{selected_show}",
+                    "Add checked tracks to:", add_target_options, index=None,
+                    placeholder="Choose a playlist...", key=f"add_target_{ident}",
                 )
-                if st.button("➕ Add checked tracks", key=f"add_confirm_{selected_show}"):
+                if st.button("➕ Add checked tracks", key=f"add_confirm_{ident}"):
                     if not show_checked:
                         st.warning("Check at least one track first.")
                     elif not target_choice:
                         st.warning("Pick a playlist to add to.")
                     else:
                         target_playlist = playlist_labels[target_choice]
-                        tracks_to_add = [{**t, "show": selected_show} for t in show_checked]
+                        tracks_to_add = [{**t, "show": ident} for t in show_checked]
                         try:
                             add_tracks_to_playlist(target_playlist["id"], tracks_to_add)
                             st.success(f"Added to '{target_choice}'.")
                             for i in range(len(playlist)):
-                                st.session_state.pop(f"addshow_check_{selected_show}_{i}", None)
+                                st.session_state.pop(f"addshow_check_{ident}_{i}", None)
                             st.rerun()
                         except Exception:
                             st.error("Couldn't add right now — the account database is unreachable.")
 
-    render_show_notes(selected_show)
+    render_show_notes(ident)
 
-# ---- Saved playlist playback ----
-elif player_mode == "playlist" and selected_playlist:
-    chosen_playlist_name = selected_playlist
-    chosen_playlist = playlist_labels[chosen_playlist_name]
-
-    display_tracks = [
-        {
-            "label": format_playlist_track_label(t),
-            "duration": t.get("duration", ""),
-            "url": t.get("url", ""),
-        }
-        for t in chosen_playlist["tracks"]
-    ]
-    dank_playlist_player(chosen_playlist_name, with_onedrive_urls(display_tracks, df))
-
+elif kind == "playlist":
+    st.divider()
+    chosen_playlist = playlist_labels[ident]
     force_columns_horizontal(equal_width=True, key="edit_delete_row")
     with st.container(key="edit_delete_row"):
         col_edit, col_delete = st.columns(2)
         with col_edit:
             if st.button("✏️ Edit this playlist", width="stretch"):
-                # hand the playlist to the creator page, then go there
                 st.session_state["playlist_draft"] = list(chosen_playlist["tracks"])
                 st.session_state["editing_playlist_id"] = chosen_playlist["id"]
-                st.session_state["editing_playlist_name"] = chosen_playlist_name
+                st.session_state["editing_playlist_name"] = ident
                 st.session_state["playlist_edit_mode"] = "edit"
-                st.session_state["new_playlist_name"] = chosen_playlist_name
-                st.session_state["editor_load_select"] = chosen_playlist_name
+                st.session_state["new_playlist_name"] = ident
+                st.session_state["editor_load_select"] = ident
                 st.switch_page("pages/playlist_creator.py")
         with col_delete:
-            if st.button("🗑️ Delete this playlist", width="stretch"):
-                try:
-                    delete_playlist_from_supabase(chosen_playlist["id"])
-                    st.success(f"Deleted '{chosen_playlist_name}'.")
-                    st.session_state["listen_playlist_select"] = None
-                    st.session_state["player_mode"] = None
-                    st.rerun()
-                except Exception:
-                    st.error("Couldn't delete right now — the account database is unreachable.")
+            st.button("🗑️ Delete this playlist", width="stretch",
+                      on_click=delete_playlist_cb,
+                      args=(chosen_playlist["id"], ident))
 
 st.divider()
 

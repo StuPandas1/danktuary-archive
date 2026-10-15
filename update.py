@@ -142,7 +142,7 @@ def _python_executable() -> str:
     )
 
 
-def run_script(script_name: str, extra_args: list | None = None) -> None:
+def run_script(script_name: str, extra_args: list | None = None, interactive: bool = False) -> None:
     """Run a Python script from this repo, streaming its output live, and raise if it fails."""
     global _current_process
 
@@ -157,6 +157,8 @@ def run_script(script_name: str, extra_args: list | None = None) -> None:
     # characters like the checkmarks generate_share_links.py prints.
     env = os.environ.copy()
     env["PYTHONIOENCODING"] = "utf-8"
+    if interactive:
+        env["DANKAPP_PROMPT_VIA_PIPE"] = "1"
 
     command = [_python_executable(), str(script_path), *(extra_args or [])]
 
@@ -164,8 +166,9 @@ def run_script(script_name: str, extra_args: list | None = None) -> None:
         command,
         cwd=ROOT,
         env=env,
+        stdin=subprocess.PIPE if interactive else subprocess.DEVNULL,
         stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,  # merge streams so log lines stay in the order they were printed
+        stderr=subprocess.STDOUT,
         text=True,
         encoding="utf-8",
         errors="replace",
@@ -184,6 +187,23 @@ def run_script(script_name: str, extra_args: list | None = None) -> None:
                     except Exception:
                         pass
                 continue  # keep raw per-file progress ticks out of the log -- the progress bar shows them instead
+
+            if line.startswith(PROMPT_PREFIX):
+                reply = []
+                try:
+                    request = json.loads(line[len(PROMPT_PREFIX):])
+                    if request.get("kind") == "missing_files":
+                        handler = confirm_missing_callback or _default_confirm_missing
+                        reply = handler(request["paths"])
+                except Exception:
+                    log.exception("Couldn't resolve prompt from %s", script_name)
+                try:
+                    process.stdin.write(json.dumps(reply) + "\n")
+                    process.stdin.flush()
+                except (BrokenPipeError, OSError):
+                    pass  # child died (e.g. Cancel) while the dialog was open
+                continue
+
             if _is_noisy_line(line):
                 continue  # harmless Streamlit bare-mode warnings -- see NOISY_LINE_MARKERS above
             log.info(f"  {script_name} | {line}")
@@ -216,6 +236,18 @@ def run_git(*args: str) -> subprocess.CompletedProcess:
 confirm_upload_callback = None
 request_artists_callback = None
 progress_callback = None
+
+confirm_missing_callback = None   # confirm_missing_callback(paths: list[str]) -> list[str] to remove
+PROMPT_PREFIX = "@PROMPT@"
+
+
+def _default_confirm_missing(paths: list) -> list:
+    remove = []
+    for fp in paths:
+        ans = input(f"'{fp}' no longer exists on disk. Remove from CSV? [y/N] ").strip().lower()
+        if ans == "y":
+            remove.append(fp)
+    return remove
 
 PROGRESS_PREFIX = "@PROGRESS@"
 
@@ -270,7 +302,7 @@ def notify(message: str) -> None:
 
 def step_scan():
     log.info("[1/7] Scanning files to update band_archive.csv...")
-    run_script("scanner.py")
+    run_script("scanner.py", interactive=True)
 
 
 UPLOAD_PLAN_PATH = ROOT / "upload_plan.json"

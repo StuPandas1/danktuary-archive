@@ -34,11 +34,19 @@ dead_weight_artists = ["Grateful Dead", "David Bowie", "Jerry Garcia Band",
                        ]
 dead_weight_year = 2022
 
+# -------------------------
+# FILTER FOR AUDIO ONLY
+# -------------------------
+
 AUDIO_EXTS = (".mp3", ".m4a", ".wav", ".flac", ".ogg")
 
 def is_audio_path(p):
     return isinstance(p, str) and p.lower().endswith(AUDIO_EXTS)
-    
+
+# -------------------------
+# CACHED DATA
+# -------------------------
+
 @st.cache_data
 def load_all_recordings(_mtimes):
     """Load band_archive.csv including all takes, for the Listen page."""
@@ -84,41 +92,36 @@ def img_b64(filename):
     return base64.b64encode((STATIC / filename).read_bytes()).decode()
 
 @st.cache_data(show_spinner=False)
-def show_index(d):
-    """One row per playable show (has a file path, not flagged missing), newest first."""
-    s = d[d["File Path"].map(is_audio_path)].copy()    
+def show_index(_d, mtimes):
+    """One row per playable show, newest first: Show_Label, Date, Location, Type, Secs."""
+    d=_d
+    s = d[d["File Path"].map(is_audio_path)].copy()
     if "Status" in s.columns:
         s = s[s["Status"] != "missing"]
     s["Date"] = pd.to_datetime(s["Date"], errors="coerce")
     s = s.dropna(subset=["Date"])
     s["Show_Label"] = s["Date"].dt.strftime("%m/%d/%Y") + " — " + s["Location"]
-    s = s.drop_duplicates("Show_Label")[["Show_Label", "Date", "Type"]]
-    return s.sort_values("Date", ascending=False).reset_index(drop=True)
 
+    files = s[pd.to_numeric(s["Take"], errors="coerce") == 1].drop_duplicates(["Show_Label", "File Path"])
+    secs = files["Duration"].apply(parse_duration).groupby(files["Show_Label"]).sum()
 
-def tracks_for_show(d, show_label):
-    """Player-ready tracks for a show. A segue chain (rows sharing one file)
-    becomes one track. 'url' is the archive.org link when one exists, and
-    'path' is the OneDrive-relative path."""
-    date_s, loc = show_label.split(" — ", 1)
-    dt = pd.to_datetime(d["Date"], errors="coerce")
-    rows = d[(dt.dt.strftime("%m/%d/%Y") == date_s) & (d["Location"] == loc)]
-    rows = rows[pd.to_numeric(rows["Take"], errors="coerce") == 1].dropna(subset=["File Path"])
-    rows = rows[rows["File Path"].map(is_audio_path)]
-    if "Status" in rows.columns:
-        rows = rows[rows["Status"] != "missing"]
-    rows = rows.sort_values("Track Number")
+    out = s.drop_duplicates("Show_Label")[["Show_Label", "Date", "Location", "Type"]].copy()
+    out["Secs"] = out["Show_Label"].map(secs).fillna(0).astype(int)
+    return out.sort_values("Date", ascending=False).reset_index(drop=True)
 
-    tracks = []
-    for path, g in rows.groupby("File Path", sort=False):
-        ia = g["IA URL"].dropna() if "IA URL" in g.columns else []
-        tracks.append({
-            "label": " -> ".join(g["Title"]),
-            "duration": g["Duration"].iloc[0],
-            "url": ia.iloc[0] if len(ia) else "",
-            "path": onedrive_rel_path(path),      # relative, so no local paths get saved
-        })
-    return tracks
+@st.cache_data(show_spinner=False)
+def song_show_map(_d, mtimes):
+    """(Title, Show_Label) pairs for every playable show, for Find by Song."""
+    d=_d
+    s = d[d["File Path"].map(is_audio_path)].copy()
+    if "Status" in s.columns:
+        s = s[s["Status"] != "missing"]
+    s = s[pd.to_numeric(s["Take"], errors="coerce") == 1]
+    s["Date"] = pd.to_datetime(s["Date"], errors="coerce")
+    s = s.dropna(subset=["Date"])
+    s["Show_Label"] = s["Date"].dt.strftime("%m/%d/%Y") + " — " + s["Location"]
+    return s[["Title", "Show_Label"]].drop_duplicates()
+
 # -------------------------
 # LOGIN INFO
 # -------------------------
@@ -146,18 +149,15 @@ def set_display_name(email, display_name):
 def get_supabase_client() -> Client:
     return create_client(st.secrets["supabase"]["url"], st.secrets["supabase"]["key"])
 
-
 import msal
 import requests
 from urllib.parse import quote
 
 _GRAPH_SCOPES = ["https://graph.microsoft.com/Files.ReadWrite"]  # same scope the cache was made with
 
-
 def _service_client():
     from supabase import create_client
     return create_client(st.secrets["supabase"]["url"], st.secrets["supabase"]["service_key"])
-
 
 def _graph_token():
     """Logs in with the cached Microsoft token (stored in Supabase) and
@@ -183,7 +183,6 @@ def _graph_token():
         raise RuntimeError("Microsoft login expired; re-run the share-link script and the seed script.")
     return result["access_token"]
 
-
 def onedrive_rel_path(local_path):
     """'C:\\...\\OneDrive\\LoveDeep\\X\\y.mp3' -> 'LoveDeep/X/y.mp3'"""
     if not isinstance(local_path, str):
@@ -193,7 +192,6 @@ def onedrive_rel_path(local_path):
     if idx == -1:
         return None
     return local_path[idx + len("OneDrive\\"):].replace("\\", "/")
-
 
 @st.cache_data(ttl=1500, show_spinner=False)   # download links last ~1 hour; refresh every 25 min
 def _onedrive_download_urls(paths):
@@ -218,7 +216,6 @@ def _onedrive_download_urls(paths):
                 if u:
                     out[chunk[int(resp["id"])]] = u
     return out
-
 
 def with_onedrive_urls(tracks, archive_df):
     """OneDrive link as 'url', archive.org (if any) as 'alt_url'. Tracks with
@@ -328,6 +325,32 @@ def add_tracks_to_playlist(playlist_id, new_tracks):
             current_tracks.append(track)
     supabase.table("playlists").update({"tracks": current_tracks}).eq("id", playlist_id).execute()
     return True, "Tracks added!"
+
+@st.cache_data(show_spinner=False)
+def tracks_for_show(_d, show_label, mtimes):
+    """Player-ready tracks for a show. A segue chain (rows sharing one file)
+    becomes one track. 'url' is the archive.org link when one exists, and
+    'path' is the OneDrive-relative path."""
+    d=_d
+    date_s, loc = show_label.split(" — ", 1)
+    dt = pd.to_datetime(d["Date"], errors="coerce")
+    rows = d[(dt.dt.strftime("%m/%d/%Y") == date_s) & (d["Location"] == loc)]
+    rows = rows[pd.to_numeric(rows["Take"], errors="coerce") == 1].dropna(subset=["File Path"])
+    rows = rows[rows["File Path"].map(is_audio_path)]
+    if "Status" in rows.columns:
+        rows = rows[rows["Status"] != "missing"]
+    rows = rows.sort_values("Track Number")
+
+    tracks = []
+    for path, g in rows.groupby("File Path", sort=False):
+        ia = g["IA URL"].dropna() if "IA URL" in g.columns else []
+        tracks.append({
+            "label": " -> ".join(g["Title"]),
+            "duration": g["Duration"].iloc[0],
+            "url": ia.iloc[0] if len(ia) else "",
+            "path": onedrive_rel_path(path),      # relative, so no local paths get saved
+        })
+    return tracks
 
 # -------------------------
 # SCANNER INFO
@@ -926,6 +949,15 @@ div[class*="st-key-btnrow_"] .stButton > button p {
 .song-browse a:hover { text-decoration:underline; }
 .song-browse-hint { color:var(--dw-marigold); font-size:12px; font-weight:600;
                     text-transform:uppercase; letter-spacing:.06em; margin:4px 0 0; }
+
+                    /* show lists: date | venue | duration */
+.listen-browse a { display:grid; grid-template-columns:auto 1fr auto; gap:12px; align-items:baseline; }
+.listen-browse a span { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.listen-browse a span:last-child { color:var(--dw-cream); font-size:13px; }
+
+/* the loaded show / selected song */
+.song-browse a.on { color:var(--dw-marigold); font-weight:800; background:#2c2926;
+                    border-left:4px solid var(--dw-green); padding-left:8px; }
 
                     /* =========================================================
    CHART TOOLTIPS (Vega draws these outside Streamlit's containers)

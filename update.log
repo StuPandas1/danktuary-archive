@@ -886,3 +886,214 @@
 2026-10-08 07:50:49  INFO     Pushing to GitHub...
 2026-10-08 07:50:52  INFO     Done! Streamlit Cloud will redeploy automatically in a minute or two.
 2026-10-08 07:50:52  INFO     Pipeline finished successfully.
+2026-10-14 19:59:04  INFO     ==================================================
+2026-10-14 19:59:04  INFO       DankApp Database Update
+2026-10-14 19:59:04  INFO     ==================================================
+2026-10-14 19:59:04  INFO     Working directory: C:\Users\Administrator\OneDrive\LoveDeep\danktuary-archive-clean
+2026-10-14 19:59:04  INFO     [1/7] Scanning files to update band_archive.csv...
+2026-10-14 19:59:15  INFO       scanner.py | Let's a-gooooo!
+2026-10-14 19:59:15  INFO       scanner.py | Found extra column(s) in band_archive.csv added by another script: ['OneDrive Share URL']. Preserving them.
+2026-10-14 19:59:15  INFO       scanner.py | Loaded 6562 existing row(s); 5075 file(s) already catalogued and will be skipped.
+2026-10-14 19:59:15  INFO       scanner.py | File 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Gig Recordings\2026-07-16 _ Brooklyn Music Kitchen\01_ Bertha.bmp' no longer exists on disk.
+2026-10-14 19:59:15  INFO       scanner.py |   Type 'yes' to remove it from the CSV, or 'no' to keep it labeled as Status: missing: Traceback (most recent call last):
+2026-10-14 19:59:15  INFO       scanner.py |   File "C:\Users\Administrator\OneDrive\LoveDeep\danktuary-archive-clean\scanner.py", line 124, in <module>
+2026-10-14 19:59:15  INFO       scanner.py |     answer = input(
+2026-10-14 19:59:15  INFO       scanner.py |              ^^^^^^
+2026-10-14 19:59:15  INFO       scanner.py | EOFError: EOF when reading a line
+2026-10-14 19:59:15  ERROR    Stopping: scanner.py exited with code 1
+2026-10-14 19:59:15  INFO     [notify] Update pipeline failed: scanner.py exited with code 1
+2026-10-14 20:00:32  INFO     ==================================================
+2026-10-14 20:00:32  INFO       DankApp Database Update
+2026-10-14 20:00:32  INFO     ==================================================
+2026-10-14 20:00:32  INFO     Working directory: C:\Users\Administrator\OneDrive\LoveDeep\danktuary-archive-clean
+2026-10-14 20:00:32  INFO     [1/7] Scanning files to update band_archive.csv...
+2026-10-14 20:00:35  INFO       scanner.py | Let's a-gooooo!
+2026-10-14 20:00:35  INFO       scanner.py | Found extra column(s) in band_archive.csv added by another script: ['OneDrive Share URL']. Preserving them.
+2026-10-14 20:00:35  INFO       scanner.py | Loaded 6562 existing row(s); 5075 file(s) already catalogued and will be skipped.
+2026-10-14 20:00:35  INFO       scanner.py | File 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Gig Recordings\2026-07-16 _ Brooklyn Music Kitchen\01_ Bertha.bmp' no longer exists on disk.
+2026-10-14 20:00:35  INFO       scanner.py |   Type 'yes' to remove it from the CSV, or 'no' to keep it labeled as Status: missing: Traceback (most recent call last):
+2026-10-14 20:00:35  INFO       scanner.py |   File "C:\Users\Administrator\OneDrive\LoveDeep\danktuary-archive-clean\scanner.py", line 124, in <module>
+2026-10-14 20:00:35  INFO       scanner.py |     answer = input(
+2026-10-14 20:00:35  INFO       scanner.py |              ^^^^^^
+2026-10-14 20:00:35  INFO       scanner.py | EOFError: EOF when reading a line
+2026-10-14 20:00:35  ERROR    Stopping: scanner.py exited with code 1
+2026-10-14 20:00:35  INFO     [notify] Update pipeline failed: scanner.py exited with code 1
+2026-10-15 07:16:25  INFO     ==================================================
+2026-10-15 07:16:25  INFO       DankApp Database Update
+2026-10-15 07:16:25  INFO     ==================================================
+2026-10-15 07:16:25  INFO     Working directory: C:\Users\Administrator\OneDrive\LoveDeep\danktuary-archive-clean
+2026-10-15 07:16:25  INFO     [1/7] Scanning files to update band_archive.csv...
+2026-10-15 07:16:35  INFO       scanner.py | Let's a-gooooo!
+2026-10-15 07:16:35  INFO       scanner.py | Found extra column(s) in band_archive.csv added by another script: ['OneDrive Share URL']. Preserving them.
+2026-10-15 07:16:35  INFO       scanner.py | Loaded 6562 existing row(s); 5075 file(s) already catalogued and will be skipped.
+2026-10-15 07:16:35  INFO       scanner.py | File 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Gig Recordings\2026-07-16 _ Brooklyn Music Kitchen\01_ Bertha.bmp' no longer exists on disk.
+2026-10-15 07:16:35  INFO       scanner.py |   Type 'yes' to remove it from the CSV, or 'no' to keep it labeled as Status: missing: File kept in CSV, labeled Status: missing -> 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Gig Recordings\2026-07-16 _ Brooklyn Music Kitchen\01_ Bertha.bmp'
+2026-10-15 07:16:35  INFO       scanner.py | File kept in CSV, labeled Status: missing -> 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Gig Recordings\2026-07-16 _ Brooklyn Music Kitchen\02_ Scarlet Fire.bmp'
+2026-10-15 07:16:35  INFO       scanner.py | File kept in CSV, labeled Status: missing -> 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Gig Recordings\2026-07-16 _ Brooklyn Music Kitchen\02_ Scarlet Fire.bmp'
+2026-10-15 07:16:35  INFO       scanner.py | File kept in CSV, labeled Status: missing -> 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Gig Recordings\2026-07-16 _ Brooklyn Music Kitchen\03_ Loser _ Eyes Of The World.bmp'
+2026-10-15 07:16:35  INFO       scanner.py | File kept in CSV, labeled Status: missing -> 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Gig Recordings\2026-07-16 _ Brooklyn Music Kitchen\03_ Loser _ Eyes Of The World.bmp'
+2026-10-15 07:16:35  INFO       scanner.py | File kept in CSV, labeled Status: missing -> 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Gig Recordings\2026-07-16 _ Brooklyn Music Kitchen\04_ The Weight.bmp'
+2026-10-15 07:16:35  INFO       scanner.py | Flagged 6 row(s) as Status: missing.
+2026-10-15 07:16:35  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Gig Recordings\2026-07-16 _ Brooklyn Music Kitchen\01_ Bertha.mp3'
+2026-10-15 07:16:35  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Gig Recordings\2026-07-16 _ Brooklyn Music Kitchen\02_ Scarlet Fire.mp3'
+2026-10-15 07:16:35  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Gig Recordings\2026-07-16 _ Brooklyn Music Kitchen\03_ Loser _ Eyes.mp3'
+2026-10-15 07:16:35  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Gig Recordings\2026-07-16 _ Brooklyn Music Kitchen\04_ The Weight.mp3'
+2026-10-15 07:16:35  INFO       scanner.py | Added 6 new row(s), removed 0 row(s), flagged 6 row(s) as missing. CSV now has 6568 total row(s).
+2026-10-15 07:16:35  INFO     [2/7] Checking what needs uploading to the Internet Archive...
+2026-10-15 07:16:40  INFO       upload_to_archive.py | Wrote upload plan: 1 show(s), 4 file(s) to upload.
+2026-10-15 07:16:40  INFO     4 file(s) across 1 show(s) are ready to upload.
+2026-10-15 07:16:53  INFO     Uploading...
+2026-10-15 07:16:58  INFO       upload_to_archive.py | 2026-07-16 — Brooklyn Music Kitchen
+2026-10-15 07:16:58  INFO       upload_to_archive.py |   deadweight-2026-07-16-brooklyn-music-kitchen: 0 file(s) already confirmed, uploading 4 file(s)...
+2026-10-15 07:16:58  INFO       upload_to_archive.py | 
+2026-10-15 07:16:59  INFO       upload_to_archive.py |  uploading 01_ Bertha.mp3:   0%|          | 0/11 [00:00<?, ?MiB/s]
+2026-10-15 07:16:59  INFO       upload_to_archive.py |  uploading 01_ Bertha.mp3:   9%|▉         | 1/11 [00:00<00:08,  1.17MiB/s]
+2026-10-15 07:16:59  INFO       upload_to_archive.py |  uploading 01_ Bertha.mp3:  27%|██▋       | 3/11 [00:01<00:02,  3.52MiB/s]
+2026-10-15 07:17:01  INFO       upload_to_archive.py |  uploading 01_ Bertha.mp3:  73%|███████▎  | 8/11 [00:01<00:00,  9.21MiB/s]
+2026-10-15 07:17:01  INFO       upload_to_archive.py |  uploading 01_ Bertha.mp3:  91%|█████████ | 10/11 [00:03<00:00,  2.36MiB/s]
+2026-10-15 07:17:01  INFO       upload_to_archive.py |  uploading 01_ Bertha.mp3: 100%|██████████| 11/11 [00:03<00:00,  2.71MiB/s]
+2026-10-15 07:17:01  INFO       upload_to_archive.py |  uploading 01_ Bertha.mp3: 100%|██████████| 11/11 [00:03<00:00,  2.97MiB/s]
+2026-10-15 07:17:30  INFO       upload_to_archive.py | 
+2026-10-15 07:17:31  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:   0%|          | 0/64 [00:00<?, ?MiB/s]
+2026-10-15 07:17:31  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:   2%|▏         | 1/64 [00:00<00:50,  1.25MiB/s]
+2026-10-15 07:17:32  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:   6%|▋         | 4/64 [00:00<00:11,  5.01MiB/s]
+2026-10-15 07:17:32  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:   9%|▉         | 6/64 [00:01<00:12,  4.66MiB/s]
+2026-10-15 07:17:32  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  11%|█         | 7/64 [00:01<00:11,  4.78MiB/s]
+2026-10-15 07:17:32  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  12%|█▎        | 8/64 [00:01<00:13,  4.16MiB/s]
+2026-10-15 07:17:33  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  14%|█▍        | 9/64 [00:02<00:13,  4.03MiB/s]
+2026-10-15 07:17:33  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  16%|█▌        | 10/64 [00:02<00:13,  3.86MiB/s]
+2026-10-15 07:17:33  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  17%|█▋        | 11/64 [00:02<00:14,  3.69MiB/s]
+2026-10-15 07:17:34  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  19%|█▉        | 12/64 [00:03<00:13,  3.82MiB/s]
+2026-10-15 07:17:34  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  20%|██        | 13/64 [00:03<00:13,  3.73MiB/s]
+2026-10-15 07:17:35  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  22%|██▏       | 14/64 [00:03<00:14,  3.47MiB/s]
+2026-10-15 07:17:35  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  23%|██▎       | 15/64 [00:04<00:24,  1.97MiB/s]
+2026-10-15 07:17:35  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  25%|██▌       | 16/64 [00:04<00:20,  2.31MiB/s]
+2026-10-15 07:17:36  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  27%|██▋       | 17/64 [00:05<00:18,  2.60MiB/s]
+2026-10-15 07:17:36  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  28%|██▊       | 18/64 [00:05<00:15,  2.90MiB/s]
+2026-10-15 07:17:36  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  30%|██▉       | 19/64 [00:05<00:14,  3.10MiB/s]
+2026-10-15 07:17:37  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  31%|███▏      | 20/64 [00:06<00:13,  3.26MiB/s]
+2026-10-15 07:17:37  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  33%|███▎      | 21/64 [00:06<00:13,  3.13MiB/s]
+2026-10-15 07:17:37  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  34%|███▍      | 22/64 [00:06<00:12,  3.37MiB/s]
+2026-10-15 07:17:37  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  36%|███▌      | 23/64 [00:06<00:11,  3.55MiB/s]
+2026-10-15 07:17:38  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  38%|███▊      | 24/64 [00:07<00:10,  3.79MiB/s]
+2026-10-15 07:17:38  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  39%|███▉      | 25/64 [00:07<00:09,  3.91MiB/s]
+2026-10-15 07:17:38  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  41%|████      | 26/64 [00:07<00:09,  4.07MiB/s]
+2026-10-15 07:17:38  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  42%|████▏     | 27/64 [00:07<00:08,  4.19MiB/s]
+2026-10-15 07:17:38  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  44%|████▍     | 28/64 [00:07<00:08,  4.28MiB/s]
+2026-10-15 07:17:39  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  45%|████▌     | 29/64 [00:08<00:08,  4.29MiB/s]
+2026-10-15 07:17:39  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  47%|████▋     | 30/64 [00:08<00:07,  4.41MiB/s]
+2026-10-15 07:17:39  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  48%|████▊     | 31/64 [00:08<00:07,  4.17MiB/s]
+2026-10-15 07:17:40  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  50%|█████     | 32/64 [00:09<00:08,  3.74MiB/s]
+2026-10-15 07:17:40  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  52%|█████▏    | 33/64 [00:09<00:09,  3.32MiB/s]
+2026-10-15 07:17:41  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  53%|█████▎    | 34/64 [00:09<00:10,  2.79MiB/s]
+2026-10-15 07:17:41  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  55%|█████▍    | 35/64 [00:10<00:12,  2.30MiB/s]
+2026-10-15 07:17:43  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  56%|█████▋    | 36/64 [00:11<00:14,  1.87MiB/s]
+2026-10-15 07:17:44  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  58%|█████▊    | 37/64 [00:12<00:20,  1.31MiB/s]
+2026-10-15 07:17:45  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  59%|█████▉    | 38/64 [00:14<00:25,  1.04MiB/s]
+2026-10-15 07:17:46  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  61%|██████    | 39/64 [00:15<00:26,  1.06s/MiB]
+2026-10-15 07:17:47  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  62%|██████▎   | 40/64 [00:16<00:24,  1.04s/MiB]
+2026-10-15 07:17:48  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  64%|██████▍   | 41/64 [00:17<00:22,  1.04MiB/s]
+2026-10-15 07:17:49  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  66%|██████▌   | 42/64 [00:17<00:19,  1.14MiB/s]
+2026-10-15 07:17:49  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  67%|██████▋   | 43/64 [00:18<00:16,  1.26MiB/s]
+2026-10-15 07:17:50  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  69%|██████▉   | 44/64 [00:18<00:14,  1.38MiB/s]
+2026-10-15 07:17:50  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  70%|███████   | 45/64 [00:19<00:12,  1.51MiB/s]
+2026-10-15 07:17:51  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  72%|███████▏  | 46/64 [00:19<00:10,  1.65MiB/s]
+2026-10-15 07:17:51  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  73%|███████▎  | 47/64 [00:20<00:09,  1.80MiB/s]
+2026-10-15 07:17:51  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  75%|███████▌  | 48/64 [00:20<00:08,  1.91MiB/s]
+2026-10-15 07:17:52  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  77%|███████▋  | 49/64 [00:21<00:07,  2.06MiB/s]
+2026-10-15 07:17:52  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  78%|███████▊  | 50/64 [00:21<00:06,  2.23MiB/s]
+2026-10-15 07:17:52  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  80%|███████▉  | 51/64 [00:21<00:05,  2.34MiB/s]
+2026-10-15 07:17:53  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  81%|████████▏ | 52/64 [00:22<00:04,  2.47MiB/s]
+2026-10-15 07:17:53  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  83%|████████▎ | 53/64 [00:22<00:04,  2.61MiB/s]
+2026-10-15 07:17:53  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  84%|████████▍ | 54/64 [00:22<00:03,  2.70MiB/s]
+2026-10-15 07:17:54  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  86%|████████▌ | 55/64 [00:23<00:03,  2.80MiB/s]
+2026-10-15 07:17:54  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  88%|████████▊ | 56/64 [00:23<00:02,  2.94MiB/s]
+2026-10-15 07:17:54  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  89%|████████▉ | 57/64 [00:23<00:02,  3.12MiB/s]
+2026-10-15 07:17:55  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  91%|█████████ | 58/64 [00:24<00:01,  3.35MiB/s]
+2026-10-15 07:17:55  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  92%|█████████▏| 59/64 [00:24<00:01,  3.57MiB/s]
+2026-10-15 07:17:55  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  94%|█████████▍| 60/64 [00:24<00:01,  3.82MiB/s]
+2026-10-15 07:17:55  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  95%|█████████▌| 61/64 [00:24<00:00,  4.08MiB/s]
+2026-10-15 07:17:55  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  97%|█████████▋| 62/64 [00:24<00:00,  4.37MiB/s]
+2026-10-15 07:17:55  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3:  98%|█████████▊| 63/64 [00:25<00:00,  4.61MiB/s]
+2026-10-15 07:17:55  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3: 100%|██████████| 64/64 [00:25<00:00,  5.14MiB/s]
+2026-10-15 07:17:55  INFO       upload_to_archive.py |  uploading 02_ Scarlet Fire.mp3: 100%|██████████| 64/64 [00:25<00:00,  2.53MiB/s]
+2026-10-15 07:18:05  INFO       upload_to_archive.py | 
+2026-10-15 07:18:06  INFO       upload_to_archive.py |  uploading 03_ Loser _ Eyes.mp3:   0%|          | 0/22 [00:00<?, ?MiB/s]
+2026-10-15 07:18:06  INFO       upload_to_archive.py |  uploading 03_ Loser _ Eyes.mp3:   5%|▍         | 1/22 [00:00<00:16,  1.26MiB/s]
+2026-10-15 07:18:06  INFO       upload_to_archive.py |  uploading 03_ Loser _ Eyes.mp3:  14%|█▎        | 3/22 [00:00<00:05,  3.78MiB/s]
+2026-10-15 07:18:07  INFO       upload_to_archive.py |  uploading 03_ Loser _ Eyes.mp3:  32%|███▏      | 7/22 [00:01<00:01,  9.51MiB/s]
+2026-10-15 07:18:10  INFO       upload_to_archive.py |  uploading 03_ Loser _ Eyes.mp3:  41%|████      | 9/22 [00:01<00:01, 10.49MiB/s]
+2026-10-15 07:18:10  INFO       upload_to_archive.py |  uploading 03_ Loser _ Eyes.mp3:  50%|█████     | 11/22 [00:04<00:05,  1.85MiB/s]
+2026-10-15 07:18:10  INFO       upload_to_archive.py |  uploading 03_ Loser _ Eyes.mp3:  59%|█████▉    | 13/22 [00:04<00:04,  2.24MiB/s]
+2026-10-15 07:18:11  INFO       upload_to_archive.py |  uploading 03_ Loser _ Eyes.mp3:  64%|██████▎   | 14/22 [00:04<00:03,  2.44MiB/s]
+2026-10-15 07:18:11  INFO       upload_to_archive.py |  uploading 03_ Loser _ Eyes.mp3:  68%|██████▊   | 15/22 [00:05<00:02,  2.67MiB/s]
+2026-10-15 07:18:11  INFO       upload_to_archive.py |  uploading 03_ Loser _ Eyes.mp3:  73%|███████▎  | 16/22 [00:05<00:02,  2.88MiB/s]
+2026-10-15 07:18:11  INFO       upload_to_archive.py |  uploading 03_ Loser _ Eyes.mp3:  77%|███████▋  | 17/22 [00:05<00:01,  2.85MiB/s]
+2026-10-15 07:18:12  INFO       upload_to_archive.py |  uploading 03_ Loser _ Eyes.mp3:  82%|████████▏ | 18/22 [00:06<00:01,  2.88MiB/s]
+2026-10-15 07:18:12  INFO       upload_to_archive.py |  uploading 03_ Loser _ Eyes.mp3:  86%|████████▋ | 19/22 [00:06<00:01,  2.95MiB/s]
+2026-10-15 07:18:12  INFO       upload_to_archive.py |  uploading 03_ Loser _ Eyes.mp3:  91%|█████████ | 20/22 [00:06<00:00,  2.96MiB/s]
+2026-10-15 07:18:13  INFO       upload_to_archive.py |  uploading 03_ Loser _ Eyes.mp3:  95%|█████████▌| 21/22 [00:07<00:00,  3.01MiB/s]
+2026-10-15 07:18:13  INFO       upload_to_archive.py |  uploading 03_ Loser _ Eyes.mp3: 100%|██████████| 22/22 [00:07<00:00,  3.19MiB/s]
+2026-10-15 07:18:13  INFO       upload_to_archive.py |  uploading 03_ Loser _ Eyes.mp3: 100%|██████████| 22/22 [00:07<00:00,  2.98MiB/s]
+2026-10-15 07:18:24  INFO       upload_to_archive.py | 
+2026-10-15 07:18:24  INFO       upload_to_archive.py |  uploading 04_ The Weight.mp3:   0%|          | 0/11 [00:00<?, ?MiB/s]
+2026-10-15 07:18:24  INFO       upload_to_archive.py |  uploading 04_ The Weight.mp3:   9%|▉         | 1/11 [00:00<00:07,  1.35MiB/s]
+2026-10-15 07:18:25  INFO       upload_to_archive.py |  uploading 04_ The Weight.mp3:  27%|██▋       | 3/11 [00:00<00:01,  4.32MiB/s]
+2026-10-15 07:18:25  INFO       upload_to_archive.py |  uploading 04_ The Weight.mp3:  45%|████▌     | 5/11 [00:01<00:01,  4.54MiB/s]
+2026-10-15 07:18:25  INFO       upload_to_archive.py |  uploading 04_ The Weight.mp3:  55%|█████▍    | 6/11 [00:01<00:00,  5.32MiB/s]
+2026-10-15 07:18:25  INFO       upload_to_archive.py |  uploading 04_ The Weight.mp3:  64%|██████▎   | 7/11 [00:01<00:00,  4.87MiB/s]
+2026-10-15 07:18:26  INFO       upload_to_archive.py |  uploading 04_ The Weight.mp3:  73%|███████▎  | 8/11 [00:01<00:00,  4.69MiB/s]
+2026-10-15 07:18:27  INFO       upload_to_archive.py |  uploading 04_ The Weight.mp3:  82%|████████▏ | 9/11 [00:02<00:00,  3.81MiB/s]
+2026-10-15 07:18:27  INFO       upload_to_archive.py |  uploading 04_ The Weight.mp3:  91%|█████████ | 10/11 [00:03<00:00,  1.71MiB/s]
+2026-10-15 07:18:27  INFO       upload_to_archive.py |  uploading 04_ The Weight.mp3: 100%|██████████| 11/11 [00:03<00:00,  2.12MiB/s]
+2026-10-15 07:18:27  INFO       upload_to_archive.py |  uploading 04_ The Weight.mp3: 100%|██████████| 11/11 [00:03<00:00,  2.89MiB/s]
+2026-10-15 07:19:29  INFO       upload_to_archive.py | Done. band_archive.csv updated with IA URLs.
+2026-10-15 07:19:29  INFO     [3/7] Analyzing data...
+2026-10-15 07:19:30  INFO       analyze.py | song_stats.csv created!
+2026-10-15 07:19:30  INFO     [4/7] Building metadata...
+2026-10-15 07:19:31  INFO       build_metadata.py | song_metadata.csv updated!
+2026-10-15 07:19:31  INFO     [5/7] Checking for songs with no artist on file...
+2026-10-15 07:19:31  INFO     No missing artists.
+2026-10-15 07:19:31  INFO     [6/7] Adding share links...
+2026-10-15 07:19:36  INFO       generate_share_links.py | Found 1 folders to generate share links for.
+2026-10-15 07:19:36  INFO       generate_share_links.py |   Processing: LoveDeep/Audio Recordings/Gig Recordings/2026-07-16 _ Brooklyn Music Kitchen
+2026-10-15 07:19:36  INFO       generate_share_links.py |     ✓ https://1drv.ms/f/c/436f797b4dd480a3/IgCkFJukcEAETKMm9cZ4sRu0ARrV7J9mw9CYiTFc26SvsSg
+2026-10-15 07:19:36  INFO       generate_share_links.py | 
+2026-10-15 07:19:36  INFO       generate_share_links.py | Done. 1 share links written to band_archive.csv.
+2026-10-15 07:19:36  INFO     [7/7] Checking for changes...
+2026-10-15 07:19:37  INFO     Changes detected. Committing...
+2026-10-15 07:19:38  INFO     Pushing to GitHub...
+2026-10-15 07:19:41  INFO     Done! Streamlit Cloud will redeploy automatically in a minute or two.
+2026-10-15 07:19:41  INFO     Pipeline finished successfully.
+2026-10-15 07:20:41  INFO     ==================================================
+2026-10-15 07:20:41  INFO       DankApp Database Update
+2026-10-15 07:20:41  INFO     ==================================================
+2026-10-15 07:20:41  INFO     Working directory: C:\Users\Administrator\OneDrive\LoveDeep\danktuary-archive-clean
+2026-10-15 07:20:41  INFO     [1/7] Scanning files to update band_archive.csv...
+2026-10-15 07:20:43  INFO       scanner.py | Let's a-gooooo!
+2026-10-15 07:20:43  INFO       scanner.py | Found extra column(s) in band_archive.csv added by another script: ['OneDrive Share URL']. Preserving them.
+2026-10-15 07:20:43  INFO       scanner.py | Loaded 6568 existing row(s); 5079 file(s) already catalogued and will be skipped.
+2026-10-15 07:20:43  INFO       scanner.py | File 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Gig Recordings\2026-07-16 _ Brooklyn Music Kitchen\01_ Bertha.bmp' no longer exists on disk.
+2026-10-15 07:20:43  INFO       scanner.py |   Type 'yes' to remove it from the CSV, or 'no' to keep it labeled as Status: missing: File kept in CSV, labeled Status: missing -> 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Gig Recordings\2026-07-16 _ Brooklyn Music Kitchen\01_ Bertha.bmp'
+2026-10-15 07:20:43  INFO       scanner.py | File kept in CSV, labeled Status: missing -> 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Gig Recordings\2026-07-16 _ Brooklyn Music Kitchen\02_ Scarlet Fire.bmp'
+2026-10-15 07:20:43  INFO       scanner.py | File kept in CSV, labeled Status: missing -> 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Gig Recordings\2026-07-16 _ Brooklyn Music Kitchen\02_ Scarlet Fire.bmp'
+2026-10-15 07:20:43  INFO       scanner.py | File kept in CSV, labeled Status: missing -> 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Gig Recordings\2026-07-16 _ Brooklyn Music Kitchen\03_ Loser _ Eyes Of The World.bmp'
+2026-10-15 07:20:43  INFO       scanner.py | File kept in CSV, labeled Status: missing -> 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Gig Recordings\2026-07-16 _ Brooklyn Music Kitchen\03_ Loser _ Eyes Of The World.bmp'
+2026-10-15 07:20:43  INFO       scanner.py | File kept in CSV, labeled Status: missing -> 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Gig Recordings\2026-07-16 _ Brooklyn Music Kitchen\04_ The Weight.bmp'
+2026-10-15 07:20:43  INFO       scanner.py | Flagged 6 row(s) as Status: missing.
+2026-10-15 07:20:43  INFO       scanner.py | Added 0 new row(s), removed 0 row(s), flagged 6 row(s) as missing. CSV now has 6568 total row(s).
+2026-10-15 07:20:43  INFO     [2/7] Checking what needs uploading to the Internet Archive...
+2026-10-15 07:20:45  INFO       upload_to_archive.py | Wrote upload plan: 0 show(s), 0 file(s) to upload.
+2026-10-15 07:20:45  INFO     Nothing new to upload.
+2026-10-15 07:20:45  INFO     [3/7] Analyzing data...
+2026-10-15 07:20:46  INFO       analyze.py | song_stats.csv created!
+2026-10-15 07:20:46  INFO     [4/7] Building metadata...
+2026-10-15 07:20:47  INFO       build_metadata.py | song_metadata.csv updated!
+2026-10-15 07:20:47  INFO     [5/7] Checking for songs with no artist on file...
+2026-10-15 07:20:47  INFO     No missing artists.
+2026-10-15 07:20:47  INFO     [6/7] Adding share links...
+2026-10-15 07:20:47  INFO       generate_share_links.py | No new folders to process.
+2026-10-15 07:20:47  INFO     [7/7] Checking for changes...
+2026-10-15 07:20:48  INFO     No changes to the data files. Nothing to push.
+2026-10-15 07:20:48  INFO     Done - database was already up to date.
+2026-10-15 07:20:48  INFO     Pipeline finished successfully.

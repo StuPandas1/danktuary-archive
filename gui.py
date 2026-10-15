@@ -113,6 +113,7 @@ class ControllerApp:
 
     def _wire_pipeline_callbacks(self):
         update.confirm_upload_callback = self._confirm_upload
+        update.confirm_missing_callback = self._confirm_missing
         update.request_artists_callback = self._request_artists
         update.progress_callback = self._on_progress
 
@@ -282,6 +283,41 @@ class ControllerApp:
             return
         self.progress_bar.configure(maximum=total, value=current)
         self.progress_label.config(text=f"{current}/{total} — {label}")
+
+    def _confirm_missing(self, paths: list) -> list:
+        """Returns the subset of paths the user wants removed from the CSV."""
+        result = {}
+        done = threading.Event()
+        self.root.after(0, self._show_missing_dialog, paths, result, done)
+        done.wait()
+        return result.get("remove", [])
+
+    def _show_missing_dialog(self, paths: list, result: dict, done: threading.Event):
+        win = tk.Toplevel(self.root)
+        win.title("Missing Files")
+        win.geometry("560x420")
+        win.transient(self.root)
+        win.grab_set()
+
+        ttk.Label(
+            win,
+            text=f"{len(paths)} file(s) are in the CSV but no longer on disk. "
+                "Checked files will be removed; unchecked ones stay, flagged as missing.",
+            padding=10,
+            wraplength=520,
+        ).pack(anchor="w")
+
+        container, inner = make_scrollable(win)
+        container.pack(fill="both", expand=True, padx=10, pady=(0, 10))
+
+        vars_by_path = {}
+        for p in paths:
+            var = tk.BooleanVar(value=True)
+            ttk.Checkbutton(inner, text=p, variable=var).pack(anchor="w", pady=1)
+            vars_by_path[p] = var
+
+        btns = ttk.Frame(win, padding=10)
+        btns.pack(fill="x")
 
     # ------------------------------------------------------------------
     # Log display
