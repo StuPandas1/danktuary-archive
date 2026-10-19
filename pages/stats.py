@@ -159,6 +159,29 @@ def studio_lengths(d):
     out = mins.rename("Total Minutes").reset_index()
     return out[out["Total Minutes"] >= 80].reset_index(drop=True)
 
+
+@st.cache_data(show_spinner=False)
+def practiced_not_live(d, d_all):
+    """Songs practiced but never played live, most practiced first.
+    'Never live' is judged against ALL recordings (d_all), so the Dead Weight
+    and year filters can't make a song look unplayed when it wasn't."""
+    live_titles = set(d_all.loc[d_all["Type"] == "live", "Title"])
+    p = d[(d["Type"] == "practice") & ~d["Title"].isin(live_titles)].sort_values("Date")
+    if p.empty:
+        return p
+    out = (
+        p.groupby("Title")
+        .agg(Times=("Title", "size"), Last=("Date", "max"), Last_Location=("Location", "last"))
+        .reset_index()
+        .sort_values(["Times", "Title"], ascending=[False, True])
+        .assign(Last=lambda x: x["Last"].dt.strftime("%m/%d/%Y"))
+        .rename(columns={"Times": "Times Practiced", "Last": "Last Practiced",
+                         "Last_Location": "Last Location"})
+        .reset_index(drop=True)
+    )
+    return out
+
+
 st.set_page_config(page_title="DankApp | Heady Stats", page_icon="static/icon.png", layout="wide")
 dank_theme()
 
@@ -524,7 +547,9 @@ elif st.session_state.active_tab == "Song Stats":
         "longest_gap":  ("Longest Gaps", "Longest Historical Gap Between Plays"),
         "longest_jams": ("Longest Jams", "Longest Jams"),
         "song_streak":  ("Streaks",      "Active Setlist Streaks"),
+        "practice_only": ("Practice Only", "Practiced But Never Played Live"),
     }
+
     active = st.session_state.get("song_active_stat")
     if active not in SONG_STATS:
         active = "most_played"          # sensible default, so the page isn't empty
@@ -567,11 +592,14 @@ elif st.session_state.active_tab == "Song Stats":
             dank_callout("No active streaks, man.")
         else:
             linked_table(ranked_table(streaks, sort_col="Active Streak"))
- 
-# -------------------------
-# TAB 4: SETLIST STATS
-# -------------------------
 
+    elif active == "practice_only":
+        table = practiced_not_live(t3_df, df)
+        if table.empty:
+            dank_hex("Everything we've practiced has been played live")
+        else:
+            table.insert(0, "Rank", range(1, len(table) + 1))
+            linked_table(table, show_cols={"Last Practiced": "Last Location"})
 # -------------------------
 # TAB 4: SETLIST STATS
 # -------------------------

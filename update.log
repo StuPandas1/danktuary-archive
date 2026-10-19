@@ -1097,3 +1097,29 @@
 2026-10-15 07:20:48  INFO     No changes to the data files. Nothing to push.
 2026-10-15 07:20:48  INFO     Done - database was already up to date.
 2026-10-15 07:20:48  INFO     Pipeline finished successfully.
+2026-10-15 21:28:09  INFO     ==================================================
+2026-10-15 21:28:09  INFO       DankApp Database Update
+2026-10-15 21:28:09  INFO     ==================================================
+2026-10-15 21:28:09  INFO     Working directory: C:\Users\Administrator\OneDrive\LoveDeep\danktuary-archive-clean
+2026-10-15 21:28:09  INFO     [1/7] Scanning files to update band_archive.csv...
+2026-10-15 21:28:22  INFO       scanner.py | Let's a-gooooo!
+2026-10-15 21:28:22  INFO       scanner.py | Loaded 6562 existing row(s); 5075 file(s) already catalogued and will be skipped.
+2026-10-15 21:28:22  INFO       scanner.py | Found extra column(s) in band_archive.csv added by another script: ['OneDrive Share URL']. Preserving them.
+2026-10-15 21:28:22  INFO       scanner.py | No changes - the archive is already up to date.
+2026-10-15 21:28:22  INFO       scanner.py | @RESULT@{"added": 0, "added_files": 0, "swapped": 0, "removed": 0, "flagged": 0, "restored": 0, "total": 6562, "new_shows": []}
+2026-10-15 21:28:22  INFO     [2/7] Checking what needs uploading to the Internet Archive...
+2026-10-15 21:28:24  INFO       upload_to_archive.py | Wrote upload plan: 0 show(s), 0 file(s) to upload.
+2026-10-15 21:28:24  INFO     Nothing new to upload.
+2026-10-15 21:28:24  INFO     [3/7] Analyzing data...
+2026-10-15 21:28:25  INFO       analyze.py | song_stats.csv created!
+2026-10-15 21:28:25  INFO     [4/7] Building metadata...
+2026-10-15 21:28:26  INFO       build_metadata.py | song_metadata.csv updated!
+2026-10-15 21:28:26  INFO     [5/7] Checking for songs with no artist on file...
+2026-10-15 21:28:26  INFO     No missing artists.
+2026-10-15 21:28:26  INFO     [6/7] Adding share links...
+2026-10-15 21:28:27  INFO       generate_share_links.py | No new folders to process.
+2026-10-15 21:28:27  INFO     [7/7] Checking for changes...
+2026-10-15 21:28:28  INFO     Changes detected. Committing...
+2026-10-15 21:28:28  INFO     Pushing to GitHub...
+2026-10-15 21:28:31  INFO     Done! Streamlit Cloud will redeploy automatically in a minute or two.
+2026-10-15 21:28:31  INFO     Pipeline finished successfully.
