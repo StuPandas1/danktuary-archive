@@ -55,6 +55,23 @@ def longest_gaps(d):
     return out.sort_values("Longest Gap (Sets)", ascending=False).reset_index(drop=True)
 
 @st.cache_data(show_spinner=False)
+def most_played_in_year(d, year):
+    """Songs ranked by plays in one calendar year, with the last play's date and venue."""
+    y = d[d["Date"].dt.year == year].sort_values("Date")
+    if y.empty:
+        return y
+    return (
+        y.groupby("Title")
+        .agg(Plays=("Title", "size"), Last=("Date", "max"), Last_Location=("Location", "last"))
+        .reset_index()
+        .sort_values(["Plays", "Title"], ascending=[False, True])
+        .assign(Last=lambda x: x["Last"].dt.strftime("%m/%d/%Y"))
+        .rename(columns={"Plays": "Times Played", "Last": "Last Played",
+                         "Last_Location": "Last Location"})
+        .reset_index(drop=True)
+    )
+
+@st.cache_data(show_spinner=False)
 def long_jams(d, min_secs=1080):
     """Segue chains (same show, same Duration) of at least min_secs."""
     d = d.sort_values(["Date", "Track Number"])
@@ -543,10 +560,11 @@ elif st.session_state.active_tab == "Song Stats":
 
     # key -> (button label, table heading)
     SONG_STATS = {
-        "most_played":  ("Most Played",  "Most Played Songs"),
-        "longest_gap":  ("Longest Gaps", "Longest Historical Gap Between Plays"),
-        "longest_jams": ("Longest Jams", "Longest Jams"),
-        "song_streak":  ("Streaks",      "Active Setlist Streaks"),
+        "most_played":   ("Most Played",   "Most Played Songs"),
+        "by_year":       ("By Year",       "Most Played by Year"),
+        "longest_gap":   ("Longest Gaps",  "Longest Historical Gap Between Plays"),
+        "longest_jams":  ("Longest Jams",  "Longest Jams"),
+        "song_streak":   ("Streaks",       "Active Setlist Streaks"),
         "practice_only": ("Practice Only", "Practiced But Never Played Live"),
     }
 
@@ -570,6 +588,25 @@ elif st.session_state.active_tab == "Song Stats":
             show_cols={"First Played": "First Location", "Last Played": "Last Location"},
         )
 
+    elif active == "by_year":
+        years = sorted(t3_df["Date"].dt.year.unique().tolist())
+        if st.session_state.get("song_year_pick") not in years:
+            st.session_state["song_year_pick"] = years[-1]      # newest year by default
+
+        if len(years) > 1:
+            year = st.select_slider("Year", options=years, key="song_year_pick")
+        else:
+            year = years[0]
+
+        table = most_played_in_year(t3_df, year)
+        if table.empty:
+            dank_hex(f"No recordings in {year}")
+        else:
+            shows_in_year = t3_df.loc[t3_df["Date"].dt.year == year, "Date"].nunique()
+            dank_hex(f"**{year}**", f"{shows_in_year} recording{'' if shows_in_year == 1 else 's'}")
+            table.insert(0, "Rank", range(1, len(table) + 1))
+            linked_table(table, show_cols={"Last Played": "Last Location"})
+            
     elif active == "longest_gap":
         gap_df = longest_gaps(t3_df)
         if gap_df.empty:
@@ -600,6 +637,7 @@ elif st.session_state.active_tab == "Song Stats":
         else:
             table.insert(0, "Rank", range(1, len(table) + 1))
             linked_table(table, show_cols={"Last Practiced": "Last Location"})
+
 # -------------------------
 # TAB 4: SETLIST STATS
 # -------------------------
@@ -747,6 +785,7 @@ elif st.session_state.active_tab == "Setlist Stats":
                 f"📈 Trend: {trend_start:.0f} min → {trend_end:.0f} min  \n"
                 f"🎧 Longest Set: {longest['Total Minutes']:.0f} min ({longest['Date']:%m/%d/%Y})"
             )
+
 else:
     dank_callout("Select a tab, man.")
 
