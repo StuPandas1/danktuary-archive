@@ -5,6 +5,7 @@ import random
 from zoneinfo import ZoneInfo
 today_md = pd.Timestamp.now(tz=ZoneInfo("America/New_York")).strftime("%m/%d")
 from shared import load_data, parse_duration, page_menu, dank_header, force_columns_horizontal, dank_theme, dank_footer, dank_sign, dank_hex, dank_callout, card_html #type: ignore
+from shared import show_index, _data_file_mtimes   # add to your shared import
 
 st.set_page_config(page_title="DankApp | The Dead Weight Hub", page_icon="static/icon.png", layout="wide")
 
@@ -104,6 +105,7 @@ with st.container(key="hex_recent"):
 day_name = pd.Timestamp.now(tz=ZoneInfo("America/New_York")).strftime("%A")
 on_this_day_df = df[df["Date"].dt.strftime("%m/%d") == today_md].copy()
 on_this_day_dates = sorted(on_this_day_df["Date"].unique())
+playable = set(show_index(df2, _data_file_mtimes())["Show_Label"])
 
 if on_this_day_dates:
     n = len(on_this_day_dates)
@@ -117,8 +119,13 @@ if on_this_day_dates:
 
             with cols[i]:
                 if st.button(label, key=f"otd_{date_str}", width="stretch"):
-                    st.session_state["pending_listen_show"] = label
-                    st.switch_page("pages/listen.py")
+                    if label in playable:
+                        st.session_state["pending_listen_show"] = label
+                        st.switch_page("pages/listen.py")
+                    else:
+                        st.session_state.pending_show_selection = label
+                        st.session_state.active_tab = "Setlist Lookup"
+                        st.switch_page("pages/stats.py")
 else:
     dank_hex(f"No recordings found on this day ({today_md})")
 
