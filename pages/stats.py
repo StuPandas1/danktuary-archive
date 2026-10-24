@@ -229,11 +229,12 @@ if "active_stat" not in st.session_state:
 if "t1_year" not in st.session_state:
     st.session_state.t1_year = (min_year, max_year)
 
-if "active_tab" not in st.session_state:
-    st.session_state.active_tab = "Song Search"
+STATS_TABS = ["Song Lookup", "Setlist Lookup", "Song Stats", "Setlist Stats"]
+if st.session_state.get("active_tab") not in STATS_TABS:
+    st.session_state.active_tab = "Song Lookup"
 # Deep-link support:
-#   /explore?song=<title>  -> selects a song, jumps to Song Search
-#   /explore?show=<label>  -> selects a show, jumps to Setlist Lookup
+#   /stats?song=<title>  -> selects a song, jumps to Song Search
+#   /stats?show=<label>  -> selects a show, jumps to Setlist Lookup
 if not st.session_state.get("deeplink_done"):
     st.session_state["deeplink_done"] = True
     query_song = st.query_params.get("song")
@@ -528,7 +529,7 @@ elif st.session_state.active_tab == "Setlist Lookup":
         # listen
         if selected_show in set(show_index(df2, _data_file_mtimes())["Show_Label"]):
             if st.button("🎧 Listen on DankApp", key=f"listen_btn_{selected_show}", width="stretch"):
-                st.session_state["listen_mode"] = "Setlists"
+                st.session_state["listen_mode"] = "By Setlist"
                 st.session_state["pending_listen_show"] = selected_show
                 st.switch_page("pages/listen.py")
 
