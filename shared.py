@@ -1821,17 +1821,20 @@ def slug_to_show(q):
 
 
 def sync_url(**params):
-    """Make the address bar match the selection. None removes a param.
-    A 'show' value can be the full label; it's shortened automatically."""
+    """Make the address bar match the selection. None removes a param."""
     if params.get("show"):
         params["show"] = show_to_slug(params["show"])
+    current = st.query_params.to_dict()
+    new = dict(current)
     for k, v in params.items():
         if v:
-            if st.query_params.get(k) != v:
-                st.query_params[k] = v
-        elif k in st.query_params:
-            del st.query_params[k]
-            
+            new[k] = v
+        else:
+            new.pop(k, None)
+    if new != current:
+        st.query_params.from_dict(new)
+        
+
 def count_bar(data, x_field, title, sort=None):
     """Bar chart of 'Times Played' with a sane whole-number y-axis."""
     max_count = int(data["Times Played"].max())
