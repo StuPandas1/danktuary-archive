@@ -318,6 +318,7 @@ if st.session_state.active_tab == "Song Lookup":
     )
     st.session_state.selected_song = selected_song
     sync_url(song=selected_song, show=None)
+    st.write("DEBUG", st.query_params.to_dict())
 
     st.session_state.setdefault("t1_show_browse", False)
     with st.container(key="btnrow_song"):
