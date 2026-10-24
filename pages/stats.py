@@ -200,6 +200,7 @@ def practiced_not_live(d, d_all):
 
 
 st.set_page_config(page_title="DankApp | Heady Stats", page_icon="static/icon.png", layout="wide")
+st.query_params["probe"] = "1"
 dank_theme()
 
 df, song_stats, metadata, jam_metadata = load_data()
