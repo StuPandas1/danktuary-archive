@@ -422,7 +422,6 @@ if st.session_state.active_tab == "Song Lookup":
                 count_bar(counts, "Length", "", sort=BUCKET_ORDER),
                 width="stretch",
             )
-    st.query_params["probe"] = "1"
             
 # -------------------------
 # TAB 2: SETLIST LOOKUP
@@ -477,6 +476,7 @@ elif st.session_state.active_tab == "Setlist Lookup":
     )
     st.session_state.selected_show = selected_show
     sync_url(show=selected_show, song=None) 
+    st.query_params["probe"] = "1"
 
     today_md = pd.Timestamp.now(tz="America/New_York").strftime("%m/%d")
     on_this_day = [s for s in unique_shows if s.startswith(today_md)]
