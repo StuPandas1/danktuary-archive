@@ -107,7 +107,7 @@ on_this_day_dates = sorted(on_this_day_df["Date"].unique())
 
 if on_this_day_dates:
     n = len(on_this_day_dates)
-    dank_sign(f"Explore {n} {'recording' if n == 1 else 'recordings'} on this day ({today_md})", direction="left")
+    dank_sign(f"Listen to {n} {'recording' if n == 1 else 'recordings'} on this day ({today_md})", direction="left")
     with st.container(key="hex_otd"):
         cols = st.columns(len(on_this_day_dates))
         for i, date in enumerate(on_this_day_dates):
@@ -117,10 +117,8 @@ if on_this_day_dates:
 
             with cols[i]:
                 if st.button(label, key=f"otd_{date_str}", width="stretch"):
-                    st.session_state.pending_show_selection = label
-                    st.session_state.active_tab = "Setlist Lookup"
-                    st.query_params["scroll"] = "1"
-                    st.switch_page("pages/stats.py")
+                    st.session_state["pending_listen_show"] = label
+                    st.switch_page("pages/listen.py")
 else:
     dank_hex(f"No recordings found on this day ({today_md})")
 
