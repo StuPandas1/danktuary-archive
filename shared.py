@@ -1168,6 +1168,34 @@ def linked_table(df, song_col="Title", show_col=None, show_loc_col=None,
         unsafe_allow_html=True,
     )
 
+def click_table(df, key, song_col=None, show_label_col=None,
+                show_col=None, loc_col=None, hide=()):
+    """Selectable table. Clicking a row opens that row's song in Song Lookup
+    (song_col), or its show in Setlist Lookup (show_label_col, or show_col
+    + loc_col). No page reload, so the session and URL sync survive.
+    Columns in `hide` (and loc_col) are used for the lookup but not shown."""
+    shown = df.drop(columns=[c for c in (*hide, loc_col) if c and c in df.columns])
+    ver = st.session_state.get(f"{key}_ver", 0)
+    st.caption("Tap a row to open it")
+    ev = st.dataframe(shown, hide_index=True, width="stretch", height=520,
+                      on_select="rerun", selection_mode="single-row",
+                      key=f"{key}_{ver}")
+    rows = ev.selection.rows
+    if not rows:
+        return
+    row = df.iloc[rows[0]]
+    st.session_state[f"{key}_ver"] = ver + 1       # fresh table, nothing stays selected
+    if song_col:
+        st.session_state["t1_pending_song_selection"] = row[song_col]
+        st.session_state["active_tab"] = "Song Lookup"
+    elif show_label_col:
+        st.session_state["pending_show_selection"] = row[show_label_col]
+        st.session_state["active_tab"] = "Setlist Lookup"
+    elif show_col and loc_col:
+        st.session_state["pending_show_selection"] = f"{row[show_col]} — {row[loc_col]}"
+        st.session_state["active_tab"] = "Setlist Lookup"
+    st.rerun()
+    
 def card_html(value, label, accent=False, nowrap=False):
     value_class = "dank-card-value dank-card-accent" if accent else "dank-card-value"
     # size by visible text length (ignoring any HTML tags in the value)
@@ -1833,7 +1861,7 @@ def sync_url(**params):
             new.pop(k, None)
     if new != current:
         st.query_params.from_dict(new)
-        
+
 
 def count_bar(data, x_field, title, sort=None):
     """Bar chart of 'Times Played' with a sane whole-number y-axis."""
