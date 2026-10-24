@@ -343,7 +343,7 @@ if st.session_state.active_tab == "Song Lookup":
 
     if st.session_state.t1_show_browse:
         song_links = "".join(
-            f'<a href="/stats?song={urllib.parse.quote(t, safe="")}" target="_self">{html.escape(t)}</a>'
+            f'<a href="/stats?song={urllib.parse.quote(t, safe="")}" target="_top">{html.escape(t)}</a>'
             for t in sorted(all_titles, key=str.lower)
         )
         st.markdown(f'<div class="song-browse">{song_links}</div>', unsafe_allow_html=True)
@@ -384,7 +384,7 @@ if st.session_state.active_tab == "Song Lookup":
                 gap_display = "—" if pd.isna(r.Gap) else str(int(r.Gap))
                 rows_html.append(
                     "<tr>"
-                    f'<td><a href="/stats?show={urllib.parse.quote(show_label, safe="")}" target="_self">{html.escape(show_label)}</a></td>'
+                    f'<td><a href="/stats?show={urllib.parse.quote(show_label, safe="")}" target="_top">{html.escape(show_label)}</a></td>'
                     f"<td>{html.escape(str(r.SegueLabel))}</td>"
                     f"<td>{html.escape(str(r.Duration))}</td>"
                     f"<td>{gap_display}</td>" 
@@ -538,7 +538,7 @@ elif st.session_state.active_tab == "Setlist Lookup":
         durations = hist["Duration"].where(~segue, "--")
         rows_html = []
         for num, title, dur, is_segue in zip(hist["Track Number"], hist["Title"], durations, segue):
-            link = f'<a href="/stats?song={urllib.parse.quote(title, safe="")}" target="_self">{html.escape(title)}</a>'
+            link = f'<a href="/stats?song={urllib.parse.quote(title, safe="")}" target="_top">{html.escape(title)}</a>'
             rows_html.append(
                 f"<tr><td>{html.escape(str(num))}</td>"
                 f"<td>{link}{' →' if is_segue else ''}</td>"
