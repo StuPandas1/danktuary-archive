@@ -1785,7 +1785,53 @@ def add_segue_labels(d):
         f'<div class="dank-card-label">{label}</div></div>'
     )
 
+def _slugify(s):
+    return re.sub(r"[^a-z0-9]+", "-", str(s).lower()).strip("-")
 
+
+@st.cache_data(show_spinner=False)
+def _show_slug_maps(mtimes):
+    """label -> slug and slug -> label, built from the whole archive.
+    The slug is the ISO date, plus the venue only when two shows share a date."""
+    d = load_all_recordings(mtimes)
+    s = d[["Date", "Location"]].dropna().copy()
+    s["Date"] = pd.to_datetime(s["Date"], errors="coerce")
+    s = s.dropna(subset=["Date"]).drop_duplicates()
+    s["label"] = s["Date"].dt.strftime("%m/%d/%Y") + " — " + s["Location"]
+    s["day"] = s["Date"].dt.strftime("%Y-%m-%d")
+    counts = s["day"].value_counts()
+    to_slug = {
+        r.label: r.day if counts[r.day] == 1 else f"{r.day}-{_slugify(r.Location)}"
+        for r in s.itertuples()
+    }
+    return to_slug, {v: k for k, v in to_slug.items()}
+
+
+def show_to_slug(label):
+    to_slug, _ = _show_slug_maps(_data_file_mtimes())
+    return to_slug.get(label, label)
+
+
+def slug_to_show(q):
+    """Slug -> full label. Old long links still work. Unknown values give None."""
+    if not q:
+        return None
+    to_slug, to_label = _show_slug_maps(_data_file_mtimes())
+    return to_label.get(q) or (q if q in to_slug else None)
+
+
+def sync_url(**params):
+    """Make the address bar match the selection. None removes a param.
+    A 'show' value can be the full label; it's shortened automatically."""
+    if params.get("show"):
+        params["show"] = show_to_slug(params["show"])
+    for k, v in params.items():
+        if v:
+            if st.query_params.get(k) != v:
+                st.query_params[k] = v
+        elif k in st.query_params:
+            del st.query_params[k]
+            
 def count_bar(data, x_field, title, sort=None):
     """Bar chart of 'Times Played' with a sane whole-number y-axis."""
     max_count = int(data["Times Played"].max())

@@ -9,7 +9,7 @@ import urllib.parse
 import numpy as np
 from shared import ( #type: ignore
     load_data, build_filtered, find_closers, parse_duration, dank_theme, dank_footer, dank_sign, force_columns_horizontal, dank_chart, card_html, add_segue_labels, count_bar, dank_hex,
-    dank_callout, make_dead_weight_callback, page_menu, local_path_to_onedrive_url, dank_header, ranked_table, linked_table, show_index,
+    dank_callout, make_dead_weight_callback, page_menu, local_path_to_onedrive_url, dank_header, ranked_table, linked_table, show_index, sync_url, _data_file_mtimes, slug_to_show,
     dead_weight_artists, dead_weight_year
 )
 
@@ -234,18 +234,16 @@ if "active_tab" not in st.session_state:
 # Deep-link support:
 #   /explore?song=<title>  -> selects a song, jumps to Song Search
 #   /explore?show=<label>  -> selects a show, jumps to Setlist Lookup
-query_song = st.query_params.get("song")
-query_show = st.query_params.get("show")
- 
-if query_song and query_song != st.session_state.selected_song:
-    st.session_state.t1_pending_song_selection = query_song
-    st.session_state.active_tab = "Song Lookup"
-    st.query_params.clear()
-elif query_show and query_show != st.session_state.selected_show:
-    st.session_state.pending_show_selection = query_show
-    st.session_state.active_tab = "Setlist Lookup"
-    st.query_params.clear()
- 
+if not st.session_state.get("deeplink_done"):
+    st.session_state["deeplink_done"] = True
+    query_song = st.query_params.get("song")
+    query_show = slug_to_show(st.query_params.get("show"))
+    if query_song:
+        st.session_state.t1_pending_song_selection = query_song
+        st.session_state.active_tab = "Song Lookup"
+    elif query_show:
+        st.session_state.pending_show_selection = query_show
+        st.session_state.active_tab = "Setlist Lookup"
 
 dank_header(subtitle="Heady Stats")
 
@@ -318,6 +316,7 @@ if st.session_state.active_tab == "Song Lookup":
         key="t1_song_widget"
     )
     st.session_state.selected_song = selected_song
+    sync_url(song=selected_song, show=None)
 
     st.session_state.setdefault("t1_show_browse", False)
     with st.container(key="btnrow_song"):
@@ -475,6 +474,7 @@ elif st.session_state.active_tab == "Setlist Lookup":
         key="selected_show_widget",
     )
     st.session_state.selected_show = selected_show
+    sync_url(show=selected_show, song=None) 
 
     today_md = pd.Timestamp.now(tz="America/New_York").strftime("%m/%d")
     on_this_day = [s for s in unique_shows if s.startswith(today_md)]
@@ -526,7 +526,7 @@ elif st.session_state.active_tab == "Setlist Lookup":
         st.markdown(f'<div class="dank-grid">{"".join(cards)}</div>', unsafe_allow_html=True)
 
         # listen
-        if selected_show in set(show_index(df2)["Show_Label"]):
+        if selected_show in set(show_index(df2, _data_file_mtimes())["Show_Label"]):
             if st.button("🎧 Listen on DankApp", key=f"listen_btn_{selected_show}", width="stretch"):
                 st.session_state["listen_mode"] = "Setlists"
                 st.session_state["pending_listen_show"] = selected_show
@@ -555,6 +555,7 @@ elif st.session_state.active_tab == "Setlist Lookup":
 
 elif st.session_state.active_tab == "Song Stats":
     dank_sign("Song Stats")
+    sync_url(song=None, show=None)
 
     t3_df, t3_stats = get_stats_df("song_stats_dw")
 
@@ -644,6 +645,7 @@ elif st.session_state.active_tab == "Song Stats":
 
 elif st.session_state.active_tab == "Setlist Stats":
     dank_sign("Setlist Stats")
+    sync_url(song=None, show=None)
 
     t3_df, t3_stats = get_stats_df("setlist_stats_dw")
 

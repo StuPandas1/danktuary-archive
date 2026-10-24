@@ -10,7 +10,7 @@ from shared import (
     load_playlists_from_supabase, delete_playlist_from_supabase,
     add_tracks_to_playlist, song_show_map,
     force_columns_horizontal, load_all_recordings, _data_file_mtimes,
-    parse_duration, format_playlist_track_label,
+    parse_duration, format_playlist_track_label, sync_url, slug_to_show,
     with_onedrive_urls, show_index, tracks_for_show,
 )
 
@@ -324,6 +324,16 @@ if st.user.is_logged_in:
     except Exception:
         st.error("Couldn't load your playlists right now.")
 
+# ---------- arriving from a shared link (?show=...), once per session ----------
+if not st.session_state.get("listen_deeplink_done"):
+    st.session_state["listen_deeplink_done"] = True
+    q = slug_to_show(st.query_params.get("show"))
+    if q in set(shows["Show_Label"]):
+        st.session_state["now_playing"] = ("show", q)
+        st.session_state["listen_sel"] = q
+        st.session_state["listen_mode"] = MODE_SET
+        st.session_state["listen_list_open"] = False
+        
 # ---------- arriving from another page (landing / stats) ----------
 if "pending_listen_show" in st.session_state:
     label = st.session_state.pop("pending_listen_show")
@@ -543,6 +553,7 @@ np_now = st.session_state.get("now_playing")
 kind, ident = np_now if np_now else (None, None)
 if kind == "playlist" and ident not in playlist_labels:
     kind = None                                   # deleted, or logged out
+sync_url(show=ident if kind == "show" else None)
 
 # ---------- player (own container, survives mode switches) ----------
 player_slot = st.container(key="player_slot")
