@@ -245,8 +245,6 @@ if not st.session_state.get("deeplink_done"):
     elif query_show:
         st.session_state.pending_show_selection = query_show
         st.session_state.active_tab = "Setlist Lookup"
-st.query_params["probe"] = "1"
-
 dank_header(subtitle="Heady Stats")
 
 tab_groups = [
@@ -424,7 +422,8 @@ if st.session_state.active_tab == "Song Lookup":
                 count_bar(counts, "Length", "", sort=BUCKET_ORDER),
                 width="stretch",
             )
-             
+    st.query_params["probe"] = "1"
+            
 # -------------------------
 # TAB 2: SETLIST LOOKUP
 # -------------------------
