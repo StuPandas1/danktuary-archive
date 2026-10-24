@@ -316,6 +316,7 @@ if st.session_state.active_tab == "Song Lookup":
         key="t1_song_widget"
     )
     st.session_state.selected_song = selected_song
+    sync_url(song=selected_song, show=None)
 
     st.session_state.setdefault("t1_show_browse", False)
     with st.container(key="btnrow_song"):
@@ -473,6 +474,7 @@ elif st.session_state.active_tab == "Setlist Lookup":
         key="selected_show_widget",
     )
     st.session_state.selected_show = selected_show
+    sync_url(show=selected_show, song=None)
 
     today_md = pd.Timestamp.now(tz="America/New_York").strftime("%m/%d")
     on_this_day = [s for s in unique_shows if s.startswith(today_md)]
@@ -553,7 +555,6 @@ elif st.session_state.active_tab == "Setlist Lookup":
 
 elif st.session_state.active_tab == "Song Stats":
     dank_sign("Song Stats")
-    sync_url(song=None, show=None)
 
     t3_df, t3_stats = get_stats_df("song_stats_dw")
 
@@ -642,7 +643,6 @@ elif st.session_state.active_tab == "Song Stats":
 
 elif st.session_state.active_tab == "Setlist Stats":
     dank_sign("Setlist Stats")
-    sync_url(song=None, show=None)
 
     t3_df, t3_stats = get_stats_df("setlist_stats_dw")
 
