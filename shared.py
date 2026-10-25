@@ -959,7 +959,7 @@ div[class*="st-key-btnrow_"] .stButton > button p {
 .song-browse a.on { color:var(--dw-marigold); font-weight:800; background:#2c2926;
                     border-left:4px solid var(--dw-green); padding-left:8px; }
 
-                    /* =========================================================
+/* =========================================================
    CHART TOOLTIPS (Vega draws these outside Streamlit's containers)
    ========================================================= */
 #vg-tooltip-element,
@@ -986,7 +986,28 @@ div[class*="st-key-btnrow_"] .stButton > button p {
     color:var(--dw-cream) !important;
     font-weight:500 !important;
 }
+/* =========================================================
+   CLICK TABLES (container key starts with clicktable_)
+   The whole container becomes a panel; the grid sits inside it.
+   ========================================================= */
+div[class*="st-key-clicktable_"] {
+    background:var(--dw-panel);
+    border:3px solid rgba(241,234,216,.35);
+    border-radius:8px;
+    box-shadow:4px 4px 0 var(--dw-marigold);
+    padding:12px 14px 14px;
+    margin:4px 4px 12px 0;
+    gap:0.6rem;
+}
+div[class*="st-key-clicktable_"] .song-browse-hint { margin:0; 
+}
 
+/* flatten the grid's own frame so it doesn't double up with the panel */
+div[class*="st-key-clicktable_"] [data-testid="stDataFrame"],
+div[class*="st-key-clicktable_"] [data-testid="stDataFrame"] > div {
+    border:none !important; border-radius:4px; overflow:hidden;
+}
+    
 /* =========================================================
    TRACKLIST ROWS (container key starts with trackrow_ / trackon_)
    ========================================================= */
@@ -1168,32 +1189,56 @@ def linked_table(df, song_col="Title", show_col=None, show_loc_col=None,
         unsafe_allow_html=True,
     )
 
-def click_table(df, key, song_col=None, show_label_col=None,
-                show_col=None, loc_col=None, hide=()):
-    """Selectable table. Clicking a row opens that row's song in Song Lookup
-    (song_col), or its show in Setlist Lookup (show_label_col, or show_col
-    + loc_col). No page reload, so the session and URL sync survive.
-    Columns in `hide` (and loc_col) are used for the lookup but not shown."""
-    shown = df.drop(columns=[c for c in (*hide, loc_col) if c and c in df.columns])
+def _dank_style(d):
+    zebra = lambda col: ["background-color:#2c2926" if i % 2 else "" for i in range(len(col))]
+    return (d.style
+            .set_properties(**{"background-color": "#201e1b", "color": "#f1ead8"})
+            .apply(zebra, axis=0)
+            .map_index(lambda _: "background-color:#151412; color:#ffb81c; font-weight:800",
+                       axis=1))
+
+def click_table(df, key, song_cols=(), show_cols=None, hide=(), goto=None):
+    """Tap a cell to jump somewhere, depending on which column it's in.
+
+    song_cols: columns whose cell opens that song in Song Lookup.
+               A tuple of names, or {shown column: column holding the title}.
+    show_cols: {shown column: location column}. The cell is a date and opens
+               that show in Setlist Lookup. Use None as the value when the
+               cell already holds the full "date — venue" label.
+    hide:      extra columns to use for lookups but not display.
+    Tapping any other column does nothing."""
+    song_map = song_cols if isinstance(song_cols, dict) else {c: c for c in song_cols}
+    show_map = show_cols or {}
+    hidden = set(hide) | {v for v in show_map.values() if v}
+    shown = df.drop(columns=[c for c in hidden if c in df.columns])
+
     ver = st.session_state.get(f"{key}_ver", 0)
-    st.caption("Tap a row to open it")
-    ev = st.dataframe(shown, hide_index=True, width="stretch", height=520,
-                      on_select="rerun", selection_mode="single-row",
-                      key=f"{key}_{ver}")
-    rows = ev.selection.rows
-    if not rows:
+    st.markdown('<div class="song-browse-hint">Tap a song or date to open stats</div>',
+                unsafe_allow_html=True)
+    with st.container(key=f"clicktable_{key}"):
+        ev = st.dataframe(_dank_style(shown), hide_index=True, width="stretch",
+                          height=520, on_select="rerun",
+                          selection_mode="single-cell", key=f"{key}_{ver}")
+
+    cells = ev.selection.cells
+    if not cells:
         return
-    row = df.iloc[rows[0]]
-    st.session_state[f"{key}_ver"] = ver + 1       # fresh table, nothing stays selected
-    if song_col:
-        st.session_state["t1_pending_song_selection"] = row[song_col]
+    r, col = cells[0]
+    row = df.iloc[r]
+    st.session_state[f"{key}_ver"] = ver + 1        # fresh table, so the highlight clears
+
+    if col in song_map:
+        st.session_state["t1_pending_song_selection"] = row[song_map[col]]
         st.session_state["active_tab"] = "Song Lookup"
-    elif show_label_col:
-        st.session_state["pending_show_selection"] = row[show_label_col]
+    elif col in show_map:
+        loc = show_map[col]
+        st.session_state["pending_show_selection"] = (
+            f"{row[col]} — {row[loc]}" if loc else row[col]
+        )
         st.session_state["active_tab"] = "Setlist Lookup"
-    elif show_col and loc_col:
-        st.session_state["pending_show_selection"] = f"{row[show_col]} — {row[loc_col]}"
-        st.session_state["active_tab"] = "Setlist Lookup"
+    # any other column: no navigation, just the rerun that clears the highlight
+    if goto:
+        st.switch_page(goto)      # e.g. "pages/stats.py"
     st.rerun()
     
 def card_html(value, label, accent=False, nowrap=False):
@@ -1849,18 +1894,33 @@ def slug_to_show(q):
 
 
 def sync_url(**params):
-    """Make the address bar match the selection. None removes a param."""
+    """Make the address bar match the selection. None removes a param.
+    A 'show' value can be the full label; it's shortened automatically."""
     if params.get("show"):
         params["show"] = show_to_slug(params["show"])
     current = st.query_params.to_dict()
     new = dict(current)
+    written = st.session_state.setdefault("_url_written", {})
     for k, v in params.items():
+        written[k] = v or None          # remember what the app itself put in the URL
         if v:
             new[k] = v
         else:
             new.pop(k, None)
     if new != current:
         st.query_params.from_dict(new)
+
+
+def url_from_browser(key):
+    """Returns the URL's value for `key` only if the browser changed it
+    (back/forward, pasted link, shared link). Returns None if the app wrote
+    it, or if the param is absent."""
+    cur = st.query_params.get(key)
+    written = st.session_state.setdefault("_url_written", {})
+    if not cur or written.get(key) == cur:
+        return None
+    written[key] = cur
+    return cur
 
 
 def count_bar(data, x_field, title, sort=None):

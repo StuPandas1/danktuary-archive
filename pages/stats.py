@@ -9,7 +9,7 @@ from shared import ( #type: ignore
     load_data, build_filtered, find_closers, parse_duration, dank_theme, dank_footer, dank_sign,
     force_columns_horizontal, dank_chart, card_html, add_segue_labels, count_bar, dank_hex,
     dank_callout, make_dead_weight_callback, page_menu, dank_header, ranked_table,
-    linked_table, click_table, show_index, sync_url, _data_file_mtimes, slug_to_show,
+    url_from_browser, click_table, show_index, sync_url, _data_file_mtimes, slug_to_show,
     dead_weight_artists, dead_weight_year
 )
 
@@ -109,7 +109,8 @@ def venue_summary(d, loc):
     return rows["Date"].nunique(), top, counts[counts == top].index.tolist()
 
 @st.cache_data(show_spinner=False)
-def most_played_table(stats):
+def most_played_table(stats, d):
+    """Most Played table with hidden first/last locations for date taps."""
     t = (
         stats.sort_values("Times_Played", ascending=False)
         .assign(
@@ -121,6 +122,9 @@ def most_played_table(stats):
                          "Last_Played": "Last Played"})
         .reset_index(drop=True)
     )
+    locs = d.sort_values("Date").groupby("Title")["Location"].agg(["first", "last"])
+    t["First Location"] = t["Title"].map(locs["first"])
+    t["Last Location"] = t["Title"].map(locs["last"])
     t.insert(0, "Rank", range(1, len(t) + 1))
     return t
 
@@ -214,19 +218,15 @@ STATS_TABS = ["Song Lookup", "Setlist Lookup", "Song Stats", "Setlist Stats"]
 if st.session_state.get("active_tab") not in STATS_TABS:
     st.session_state.active_tab = "Song Lookup"
 
-# Shared-link support, once per session:
-#   /stats?song=<title>  -> selects a song, jumps to Song Lookup
-#   /stats?show=<slug>   -> selects a show, jumps to Setlist Lookup
-if not st.session_state.get("deeplink_done"):
-    st.session_state["deeplink_done"] = True
-    query_song = st.query_params.get("song")
-    query_show = slug_to_show(st.query_params.get("show"))
-    if query_song:
-        st.session_state.t1_pending_song_selection = query_song
-        st.session_state.active_tab = "Song Lookup"
-    elif query_show:
-        st.session_state.pending_show_selection = query_show
-        st.session_state.active_tab = "Setlist Lookup"
+# Address bar changed by the browser (shared link, back/forward): load that song or show
+query_song = url_from_browser("song")
+query_show = slug_to_show(url_from_browser("show"))
+if query_song:
+    st.session_state.t1_pending_song_selection = query_song
+    st.session_state.active_tab = "Song Lookup"
+elif query_show:
+    st.session_state.pending_show_selection = query_show
+    st.session_state.active_tab = "Setlist Lookup"
 
 # ---------- callbacks (run before the rerun, so setting widget keys is legal) ----------
 def pick_song_cb(title):
@@ -367,7 +367,7 @@ if st.session_state.active_tab == "Song Lookup":
                 "Duration": perf["Duration"].astype(str),
                 "Gap": perf["Gap"].map(lambda g: "—" if pd.isna(g) else str(int(g))),
             }).reset_index(drop=True)
-            click_table(history, key="tbl_hist", show_label_col="Show")
+            click_table(history, key="tbl_hist", show_cols={"Show": None})
 
         # ---- plays per year ----
         with tab_year:
@@ -514,7 +514,7 @@ elif st.session_state.active_tab == "Setlist Lookup":
             "Duration": hist["Duration"].where(~segue, "--").astype(str),
             "_song": hist["Title"],
         })
-        click_table(setlist, key="tbl_setlist", song_col="_song", hide=("_song",))
+        click_table(setlist, key="tbl_setlist", song_cols={"Title": "_song"}, hide=("_song",))
 
 # =========================================================
 # TAB 3: SONG STATS
@@ -550,7 +550,8 @@ elif st.session_state.active_tab == "Song Stats":
     dank_hex(SONG_STATS[active][1])
 
     if active == "most_played":
-        click_table(most_played_table(t3_stats), key="tbl_mp", song_col="Title")
+        click_table(most_played_table(t3_stats, t3_df), key="tbl_mp", song_cols=("Title",),
+            show_cols={"First Played": "First Location", "Last Played": "Last Location"})
 
     elif active == "by_year":
         years = sorted(t3_df["Date"].dt.year.unique().tolist())
@@ -566,7 +567,7 @@ elif st.session_state.active_tab == "Song Stats":
             n_shows = t3_df.loc[t3_df["Date"].dt.year == year, "Date"].nunique()
             dank_hex(f"**{year}**", f"{n_shows} recording{'' if n_shows == 1 else 's'}")
             table.insert(0, "Rank", range(1, len(table) + 1))
-            click_table(table, key="tbl_year", song_col="Title")
+            click_table(table, key="tbl_year", song_cols=("Title",), show_cols={"Last Played": "Last Location"})
 
     elif active == "longest_gap":
         gap_df = longest_gaps(t3_df)
@@ -574,8 +575,8 @@ elif st.session_state.active_tab == "Song Stats":
             dank_hex("No gaps to show")
         else:
             gap_df.insert(0, "Rank", range(1, len(gap_df) + 1))
-            click_table(gap_df, key="tbl_gap", song_col="Title",
-                        hide=("From Location", "To Location"))
+            click_table(gap_df, key="tbl_gap", song_cols=("Title",),
+                        show_cols={"From": "From Location", "To": "To Location"})
 
     elif active == "longest_jams":
         jams_df = long_jams(t3_df)
@@ -583,7 +584,7 @@ elif st.session_state.active_tab == "Song Stats":
             dank_hex("No jams over 18 minutes")
         else:
             jams_df.insert(0, "Rank", range(1, len(jams_df) + 1))
-            click_table(jams_df, key="tbl_jams", show_col="Date", loc_col="Location")
+            click_table(jams_df, key="tbl_jams", show_cols={"Date": "Location"})
 
     elif active == "song_streak":
         streaks = active_streaks(t3_df)
@@ -591,7 +592,7 @@ elif st.session_state.active_tab == "Song Stats":
             dank_callout("No active streaks, man.")
         else:
             click_table(ranked_table(streaks, sort_col="Active Streak"),
-                        key="tbl_streak", song_col="Title")
+                        key="tbl_streak", song_cols=("Title",))
 
     elif active == "practice_only":
         table = practiced_not_live(t3_df, df)
@@ -599,7 +600,7 @@ elif st.session_state.active_tab == "Song Stats":
             dank_hex("Everything we've practiced has been played live")
         else:
             table.insert(0, "Rank", range(1, len(table) + 1))
-            click_table(table, key="tbl_practice", song_col="Title")
+            click_table(table, key="tbl_practice", song_cols=("Title",), show_cols={"Last Practiced": "Last Location"})
 
 # =========================================================
 # TAB 4: SETLIST STATS
@@ -636,12 +637,12 @@ elif st.session_state.active_tab == "Setlist Stats":
     if active == "openers":
         table = opener_counts(t3_df)
         table.insert(0, "Rank", range(1, len(table) + 1))
-        click_table(table, key="tbl_open", song_col="Title")
+        click_table(table, key="tbl_open", song_cols=("Title",))
 
     elif active == "closers":
         table = closer_counts(t3_df)
         table.insert(0, "Rank", range(1, len(table) + 1))
-        click_table(table, key="tbl_close", song_col="Title")
+        click_table(table, key="tbl_close", song_cols=("Title",))
 
     elif active == "segues":
         table = segue_counts(t3_df)
@@ -649,7 +650,7 @@ elif st.session_state.active_tab == "Setlist Stats":
             dank_hex("No segues played 3+ times")
         else:
             table.insert(0, "Rank", range(1, len(table) + 1))
-            linked_table(table, song_col=None)      # two songs per cell, so nothing to open
+            click_table(table, key="tbl_segues", song_cols=())      # two songs per cell, so nothing to open
 
     elif active == "most_common_gig":
         table = gig_counts(t3_df)
@@ -657,7 +658,7 @@ elif st.session_state.active_tab == "Setlist Stats":
             dank_hex("No gig recordings found")
         else:
             table.insert(0, "Rank", range(1, len(table) + 1))
-            click_table(table, key="tbl_gig", song_col="Title")
+            click_table(table, key="tbl_gig", song_cols=("Title",), show_cols={"Last Played": "Last Location"})
 
     elif active == "heatmap":
         month_names = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",

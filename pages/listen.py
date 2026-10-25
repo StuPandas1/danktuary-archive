@@ -5,7 +5,7 @@ import html
 import re
 import random
 from shared import (
-    page_menu, dank_header, dank_theme, dank_footer, dank_sign, dank_hex, dank_callout, card_html, linked_table,
+    page_menu, dank_header, dank_theme, dank_footer, dank_sign, dank_hex, dank_callout, card_html, click_table, url_from_browser,
     dank_playlist_player, get_supabase_client,
     load_playlists_from_supabase, delete_playlist_from_supabase,
     add_tracks_to_playlist, song_show_map,
@@ -304,7 +304,9 @@ def render_setlist_stats(playlist, archive_df, show_label):
     if not matched:
         dank_hex("Couldn't match this show to the archive")
     else:
-        linked_table(pd.DataFrame(rows), song_col="Song")
+        history = pd.DataFrame(rows).astype(str)     # mixed numbers and "First time!" text
+        click_table(history, key="tbl_song_history", song_cols=("Song",),
+                    goto="pages/stats.py")
 
 # -------------------------
 # BROWSE DATA
@@ -327,7 +329,7 @@ if st.user.is_logged_in:
 # ---------- arriving from a shared link (?show=...), once per session ----------
 if not st.session_state.get("listen_deeplink_done"):
     st.session_state["listen_deeplink_done"] = True
-    q = slug_to_show(st.query_params.get("show"))
+    q = slug_to_show(url_from_browser("show"))
     if q in set(shows["Show_Label"]):
         st.session_state["now_playing"] = ("show", q)
         st.session_state["listen_sel"] = q
