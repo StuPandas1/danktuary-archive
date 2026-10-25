@@ -305,7 +305,7 @@ def render_setlist_stats(playlist, archive_df, show_label):
         dank_hex("Couldn't match this show to the archive")
     else:
         history = pd.DataFrame(rows).astype(str)     # mixed numbers and "First time!" text
-        click_table(history, key="tbl_song_history", song_cols=("Song",),
+        click_table(history, key="tbl_song_history", song_cols=("Song","Date"),
                     goto="pages/stats.py")
 
 # -------------------------
