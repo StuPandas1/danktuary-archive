@@ -248,13 +248,14 @@ def _get_show_setlist_titles(show_label, archive_df):
 
 @st.cache_data(show_spinner=False)
 def song_date_index(_archive_df, mtimes):
-    """{normalized title: [Take-1 play dates]}, built once per data change."""
+    """{normalized title: [(date, location), ...]} for Take-1 plays."""
     a = _archive_df[pd.to_numeric(_archive_df["Take"], errors="coerce") == 1]
     t = pd.DataFrame({
         "k": a["Title"].map(_normalize_song_title),
         "d": pd.to_datetime(a["Date"], errors="coerce"),
-    }).dropna()
-    return t.groupby("k")["d"].apply(list).to_dict()
+        "l": a["Location"],
+    }).dropna(subset=["k", "d"])
+    return t.groupby("k").apply(lambda g: list(zip(g["d"], g["l"])), include_groups=False).to_dict()
 
 @st.cache_data(show_spinner=False)
 def history_for_show(_archive_df, show_label, mtimes):
@@ -264,19 +265,21 @@ def history_for_show(_archive_df, show_label, mtimes):
     titles = _get_show_setlist_titles(show_label, _archive_df)
     rows, bustout = [], None
     for title in titles:
-        dates = idx.get(_normalize_song_title(title), [])
-        prior = [d for d in dates if show_date is None or d < show_date]
-        last = max(prior) if prior else None
+        plays = idx.get(_normalize_song_title(title), [])
+        prior = [p for p in plays if show_date is None or p[0] < show_date]
+        last = max(prior, key=lambda p: p[0]) if prior else None
         rows.append({
             "Song": title,
-            "Total Plays": len(dates) if dates else "First time!",
-            "Previous Play": last.strftime("%m/%d/%Y") if last is not None else "First time!",
+            "Total Plays": len(plays) if plays else "First time!",
+            "Previous Play": last[0].strftime("%m/%d/%Y") if last else "First time!",
+            "Previous Location": last[1] if last else "",
         })
         if last is not None and show_date is not None:
-            days = (show_date - last).days
+            days = (show_date - last[0]).days
             if bustout is None or days > bustout[1]:
                 bustout = (title, days)
     return rows, bustout, bool(titles)
+
 
 def render_setlist_stats(playlist, archive_df, show_label):
     stats = compute_setlist_stats(playlist)
@@ -305,8 +308,10 @@ def render_setlist_stats(playlist, archive_df, show_label):
         dank_hex("Couldn't match this show to the archive")
     else:
         history = pd.DataFrame(rows).astype(str)     # mixed numbers and "First time!" text
-        click_table(history, key="tbl_song_history", song_cols=("Song","Previous Play"),
-                    goto="pages/stats.py")
+        click_table(history, key="tbl_song_history",
+            song_cols=("Song",),
+            show_cols={"Previous Play": "Previous Location"},
+            goto="pages/stats.py")
 
 # -------------------------
 # BROWSE DATA
