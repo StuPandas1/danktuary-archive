@@ -327,28 +327,37 @@ def add_tracks_to_playlist(playlist_id, new_tracks):
     return True, "Tracks added!"
 
 @st.cache_data(show_spinner=False)
-def tracks_for_show(_d, show_label, mtimes):
+def tracks_for_show(_d, show_label, mtimes, all_takes=False):
     """Player-ready tracks for a show. A segue chain (rows sharing one file)
-    becomes one track. 'url' is the archive.org link when one exists, and
-    'path' is the OneDrive-relative path."""
-    d=_d
+    becomes one track. all_takes=False keeps Take 1 only (for stats);
+    all_takes=True keeps every take and labels them, e.g. 'Loser (Take 2)'."""
+    d = _d
     date_s, loc = show_label.split(" — ", 1)
     dt = pd.to_datetime(d["Date"], errors="coerce")
-    rows = d[(dt.dt.strftime("%m/%d/%Y") == date_s) & (d["Location"] == loc)]
-    rows = rows[pd.to_numeric(rows["Take"], errors="coerce") == 1].dropna(subset=["File Path"])
+    rows = d[(dt.dt.strftime("%m/%d/%Y") == date_s) & (d["Location"] == loc)].copy()
+    rows["_take"] = pd.to_numeric(rows["Take"], errors="coerce").fillna(1).astype(int)
+    if not all_takes:
+        rows = rows[rows["_take"] == 1]
+    rows = rows.dropna(subset=["File Path"])
     rows = rows[rows["File Path"].map(is_audio_path)]
     if "Status" in rows.columns:
         rows = rows[rows["Status"] != "missing"]
-    rows = rows.sort_values("Track Number")
+
+    # how many takes exist for each track number (to know which ones to label)
+    rows["_n"] = rows.groupby("Track Number")["_take"].transform("nunique")
+    rows = rows.sort_values(["Track Number", "_take"], kind="stable")
 
     tracks = []
     for path, g in rows.groupby("File Path", sort=False):
         ia = g["IA URL"].dropna() if "IA URL" in g.columns else []
+        label = " -> ".join(g["Title"])
+        if g["_n"].max() > 1:
+            label += f" (Take {g['_take'].min()})"
         tracks.append({
-            "label": " -> ".join(g["Title"]),
+            "label": label,
             "duration": g["Duration"].iloc[0],
             "url": ia.iloc[0] if len(ia) else "",
-            "path": onedrive_rel_path(path),      # relative, so no local paths get saved
+            "path": onedrive_rel_path(path),
         })
     return tracks
 

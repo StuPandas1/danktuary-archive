@@ -565,9 +565,11 @@ sync_url(show=ident if kind == "show" else None)
 # ---------- player (own container, survives mode switches) ----------
 player_slot = st.container(key="player_slot")
 playlist = []
+stats_tracks = []
 with player_slot:
     if kind == "show":
-        playlist = tracks_for_show(df, ident, MT)
+        playlist = tracks_for_show(df, ident, MT, True)
+        stats_tracks = tracks_for_show(df, ident, MT) 
         if playlist:
             playable = with_onedrive_urls(playlist, df)
             dank_playlist_player(ident, playable)
@@ -588,7 +590,7 @@ with player_slot:
 if kind == "show" and playlist:
     st.divider()
     with st.expander("📊 Setlist Stats", True):
-        render_setlist_stats(playlist, df, ident)
+        render_setlist_stats(stats_tracks, df, ident)
 
     if st.user.is_logged_in:
         with st.expander("➕ Add tracks from this show to a playlist"):
