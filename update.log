@@ -1123,3 +1123,516 @@
 2026-10-15 21:28:28  INFO     Pushing to GitHub...
 2026-10-15 21:28:31  INFO     Done! Streamlit Cloud will redeploy automatically in a minute or two.
 2026-10-15 21:28:31  INFO     Pipeline finished successfully.
+2026-10-28 23:09:57  INFO     ==================================================
+2026-10-28 23:09:57  INFO       DankApp Database Update
+2026-10-28 23:09:57  INFO     ==================================================
+2026-10-28 23:09:57  INFO     Working directory: C:\Users\Administrator\OneDrive\LoveDeep\danktuary-archive-clean
+2026-10-28 23:09:57  INFO     [1/9] Scan files...
+2026-10-28 23:10:09  INFO       scanner.py | Let's a-gooooo!
+2026-10-28 23:10:09  INFO       scanner.py | Loaded 6562 existing row(s); 5075 file(s) already catalogued and will be skipped.
+2026-10-28 23:10:09  INFO       scanner.py | Found extra column(s) in band_archive.csv added by another script: ['OneDrive Share URL']. Preserving them.
+2026-10-28 23:10:09  INFO       scanner.py | New folder detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-10-28 _ Jam Session'
+2026-10-28 23:10:09  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-10-28 _ Jam Session\01_ Viola Lee Blues.mp3'
+2026-10-28 23:10:09  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-10-28 _ Jam Session\02_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3'
+2026-10-28 23:10:09  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-10-28 _ Jam Session\03_ I Second That Emotion.mp3'
+2026-10-28 23:10:09  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-10-28 _ Jam Session\04_ Peggy-O _ Not Fade Away _ GDTRFB.mp3'
+2026-10-28 23:10:09  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-10-28 _ Jam Session\05_ The Shape I'm In.mp3'
+2026-10-28 23:10:09  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-10-28 _ Jam Session\06_ Feel Like A Stranger.mp3'
+2026-10-28 23:10:09  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-10-28 _ Jam Session\07_ Shakedown Street.mp3'
+2026-10-28 23:10:21  INFO       scanner.py | Added 11 new row(s) from 7 file(s); updated 0 placeholder(s) in place. CSV now has 6573 total row(s).
+2026-10-28 23:10:22  INFO     [2/9] Check the scan result...
+2026-10-28 23:10:22  INFO     Check passed (0 warning(s)).
+2026-10-28 23:10:22  INFO     [3/9] Upload to Internet Archive...
+2026-10-28 23:10:22  INFO     Checking what needs uploading to the Internet Archive...
+2026-10-28 23:10:32  INFO       upload_to_archive.py | Wrote upload plan: 1 show(s), 7 file(s) to upload.
+2026-10-28 23:10:32  INFO     7 file(s) across 1 show(s) are ready to upload.
+2026-10-28 23:10:37  INFO     Uploading...
+2026-10-28 23:10:40  INFO       upload_to_archive.py | 2026-10-28 — Danktuary Studios
+2026-10-28 23:10:40  INFO       upload_to_archive.py |   deadweight-2026-10-28-danktuary-studios: 0 file(s) already confirmed, uploading 7 file(s)...
+2026-10-28 23:10:40  INFO       upload_to_archive.py | 
+2026-10-28 23:10:41  INFO       upload_to_archive.py |  uploading 01_ Viola Lee Blues.mp3:   0%|          | 0/16 [00:00<?, ?MiB/s]
+2026-10-28 23:10:41  INFO       upload_to_archive.py |  uploading 01_ Viola Lee Blues.mp3:   6%|▋         | 1/16 [00:00<00:14,  1.02MiB/s]
+2026-10-28 23:10:41  INFO       upload_to_archive.py |  uploading 01_ Viola Lee Blues.mp3:  12%|█▎        | 2/16 [00:01<00:07,  1.90MiB/s]
+2026-10-28 23:10:41  INFO       upload_to_archive.py |  uploading 01_ Viola Lee Blues.mp3:  19%|█▉        | 3/16 [00:01<00:04,  2.63MiB/s]
+2026-10-28 23:10:42  INFO       upload_to_archive.py |  uploading 01_ Viola Lee Blues.mp3:  25%|██▌       | 4/16 [00:01<00:03,  3.03MiB/s]
+2026-10-28 23:10:42  INFO       upload_to_archive.py |  uploading 01_ Viola Lee Blues.mp3:  31%|███▏      | 5/16 [00:02<00:03,  2.87MiB/s]
+2026-10-28 23:10:43  INFO       upload_to_archive.py |  uploading 01_ Viola Lee Blues.mp3:  38%|███▊      | 6/16 [00:02<00:03,  2.72MiB/s]
+2026-10-28 23:10:43  INFO       upload_to_archive.py |  uploading 01_ Viola Lee Blues.mp3:  44%|████▍     | 7/16 [00:02<00:03,  2.64MiB/s]
+2026-10-28 23:10:44  INFO       upload_to_archive.py |  uploading 01_ Viola Lee Blues.mp3:  50%|█████     | 8/16 [00:03<00:03,  2.13MiB/s]
+2026-10-28 23:10:44  INFO       upload_to_archive.py |  uploading 01_ Viola Lee Blues.mp3:  56%|█████▋    | 9/16 [00:03<00:03,  2.10MiB/s]
+2026-10-28 23:10:45  INFO       upload_to_archive.py |  uploading 01_ Viola Lee Blues.mp3:  62%|██████▎   | 10/16 [00:04<00:02,  2.08MiB/s]
+2026-10-28 23:10:45  INFO       upload_to_archive.py |  uploading 01_ Viola Lee Blues.mp3:  69%|██████▉   | 11/16 [00:04<00:02,  2.08MiB/s]
+2026-10-28 23:10:46  INFO       upload_to_archive.py |  uploading 01_ Viola Lee Blues.mp3:  75%|███████▌  | 12/16 [00:05<00:01,  2.11MiB/s]
+2026-10-28 23:10:46  INFO       upload_to_archive.py |  uploading 01_ Viola Lee Blues.mp3:  81%|████████▏ | 13/16 [00:05<00:01,  2.15MiB/s]
+2026-10-28 23:10:47  INFO       upload_to_archive.py |  uploading 01_ Viola Lee Blues.mp3:  88%|████████▊ | 14/16 [00:06<00:00,  2.20MiB/s]
+2026-10-28 23:10:47  INFO       upload_to_archive.py |  uploading 01_ Viola Lee Blues.mp3:  94%|█████████▍| 15/16 [00:06<00:00,  2.17MiB/s]
+2026-10-28 23:10:47  INFO       upload_to_archive.py |  uploading 01_ Viola Lee Blues.mp3: 100%|██████████| 16/16 [00:06<00:00,  2.33MiB/s]
+2026-10-28 23:11:21  INFO       upload_to_archive.py | 
+2026-10-28 23:11:22  INFO       upload_to_archive.py |  uploading 02_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:   0%|          | 0/48 [00:00<?, ?MiB/s]
+2026-10-28 23:11:22  INFO       upload_to_archive.py |  uploading 02_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:   2%|▏         | 1/48 [00:00<00:33,  1.40MiB/s]
+2026-10-28 23:11:22  INFO       upload_to_archive.py |  uploading 02_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:   4%|▍         | 2/48 [00:00<00:17,  2.69MiB/s]
+2026-10-28 23:11:23  INFO       upload_to_archive.py |  uploading 02_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:   6%|▋         | 3/48 [00:01<00:14,  3.14MiB/s]
+2026-10-28 23:11:23  INFO       upload_to_archive.py |  uploading 02_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:   8%|▊         | 4/48 [00:01<00:12,  3.56MiB/s]
+2026-10-28 23:11:25  INFO       upload_to_archive.py |  uploading 02_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  10%|█         | 5/48 [00:01<00:12,  3.33MiB/s]
+2026-10-28 23:11:25  INFO       upload_to_archive.py |  uploading 02_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  12%|█▎        | 6/48 [00:03<00:39,  1.06MiB/s]
+2026-10-28 23:11:26  INFO       upload_to_archive.py |  uploading 02_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  15%|█▍        | 7/48 [00:04<00:29,  1.37MiB/s]
+2026-10-28 23:11:26  INFO       upload_to_archive.py |  uploading 02_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  17%|█▋        | 8/48 [00:04<00:23,  1.67MiB/s]
+2026-10-28 23:11:26  INFO       upload_to_archive.py |  uploading 02_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  19%|█▉        | 9/48 [00:04<00:19,  1.99MiB/s]
+2026-10-28 23:11:27  INFO       upload_to_archive.py |  uploading 02_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  21%|██        | 10/48 [00:05<00:16,  2.32MiB/s]
+2026-10-28 23:11:27  INFO       upload_to_archive.py |  uploading 02_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  23%|██▎       | 11/48 [00:05<00:14,  2.59MiB/s]
+2026-10-28 23:11:27  INFO       upload_to_archive.py |  uploading 02_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  25%|██▌       | 12/48 [00:05<00:12,  2.84MiB/s]
+2026-10-28 23:11:27  INFO       upload_to_archive.py |  uploading 02_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  27%|██▋       | 13/48 [00:05<00:11,  3.03MiB/s]
+2026-10-28 23:11:28  INFO       upload_to_archive.py |  uploading 02_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  29%|██▉       | 14/48 [00:06<00:10,  3.23MiB/s]
+2026-10-28 23:11:28  INFO       upload_to_archive.py |  uploading 02_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  31%|███▏      | 15/48 [00:06<00:09,  3.44MiB/s]
+2026-10-28 23:11:28  INFO       upload_to_archive.py |  uploading 02_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  33%|███▎      | 16/48 [00:06<00:08,  3.57MiB/s]
+2026-10-28 23:11:28  INFO       upload_to_archive.py |  uploading 02_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  35%|███▌      | 17/48 [00:06<00:08,  3.68MiB/s]
+2026-10-28 23:11:29  INFO       upload_to_archive.py |  uploading 02_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  38%|███▊      | 18/48 [00:07<00:07,  3.75MiB/s]
+2026-10-28 23:11:29  INFO       upload_to_archive.py |  uploading 02_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  40%|███▉      | 19/48 [00:07<00:07,  3.88MiB/s]
+2026-10-28 23:11:29  INFO       upload_to_archive.py |  uploading 02_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  42%|████▏     | 20/48 [00:07<00:07,  3.82MiB/s]
+2026-10-28 23:11:29  INFO       upload_to_archive.py |  uploading 02_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  44%|████▍     | 21/48 [00:07<00:07,  3.82MiB/s]
+2026-10-28 23:11:30  INFO       upload_to_archive.py |  uploading 02_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  46%|████▌     | 22/48 [00:08<00:06,  3.95MiB/s]
+2026-10-28 23:11:30  INFO       upload_to_archive.py |  uploading 02_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  48%|████▊     | 23/48 [00:08<00:06,  3.95MiB/s]
+2026-10-28 23:11:30  INFO       upload_to_archive.py |  uploading 02_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  50%|█████     | 24/48 [00:08<00:05,  4.02MiB/s]
+2026-10-28 23:11:30  INFO       upload_to_archive.py |  uploading 02_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  52%|█████▏    | 25/48 [00:08<00:05,  4.00MiB/s]
+2026-10-28 23:11:31  INFO       upload_to_archive.py |  uploading 02_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  54%|█████▍    | 26/48 [00:09<00:05,  4.09MiB/s]
+2026-10-28 23:11:31  INFO       upload_to_archive.py |  uploading 02_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  56%|█████▋    | 27/48 [00:09<00:05,  4.08MiB/s]
+2026-10-28 23:11:31  INFO       upload_to_archive.py |  uploading 02_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  58%|█████▊    | 28/48 [00:09<00:04,  4.20MiB/s]
+2026-10-28 23:11:31  INFO       upload_to_archive.py |  uploading 02_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  60%|██████    | 29/48 [00:09<00:04,  4.12MiB/s]
+2026-10-28 23:11:32  INFO       upload_to_archive.py |  uploading 02_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  62%|██████▎   | 30/48 [00:10<00:04,  4.21MiB/s]
+2026-10-28 23:11:32  INFO       upload_to_archive.py |  uploading 02_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  65%|██████▍   | 31/48 [00:10<00:04,  4.17MiB/s]
+2026-10-28 23:11:32  INFO       upload_to_archive.py |  uploading 02_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  67%|██████▋   | 32/48 [00:10<00:03,  4.32MiB/s]
+2026-10-28 23:11:32  INFO       upload_to_archive.py |  uploading 02_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  69%|██████▉   | 33/48 [00:10<00:03,  4.25MiB/s]
+2026-10-28 23:11:33  INFO       upload_to_archive.py |  uploading 02_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  71%|███████   | 34/48 [00:11<00:03,  3.60MiB/s]
+2026-10-28 23:11:33  INFO       upload_to_archive.py |  uploading 02_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  73%|███████▎  | 35/48 [00:11<00:03,  3.34MiB/s]
+2026-10-28 23:11:33  INFO       upload_to_archive.py |  uploading 02_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  75%|███████▌  | 36/48 [00:11<00:03,  3.27MiB/s]
+2026-10-28 23:11:34  INFO       upload_to_archive.py |  uploading 02_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  77%|███████▋  | 37/48 [00:12<00:03,  3.22MiB/s]
+2026-10-28 23:11:34  INFO       upload_to_archive.py |  uploading 02_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  79%|███████▉  | 38/48 [00:12<00:03,  3.27MiB/s]
+2026-10-28 23:11:34  INFO       upload_to_archive.py |  uploading 02_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  81%|████████▏ | 39/48 [00:12<00:02,  3.24MiB/s]
+2026-10-28 23:11:35  INFO       upload_to_archive.py |  uploading 02_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  83%|████████▎ | 40/48 [00:13<00:02,  3.31MiB/s]
+2026-10-28 23:11:35  INFO       upload_to_archive.py |  uploading 02_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  85%|████████▌ | 41/48 [00:13<00:02,  3.35MiB/s]
+2026-10-28 23:11:35  INFO       upload_to_archive.py |  uploading 02_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  88%|████████▊ | 42/48 [00:13<00:01,  3.19MiB/s]
+2026-10-28 23:11:36  INFO       upload_to_archive.py |  uploading 02_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  90%|████████▉ | 43/48 [00:14<00:01,  2.91MiB/s]
+2026-10-28 23:11:36  INFO       upload_to_archive.py |  uploading 02_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  92%|█████████▏| 44/48 [00:14<00:01,  2.82MiB/s]
+2026-10-28 23:11:37  INFO       upload_to_archive.py |  uploading 02_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  94%|█████████▍| 45/48 [00:14<00:01,  2.76MiB/s]
+2026-10-28 23:11:37  INFO       upload_to_archive.py |  uploading 02_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  96%|█████████▌| 46/48 [00:15<00:00,  2.62MiB/s]
+2026-10-28 23:11:37  INFO       upload_to_archive.py |  uploading 02_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  98%|█████████▊| 47/48 [00:15<00:00,  2.69MiB/s]
+2026-10-28 23:11:37  INFO       upload_to_archive.py |  uploading 02_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3: 100%|██████████| 48/48 [00:15<00:00,  2.97MiB/s]
+2026-10-28 23:11:37  INFO       upload_to_archive.py |  uploading 02_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3: 100%|██████████| 48/48 [00:15<00:00,  3.03MiB/s]
+2026-10-28 23:11:39  INFO       upload_to_archive.py | 
+2026-10-28 23:11:40  INFO       upload_to_archive.py |  uploading 03_ I Second That Emotion.mp3:   0%|          | 0/11 [00:00<?, ?MiB/s]
+2026-10-28 23:11:40  INFO       upload_to_archive.py |  uploading 03_ I Second That Emotion.mp3:   9%|▉         | 1/11 [00:00<00:08,  1.21MiB/s]
+2026-10-28 23:11:40  INFO       upload_to_archive.py |  uploading 03_ I Second That Emotion.mp3:  27%|██▋       | 3/11 [00:00<00:02,  3.92MiB/s]
+2026-10-28 23:11:41  INFO       upload_to_archive.py |  uploading 03_ I Second That Emotion.mp3:  45%|████▌     | 5/11 [00:01<00:01,  4.27MiB/s]
+2026-10-28 23:11:41  INFO       upload_to_archive.py |  uploading 03_ I Second That Emotion.mp3:  55%|█████▍    | 6/11 [00:01<00:01,  4.18MiB/s]
+2026-10-28 23:11:41  INFO       upload_to_archive.py |  uploading 03_ I Second That Emotion.mp3:  64%|██████▎   | 7/11 [00:01<00:00,  4.25MiB/s]
+2026-10-28 23:11:42  INFO       upload_to_archive.py |  uploading 03_ I Second That Emotion.mp3:  73%|███████▎  | 8/11 [00:02<00:00,  4.08MiB/s]
+2026-10-28 23:11:42  INFO       upload_to_archive.py |  uploading 03_ I Second That Emotion.mp3:  82%|████████▏ | 9/11 [00:02<00:00,  3.85MiB/s]
+2026-10-28 23:11:42  INFO       upload_to_archive.py |  uploading 03_ I Second That Emotion.mp3:  91%|█████████ | 10/11 [00:02<00:00,  3.71MiB/s]
+2026-10-28 23:11:42  INFO       upload_to_archive.py |  uploading 03_ I Second That Emotion.mp3: 100%|██████████| 11/11 [00:02<00:00,  4.28MiB/s]
+2026-10-28 23:11:42  INFO       upload_to_archive.py |  uploading 03_ I Second That Emotion.mp3: 100%|██████████| 11/11 [00:02<00:00,  3.86MiB/s]
+2026-10-28 23:11:48  INFO       upload_to_archive.py | 
+2026-10-28 23:11:49  INFO       upload_to_archive.py |  uploading 04_ Peggy-O _ Not Fade Away _ GDTRFB.mp3:   0%|          | 0/37 [00:00<?, ?MiB/s]
+2026-10-28 23:11:49  INFO       upload_to_archive.py |  uploading 04_ Peggy-O _ Not Fade Away _ GDTRFB.mp3:   3%|▎         | 1/37 [00:00<00:34,  1.03MiB/s]
+2026-10-28 23:11:49  INFO       upload_to_archive.py |  uploading 04_ Peggy-O _ Not Fade Away _ GDTRFB.mp3:   5%|▌         | 2/37 [00:01<00:16,  2.06MiB/s]
+2026-10-28 23:11:50  INFO       upload_to_archive.py |  uploading 04_ Peggy-O _ Not Fade Away _ GDTRFB.mp3:  11%|█         | 4/37 [00:01<00:08,  4.09MiB/s]
+2026-10-28 23:11:50  INFO       upload_to_archive.py |  uploading 04_ Peggy-O _ Not Fade Away _ GDTRFB.mp3:  14%|█▎        | 5/37 [00:01<00:09,  3.50MiB/s]
+2026-10-28 23:11:51  INFO       upload_to_archive.py |  uploading 04_ Peggy-O _ Not Fade Away _ GDTRFB.mp3:  16%|█▌        | 6/37 [00:02<00:13,  2.26MiB/s]
+2026-10-28 23:11:52  INFO       upload_to_archive.py |  uploading 04_ Peggy-O _ Not Fade Away _ GDTRFB.mp3:  19%|█▉        | 7/37 [00:03<00:14,  2.12MiB/s]
+2026-10-28 23:11:53  INFO       upload_to_archive.py |  uploading 04_ Peggy-O _ Not Fade Away _ GDTRFB.mp3:  22%|██▏       | 8/37 [00:03<00:16,  1.75MiB/s]
+2026-10-28 23:11:53  INFO       upload_to_archive.py |  uploading 04_ Peggy-O _ Not Fade Away _ GDTRFB.mp3:  24%|██▍       | 9/37 [00:04<00:17,  1.57MiB/s]
+2026-10-28 23:11:54  INFO       upload_to_archive.py |  uploading 04_ Peggy-O _ Not Fade Away _ GDTRFB.mp3:  27%|██▋       | 10/37 [00:05<00:16,  1.59MiB/s]
+2026-10-28 23:11:54  INFO       upload_to_archive.py |  uploading 04_ Peggy-O _ Not Fade Away _ GDTRFB.mp3:  30%|██▉       | 11/37 [00:05<00:14,  1.79MiB/s]
+2026-10-28 23:11:54  INFO       upload_to_archive.py |  uploading 04_ Peggy-O _ Not Fade Away _ GDTRFB.mp3:  32%|███▏      | 12/37 [00:06<00:13,  1.92MiB/s]
+2026-10-28 23:11:55  INFO       upload_to_archive.py |  uploading 04_ Peggy-O _ Not Fade Away _ GDTRFB.mp3:  35%|███▌      | 13/37 [00:06<00:12,  1.99MiB/s]
+2026-10-28 23:11:55  INFO       upload_to_archive.py |  uploading 04_ Peggy-O _ Not Fade Away _ GDTRFB.mp3:  38%|███▊      | 14/37 [00:07<00:11,  2.02MiB/s]
+2026-10-28 23:11:56  INFO       upload_to_archive.py |  uploading 04_ Peggy-O _ Not Fade Away _ GDTRFB.mp3:  41%|████      | 15/37 [00:07<00:10,  2.08MiB/s]
+2026-10-28 23:11:56  INFO       upload_to_archive.py |  uploading 04_ Peggy-O _ Not Fade Away _ GDTRFB.mp3:  43%|████▎     | 16/37 [00:07<00:09,  2.15MiB/s]
+2026-10-28 23:11:57  INFO       upload_to_archive.py |  uploading 04_ Peggy-O _ Not Fade Away _ GDTRFB.mp3:  46%|████▌     | 17/37 [00:08<00:09,  2.22MiB/s]
+2026-10-28 23:11:57  INFO       upload_to_archive.py |  uploading 04_ Peggy-O _ Not Fade Away _ GDTRFB.mp3:  49%|████▊     | 18/37 [00:08<00:08,  2.23MiB/s]
+2026-10-28 23:11:58  INFO       upload_to_archive.py |  uploading 04_ Peggy-O _ Not Fade Away _ GDTRFB.mp3:  51%|█████▏    | 19/37 [00:09<00:08,  2.19MiB/s]
+2026-10-28 23:11:58  INFO       upload_to_archive.py |  uploading 04_ Peggy-O _ Not Fade Away _ GDTRFB.mp3:  54%|█████▍    | 20/37 [00:09<00:08,  2.06MiB/s]
+2026-10-28 23:11:59  INFO       upload_to_archive.py |  uploading 04_ Peggy-O _ Not Fade Away _ GDTRFB.mp3:  57%|█████▋    | 21/37 [00:10<00:07,  2.01MiB/s]
+2026-10-28 23:11:59  INFO       upload_to_archive.py |  uploading 04_ Peggy-O _ Not Fade Away _ GDTRFB.mp3:  59%|█████▉    | 22/37 [00:10<00:07,  1.99MiB/s]
+2026-10-28 23:12:00  INFO       upload_to_archive.py |  uploading 04_ Peggy-O _ Not Fade Away _ GDTRFB.mp3:  62%|██████▏   | 23/37 [00:11<00:07,  1.98MiB/s]
+2026-10-28 23:12:00  INFO       upload_to_archive.py |  uploading 04_ Peggy-O _ Not Fade Away _ GDTRFB.mp3:  65%|██████▍   | 24/37 [00:11<00:06,  1.98MiB/s]
+2026-10-28 23:12:01  INFO       upload_to_archive.py |  uploading 04_ Peggy-O _ Not Fade Away _ GDTRFB.mp3:  68%|██████▊   | 25/37 [00:12<00:05,  2.04MiB/s]
+2026-10-28 23:12:01  INFO       upload_to_archive.py |  uploading 04_ Peggy-O _ Not Fade Away _ GDTRFB.mp3:  70%|███████   | 26/37 [00:12<00:05,  2.04MiB/s]
+2026-10-28 23:12:02  INFO       upload_to_archive.py |  uploading 04_ Peggy-O _ Not Fade Away _ GDTRFB.mp3:  73%|███████▎  | 27/37 [00:13<00:04,  2.07MiB/s]
+2026-10-28 23:12:02  INFO       upload_to_archive.py |  uploading 04_ Peggy-O _ Not Fade Away _ GDTRFB.mp3:  76%|███████▌  | 28/37 [00:13<00:04,  2.15MiB/s]
+2026-10-28 23:12:02  INFO       upload_to_archive.py |  uploading 04_ Peggy-O _ Not Fade Away _ GDTRFB.mp3:  78%|███████▊  | 29/37 [00:14<00:03,  2.18MiB/s]
+2026-10-28 23:12:03  INFO       upload_to_archive.py |  uploading 04_ Peggy-O _ Not Fade Away _ GDTRFB.mp3:  81%|████████  | 30/37 [00:14<00:03,  2.25MiB/s]
+2026-10-28 23:12:03  INFO       upload_to_archive.py |  uploading 04_ Peggy-O _ Not Fade Away _ GDTRFB.mp3:  84%|████████▍ | 31/37 [00:14<00:02,  2.28MiB/s]
+2026-10-28 23:12:04  INFO       upload_to_archive.py |  uploading 04_ Peggy-O _ Not Fade Away _ GDTRFB.mp3:  86%|████████▋ | 32/37 [00:15<00:02,  2.36MiB/s]
+2026-10-28 23:12:04  INFO       upload_to_archive.py |  uploading 04_ Peggy-O _ Not Fade Away _ GDTRFB.mp3:  89%|████████▉ | 33/37 [00:15<00:01,  2.37MiB/s]
+2026-10-28 23:12:04  INFO       upload_to_archive.py |  uploading 04_ Peggy-O _ Not Fade Away _ GDTRFB.mp3:  92%|█████████▏| 34/37 [00:16<00:01,  2.45MiB/s]
+2026-10-28 23:12:05  INFO       upload_to_archive.py |  uploading 04_ Peggy-O _ Not Fade Away _ GDTRFB.mp3:  95%|█████████▍| 35/37 [00:16<00:00,  2.53MiB/s]
+2026-10-28 23:12:05  INFO       upload_to_archive.py |  uploading 04_ Peggy-O _ Not Fade Away _ GDTRFB.mp3:  97%|█████████▋| 36/37 [00:16<00:00,  2.62MiB/s]
+2026-10-28 23:12:05  INFO       upload_to_archive.py |  uploading 04_ Peggy-O _ Not Fade Away _ GDTRFB.mp3: 100%|██████████| 37/37 [00:16<00:00,  3.29MiB/s]
+2026-10-28 23:12:05  INFO       upload_to_archive.py |  uploading 04_ Peggy-O _ Not Fade Away _ GDTRFB.mp3: 100%|██████████| 37/37 [00:16<00:00,  2.18MiB/s]
+2026-10-28 23:12:07  INFO       upload_to_archive.py | 
+2026-10-28 23:12:07  INFO       upload_to_archive.py |  uploading 05_ The Shape I'm In.mp3:   0%|          | 0/7 [00:00<?, ?MiB/s]
+2026-10-28 23:12:08  INFO       upload_to_archive.py |  uploading 05_ The Shape I'm In.mp3:  14%|█▍        | 1/7 [00:00<00:04,  1.41MiB/s]
+2026-10-28 23:12:08  INFO       upload_to_archive.py |  uploading 05_ The Shape I'm In.mp3:  57%|█████▋    | 4/7 [00:00<00:00,  5.52MiB/s]
+2026-10-28 23:12:08  INFO       upload_to_archive.py |  uploading 05_ The Shape I'm In.mp3:  86%|████████▌ | 6/7 [00:01<00:00,  6.95MiB/s]
+2026-10-28 23:12:08  INFO       upload_to_archive.py |  uploading 05_ The Shape I'm In.mp3: 100%|██████████| 7/7 [00:01<00:00,  5.89MiB/s]
+2026-10-28 23:12:14  INFO       upload_to_archive.py | 
+2026-10-28 23:12:15  INFO       upload_to_archive.py |  uploading 06_ Feel Like A Stranger.mp3:   0%|          | 0/12 [00:00<?, ?MiB/s]
+2026-10-28 23:12:15  INFO       upload_to_archive.py |  uploading 06_ Feel Like A Stranger.mp3:   8%|▊         | 1/12 [00:00<00:08,  1.26MiB/s]
+2026-10-28 23:12:15  INFO       upload_to_archive.py |  uploading 06_ Feel Like A Stranger.mp3:  17%|█▋        | 2/12 [00:01<00:04,  2.16MiB/s]
+2026-10-28 23:12:15  INFO       upload_to_archive.py |  uploading 06_ Feel Like A Stranger.mp3:  25%|██▌       | 3/12 [00:01<00:03,  2.74MiB/s]
+2026-10-28 23:12:16  INFO       upload_to_archive.py |  uploading 06_ Feel Like A Stranger.mp3:  33%|███▎      | 4/12 [00:01<00:02,  3.19MiB/s]
+2026-10-28 23:12:16  INFO       upload_to_archive.py |  uploading 06_ Feel Like A Stranger.mp3:  42%|████▏     | 5/12 [00:01<00:02,  2.78MiB/s]
+2026-10-28 23:12:18  INFO       upload_to_archive.py |  uploading 06_ Feel Like A Stranger.mp3:  50%|█████     | 6/12 [00:02<00:02,  2.54MiB/s]
+2026-10-28 23:12:18  INFO       upload_to_archive.py |  uploading 06_ Feel Like A Stranger.mp3:  58%|█████▊    | 7/12 [00:04<00:04,  1.18MiB/s]
+2026-10-28 23:12:19  INFO       upload_to_archive.py |  uploading 06_ Feel Like A Stranger.mp3:  67%|██████▋   | 8/12 [00:04<00:02,  1.48MiB/s]
+2026-10-28 23:12:19  INFO       upload_to_archive.py |  uploading 06_ Feel Like A Stranger.mp3:  75%|███████▌  | 9/12 [00:04<00:01,  1.80MiB/s]
+2026-10-28 23:12:19  INFO       upload_to_archive.py |  uploading 06_ Feel Like A Stranger.mp3:  83%|████████▎ | 10/12 [00:05<00:00,  2.08MiB/s]
+2026-10-28 23:12:19  INFO       upload_to_archive.py |  uploading 06_ Feel Like A Stranger.mp3:  92%|█████████▏| 11/12 [00:05<00:00,  2.27MiB/s]
+2026-10-28 23:12:19  INFO       upload_to_archive.py |  uploading 06_ Feel Like A Stranger.mp3: 100%|██████████| 12/12 [00:05<00:00,  2.16MiB/s]
+2026-10-28 23:12:21  INFO       upload_to_archive.py | 
+2026-10-28 23:12:22  INFO       upload_to_archive.py |  uploading 07_ Shakedown Street.mp3:   0%|          | 0/10 [00:00<?, ?MiB/s]
+2026-10-28 23:12:22  INFO       upload_to_archive.py |  uploading 07_ Shakedown Street.mp3:  10%|█         | 1/10 [00:00<00:06,  1.33MiB/s]
+2026-10-28 23:12:22  INFO       upload_to_archive.py |  uploading 07_ Shakedown Street.mp3:  40%|████      | 4/10 [00:00<00:01,  5.18MiB/s]
+2026-10-28 23:12:22  INFO       upload_to_archive.py |  uploading 07_ Shakedown Street.mp3:  70%|███████   | 7/10 [00:01<00:00,  8.80MiB/s]
+2026-10-28 23:12:22  INFO       upload_to_archive.py |  uploading 07_ Shakedown Street.mp3: 100%|██████████| 10/10 [00:01<00:00,  8.68MiB/s]
+2026-10-28 23:13:34  INFO       upload_to_archive.py | Done. band_archive.csv updated with IA URLs.
+2026-10-28 23:13:34  INFO     [4/9] Analyze data...
+2026-10-28 23:13:35  INFO       analyze.py | song_stats.csv created!
+2026-10-28 23:13:35  INFO     [5/9] Build metadata...
+2026-10-28 23:13:36  INFO       build_metadata.py | song_metadata.csv updated!
+2026-10-28 23:13:36  INFO     [6/9] Fill missing artists...
+2026-10-28 23:13:36  INFO     No missing artists.
+2026-10-28 23:13:36  INFO     [7/9] Generate share links...
+2026-10-28 23:13:45  INFO       generate_share_links.py | Found 1 folders to generate share links for.
+2026-10-28 23:13:45  INFO       generate_share_links.py |   Processing: LoveDeep/Audio Recordings/Jam Session Recordings 2021-/2026/2026-10-28 _ Jam Session
+2026-10-28 23:13:45  INFO       generate_share_links.py |     ✓ https://1drv.ms/f/c/436f797b4dd480a3/IgDB2JYrWR7fSbdlUYDyjk6fAXI5ATjchmfVxdbwaf1lvn0
+2026-10-28 23:13:45  INFO       generate_share_links.py | 
+2026-10-28 23:13:45  INFO       generate_share_links.py | Done. 1 share links written to band_archive.csv.
+2026-10-28 23:13:45  INFO     [8/9] Final check before push...
+2026-10-28 23:13:45  INFO     Check passed (0 warning(s)).
+2026-10-28 23:13:45  INFO     [9/9] Commit and push...
+2026-10-28 23:13:46  INFO     Changes detected. Committing...
+2026-10-28 23:13:47  INFO     Pushing to GitHub...
+2026-10-28 23:13:50  INFO     Done! Streamlit Cloud will redeploy automatically in a minute or two.
+2026-10-28 23:13:50  INFO     Pipeline finished successfully.
+2026-10-28 23:13:50  INFO       Scan: 11 new track row(s) from 7 file(s)
+2026-10-28 23:13:50  INFO       Shows touched: 2026-10-28 — Danktuary Studios
+2026-10-28 23:13:50  INFO       Uploaded 7 file(s) from 1 show(s) to the Internet Archive.
+2026-10-28 23:13:50  INFO       Data check: passed with 0 warning(s).
+2026-10-28 23:13:50  INFO       Git: pushed commit 19a5cf2
+2026-10-28 23:13:50  INFO       Took 3m 52s.
+2026-10-31 20:00:21  INFO     ==================================================
+2026-10-31 20:00:21  INFO       DankApp Database Update
+2026-10-31 20:00:21  INFO     ==================================================
+2026-10-31 20:00:21  INFO     Working directory: C:\Users\Administrator\OneDrive\LoveDeep\danktuary-archive-clean
+2026-10-31 20:00:21  INFO     [1/9] Scan files...
+2026-10-31 20:00:31  INFO       scanner.py | Let's a-gooooo!
+2026-10-31 20:00:31  INFO       scanner.py | Loaded 6573 existing row(s); 5082 file(s) already catalogued and will be skipped.
+2026-10-31 20:00:31  INFO       scanner.py | Found extra column(s) in band_archive.csv added by another script: ['OneDrive Share URL']. Preserving them.
+2026-10-31 20:00:31  INFO       scanner.py | New folder detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-10-21 _ Jam Session'
+2026-10-31 20:00:31  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-10-21 _ Jam Session\01_ They Love Each Other _ Not Fade Away _ Cumberland _ GDTRFB _ Cumberland.mp3'
+2026-10-31 20:00:31  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-10-21 _ Jam Session\02_ Mission In The Rain.mp3'
+2026-10-31 20:00:38  INFO       scanner.py | Added 6 new row(s) from 2 file(s); updated 0 placeholder(s) in place. CSV now has 6579 total row(s).
+2026-10-31 20:00:39  INFO     [2/9] Check the scan result...
+2026-10-31 20:00:39  INFO     Check passed (0 warning(s)).
+2026-10-31 20:00:39  INFO     [3/9] Upload to Internet Archive...
+2026-10-31 20:00:39  INFO     Checking what needs uploading to the Internet Archive...
+2026-10-31 20:00:44  INFO       upload_to_archive.py | Wrote upload plan: 1 show(s), 2 file(s) to upload.
+2026-10-31 20:00:44  INFO     2 file(s) across 1 show(s) are ready to upload.
+2026-10-31 20:00:48  INFO     Uploading...
+2026-10-31 20:00:51  INFO       upload_to_archive.py | 2026-10-21 — Danktuary Studios
+2026-10-31 20:00:51  INFO       upload_to_archive.py |   deadweight-2026-10-21-danktuary-studios: 0 file(s) already confirmed, uploading 2 file(s)...
+2026-10-31 20:00:51  INFO       upload_to_archive.py | 
+2026-10-31 20:00:52  INFO       upload_to_archive.py |  uploading 01_ They Love Each Other _ Not Fade Away _ Cumberland _ GDTRFB _ Cumberland.mp3:   0%|          | 0/34 [00:00<?, ?MiB/s]
+2026-10-31 20:00:53  INFO       upload_to_archive.py |  uploading 01_ They Love Each Other _ Not Fade Away _ Cumberland _ GDTRFB _ Cumberland.mp3:   3%|▎         | 1/34 [00:00<00:32,  1.03MiB/s]
+2026-10-31 20:00:53  INFO       upload_to_archive.py |  uploading 01_ They Love Each Other _ Not Fade Away _ Cumberland _ GDTRFB _ Cumberland.mp3:   6%|▌         | 2/34 [00:01<00:16,  1.99MiB/s]
+2026-10-31 20:00:53  INFO       upload_to_archive.py |  uploading 01_ They Love Each Other _ Not Fade Away _ Cumberland _ GDTRFB _ Cumberland.mp3:   9%|▉         | 3/34 [00:01<00:12,  2.42MiB/s]
+2026-10-31 20:00:54  INFO       upload_to_archive.py |  uploading 01_ They Love Each Other _ Not Fade Away _ Cumberland _ GDTRFB _ Cumberland.mp3:  12%|█▏        | 4/34 [00:01<00:10,  2.75MiB/s]
+2026-10-31 20:00:54  INFO       upload_to_archive.py |  uploading 01_ They Love Each Other _ Not Fade Away _ Cumberland _ GDTRFB _ Cumberland.mp3:  15%|█▍        | 5/34 [00:02<00:10,  2.72MiB/s]
+2026-10-31 20:00:54  INFO       upload_to_archive.py |  uploading 01_ They Love Each Other _ Not Fade Away _ Cumberland _ GDTRFB _ Cumberland.mp3:  18%|█▊        | 6/34 [00:02<00:10,  2.62MiB/s]
+2026-10-31 20:00:55  INFO       upload_to_archive.py |  uploading 01_ They Love Each Other _ Not Fade Away _ Cumberland _ GDTRFB _ Cumberland.mp3:  21%|██        | 7/34 [00:02<00:10,  2.56MiB/s]
+2026-10-31 20:00:55  INFO       upload_to_archive.py |  uploading 01_ They Love Each Other _ Not Fade Away _ Cumberland _ GDTRFB _ Cumberland.mp3:  24%|██▎       | 8/34 [00:03<00:10,  2.50MiB/s]
+2026-10-31 20:00:56  INFO       upload_to_archive.py |  uploading 01_ They Love Each Other _ Not Fade Away _ Cumberland _ GDTRFB _ Cumberland.mp3:  26%|██▋       | 9/34 [00:03<00:10,  2.47MiB/s]
+2026-10-31 20:00:56  INFO       upload_to_archive.py |  uploading 01_ They Love Each Other _ Not Fade Away _ Cumberland _ GDTRFB _ Cumberland.mp3:  29%|██▉       | 10/34 [00:04<00:11,  2.05MiB/s]
+2026-10-31 20:00:57  INFO       upload_to_archive.py |  uploading 01_ They Love Each Other _ Not Fade Away _ Cumberland _ GDTRFB _ Cumberland.mp3:  32%|███▏      | 11/34 [00:04<00:10,  2.16MiB/s]
+2026-10-31 20:00:57  INFO       upload_to_archive.py |  uploading 01_ They Love Each Other _ Not Fade Away _ Cumberland _ GDTRFB _ Cumberland.mp3:  35%|███▌      | 12/34 [00:05<00:09,  2.29MiB/s]
+2026-10-31 20:00:58  INFO       upload_to_archive.py |  uploading 01_ They Love Each Other _ Not Fade Away _ Cumberland _ GDTRFB _ Cumberland.mp3:  38%|███▊      | 13/34 [00:05<00:08,  2.35MiB/s]
+2026-10-31 20:00:59  INFO       upload_to_archive.py |  uploading 01_ They Love Each Other _ Not Fade Away _ Cumberland _ GDTRFB _ Cumberland.mp3:  41%|████      | 14/34 [00:06<00:10,  1.94MiB/s]
+2026-10-31 20:00:59  INFO       upload_to_archive.py |  uploading 01_ They Love Each Other _ Not Fade Away _ Cumberland _ GDTRFB _ Cumberland.mp3:  44%|████▍     | 15/34 [00:07<00:10,  1.74MiB/s]
+2026-10-31 20:01:00  INFO       upload_to_archive.py |  uploading 01_ They Love Each Other _ Not Fade Away _ Cumberland _ GDTRFB _ Cumberland.mp3:  47%|████▋     | 16/34 [00:07<00:10,  1.67MiB/s]
+2026-10-31 20:01:01  INFO       upload_to_archive.py |  uploading 01_ They Love Each Other _ Not Fade Away _ Cumberland _ GDTRFB _ Cumberland.mp3:  50%|█████     | 17/34 [00:08<00:10,  1.65MiB/s]
+2026-10-31 20:01:01  INFO       upload_to_archive.py |  uploading 01_ They Love Each Other _ Not Fade Away _ Cumberland _ GDTRFB _ Cumberland.mp3:  53%|█████▎    | 18/34 [00:09<00:10,  1.50MiB/s]
+2026-10-31 20:01:02  INFO       upload_to_archive.py |  uploading 01_ They Love Each Other _ Not Fade Away _ Cumberland _ GDTRFB _ Cumberland.mp3:  56%|█████▌    | 19/34 [00:09<00:10,  1.44MiB/s]
+2026-10-31 20:01:03  INFO       upload_to_archive.py |  uploading 01_ They Love Each Other _ Not Fade Away _ Cumberland _ GDTRFB _ Cumberland.mp3:  59%|█████▉    | 20/34 [00:10<00:09,  1.42MiB/s]
+2026-10-31 20:01:04  INFO       upload_to_archive.py |  uploading 01_ They Love Each Other _ Not Fade Away _ Cumberland _ GDTRFB _ Cumberland.mp3:  62%|██████▏   | 21/34 [00:11<00:10,  1.28MiB/s]
+2026-10-31 20:01:05  INFO       upload_to_archive.py |  uploading 01_ They Love Each Other _ Not Fade Away _ Cumberland _ GDTRFB _ Cumberland.mp3:  65%|██████▍   | 22/34 [00:12<00:09,  1.24MiB/s]
+2026-10-31 20:01:05  INFO       upload_to_archive.py |  uploading 01_ They Love Each Other _ Not Fade Away _ Cumberland _ GDTRFB _ Cumberland.mp3:  68%|██████▊   | 23/34 [00:13<00:08,  1.25MiB/s]
+2026-10-31 20:01:06  INFO       upload_to_archive.py |  uploading 01_ They Love Each Other _ Not Fade Away _ Cumberland _ GDTRFB _ Cumberland.mp3:  71%|███████   | 24/34 [00:13<00:07,  1.28MiB/s]
+2026-10-31 20:01:07  INFO       upload_to_archive.py |  uploading 01_ They Love Each Other _ Not Fade Away _ Cumberland _ GDTRFB _ Cumberland.mp3:  74%|███████▎  | 25/34 [00:14<00:06,  1.35MiB/s]
+2026-10-31 20:01:07  INFO       upload_to_archive.py |  uploading 01_ They Love Each Other _ Not Fade Away _ Cumberland _ GDTRFB _ Cumberland.mp3:  76%|███████▋  | 26/34 [00:15<00:05,  1.42MiB/s]
+2026-10-31 20:01:08  INFO       upload_to_archive.py |  uploading 01_ They Love Each Other _ Not Fade Away _ Cumberland _ GDTRFB _ Cumberland.mp3:  79%|███████▉  | 27/34 [00:15<00:04,  1.52MiB/s]
+2026-10-31 20:01:08  INFO       upload_to_archive.py |  uploading 01_ They Love Each Other _ Not Fade Away _ Cumberland _ GDTRFB _ Cumberland.mp3:  82%|████████▏ | 28/34 [00:16<00:03,  1.63MiB/s]
+2026-10-31 20:01:09  INFO       upload_to_archive.py |  uploading 01_ They Love Each Other _ Not Fade Away _ Cumberland _ GDTRFB _ Cumberland.mp3:  85%|████████▌ | 29/34 [00:16<00:02,  1.74MiB/s]
+2026-10-31 20:01:09  INFO       upload_to_archive.py |  uploading 01_ They Love Each Other _ Not Fade Away _ Cumberland _ GDTRFB _ Cumberland.mp3:  88%|████████▊ | 30/34 [00:17<00:02,  1.86MiB/s]
+2026-10-31 20:01:10  INFO       upload_to_archive.py |  uploading 01_ They Love Each Other _ Not Fade Away _ Cumberland _ GDTRFB _ Cumberland.mp3:  91%|█████████ | 31/34 [00:17<00:01,  2.00MiB/s]
+2026-10-31 20:01:10  INFO       upload_to_archive.py |  uploading 01_ They Love Each Other _ Not Fade Away _ Cumberland _ GDTRFB _ Cumberland.mp3:  94%|█████████▍| 32/34 [00:18<00:00,  2.10MiB/s]
+2026-10-31 20:01:10  INFO       upload_to_archive.py |  uploading 01_ They Love Each Other _ Not Fade Away _ Cumberland _ GDTRFB _ Cumberland.mp3:  97%|█████████▋| 33/34 [00:18<00:00,  2.21MiB/s]
+2026-10-31 20:01:10  INFO       upload_to_archive.py |  uploading 01_ They Love Each Other _ Not Fade Away _ Cumberland _ GDTRFB _ Cumberland.mp3: 100%|██████████| 34/34 [00:18<00:00,  2.70MiB/s]
+2026-10-31 20:01:10  INFO       upload_to_archive.py |  uploading 01_ They Love Each Other _ Not Fade Away _ Cumberland _ GDTRFB _ Cumberland.mp3: 100%|██████████| 34/34 [00:18<00:00,  1.82MiB/s]
+2026-10-31 20:01:27  INFO       upload_to_archive.py | 
+2026-10-31 20:01:29  INFO       upload_to_archive.py |  uploading 02_ Mission In The Rain.mp3:   0%|          | 0/10 [00:00<?, ?MiB/s]
+2026-10-31 20:01:30  INFO       upload_to_archive.py |  uploading 02_ Mission In The Rain.mp3:  10%|█         | 1/10 [00:01<00:12,  1.33s/MiB]
+2026-10-31 20:01:32  INFO       upload_to_archive.py |  uploading 02_ Mission In The Rain.mp3:  20%|██        | 2/10 [00:02<00:10,  1.33s/MiB]
+2026-10-31 20:01:34  INFO       upload_to_archive.py |  uploading 02_ Mission In The Rain.mp3:  30%|███       | 3/10 [00:04<00:09,  1.42s/MiB]
+2026-10-31 20:01:35  INFO       upload_to_archive.py |  uploading 02_ Mission In The Rain.mp3:  40%|████      | 4/10 [00:06<00:09,  1.62s/MiB]
+2026-10-31 20:01:37  INFO       upload_to_archive.py |  uploading 02_ Mission In The Rain.mp3:  50%|█████     | 5/10 [00:07<00:07,  1.53s/MiB]
+2026-10-31 20:01:38  INFO       upload_to_archive.py |  uploading 02_ Mission In The Rain.mp3:  60%|██████    | 6/10 [00:09<00:06,  1.60s/MiB]
+2026-10-31 20:01:39  INFO       upload_to_archive.py |  uploading 02_ Mission In The Rain.mp3:  70%|███████   | 7/10 [00:10<00:04,  1.53s/MiB]
+2026-10-31 20:01:40  INFO       upload_to_archive.py |  uploading 02_ Mission In The Rain.mp3:  80%|████████  | 8/10 [00:11<00:02,  1.36s/MiB]
+2026-10-31 20:01:40  INFO       upload_to_archive.py |  uploading 02_ Mission In The Rain.mp3:  90%|█████████ | 9/10 [00:12<00:01,  1.20s/MiB]
+2026-10-31 20:01:40  INFO       upload_to_archive.py |  uploading 02_ Mission In The Rain.mp3: 100%|██████████| 10/10 [00:12<00:00,  1.05MiB/s]
+2026-10-31 20:01:40  INFO       upload_to_archive.py |  uploading 02_ Mission In The Rain.mp3: 100%|██████████| 10/10 [00:12<00:00,  1.29s/MiB]
+2026-10-31 20:02:43  INFO       upload_to_archive.py | Done. band_archive.csv updated with IA URLs.
+2026-10-31 20:02:43  INFO     [4/9] Analyze data...
+2026-10-31 20:02:44  INFO       analyze.py | song_stats.csv created!
+2026-10-31 20:02:44  INFO     [5/9] Build metadata...
+2026-10-31 20:02:45  INFO       build_metadata.py | song_metadata.csv updated!
+2026-10-31 20:02:45  INFO     [6/9] Fill missing artists...
+2026-10-31 20:02:45  INFO     No missing artists.
+2026-10-31 20:02:45  INFO     [7/9] Generate share links...
+2026-10-31 20:02:52  INFO       generate_share_links.py | Found 1 folders to generate share links for.
+2026-10-31 20:02:52  INFO       generate_share_links.py |   Processing: LoveDeep/Audio Recordings/Jam Session Recordings 2021-/2026/2026-10-21 _ Jam Session
+2026-10-31 20:02:52  INFO       generate_share_links.py |     ✓ https://1drv.ms/f/c/436f797b4dd480a3/IgCUYUtnuQDhTbL7aOTPM8v8AQ-vqhM3Vnci70GT9X2std4
+2026-10-31 20:02:52  INFO       generate_share_links.py | 
+2026-10-31 20:02:52  INFO       generate_share_links.py | Done. 1 share links written to band_archive.csv.
+2026-10-31 20:02:52  INFO     [8/9] Final check before push...
+2026-10-31 20:02:52  INFO     Check passed (0 warning(s)).
+2026-10-31 20:02:52  INFO     [9/9] Commit and push...
+2026-10-31 20:02:53  INFO     Changes detected. Committing...
+2026-10-31 20:02:54  INFO     Pushing to GitHub...
+2026-10-31 20:02:57  INFO     Done! Streamlit Cloud will redeploy automatically in a minute or two.
+2026-10-31 20:02:57  INFO     Pipeline finished successfully.
+2026-10-31 20:02:57  INFO       Scan: 6 new track row(s) from 2 file(s)
+2026-10-31 20:02:57  INFO       Shows touched: 2026-10-21 — Danktuary Studios
+2026-10-31 20:02:57  INFO       Uploaded 2 file(s) from 1 show(s) to the Internet Archive.
+2026-10-31 20:02:57  INFO       Data check: passed with 0 warning(s).
+2026-10-31 20:02:57  INFO       Git: pushed commit 8f42ca1
+2026-10-31 20:02:57  INFO       Took 2m 35s.
+2026-11-04 23:15:11  INFO     ==================================================
+2026-11-04 23:15:11  INFO       DankApp Database Update
+2026-11-04 23:15:11  INFO     ==================================================
+2026-11-04 23:15:11  INFO     Working directory: C:\Users\Administrator\OneDrive\LoveDeep\danktuary-archive-clean
+2026-11-04 23:15:11  INFO     [1/9] Scan files...
+2026-11-04 23:15:25  INFO       scanner.py | Let's a-gooooo!
+2026-11-04 23:15:25  INFO       scanner.py | Loaded 6579 existing row(s); 5084 file(s) already catalogued and will be skipped.
+2026-11-04 23:15:25  INFO       scanner.py | Found extra column(s) in band_archive.csv added by another script: ['OneDrive Share URL']. Preserving them.
+2026-11-04 23:15:25  INFO       scanner.py | New folder detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-11-04 _ Jam Session'
+2026-11-04 23:15:25  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-11-04 _ Jam Session\01_ How Sweet It Is.mp3'
+2026-11-04 23:15:25  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-11-04 _ Jam Session\02_ One More Saturday Night.mp3'
+2026-11-04 23:15:25  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-11-04 _ Jam Session\03_ The Shape I'm In.mp3'
+2026-11-04 23:15:25  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-11-04 _ Jam Session\04_ Truckin _ Stuck Inside Of Mobile _ Bird Song _ Truckin.mp3'
+2026-11-04 23:15:25  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-11-04 _ Jam Session\05_ Brown Eyed Women.mp3'
+2026-11-04 23:15:25  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-11-04 _ Jam Session\06_ Ramble On Rose.mp3'
+2026-11-04 23:15:25  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-11-04 _ Jam Session\07_ The Shape I'm In.mp3'
+2026-11-04 23:15:25  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-11-04 _ Jam Session\08_ Sugaree.mp3'
+2026-11-04 23:15:25  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-11-04 _ Jam Session\09_ Ship Of Fools _ Eyes Of The World.mp3'
+2026-11-04 23:15:25  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-11-04 _ Jam Session\10_ Midnight Moonlight.mp3'
+2026-11-04 23:15:35  INFO       scanner.py | Added 14 new row(s) from 10 file(s); updated 0 placeholder(s) in place. CSV now has 6593 total row(s).
+2026-11-04 23:15:35  INFO     [2/9] Check the scan result...
+2026-11-04 23:15:35  INFO     Check passed (0 warning(s)).
+2026-11-04 23:15:35  INFO     [3/9] Upload to Internet Archive...
+2026-11-04 23:15:35  INFO     Checking what needs uploading to the Internet Archive...
+2026-11-04 23:15:40  INFO       upload_to_archive.py | Wrote upload plan: 1 show(s), 10 file(s) to upload.
+2026-11-04 23:15:40  INFO     10 file(s) across 1 show(s) are ready to upload.
+2026-11-04 23:15:51  INFO     Uploading...
+2026-11-04 23:15:56  INFO       upload_to_archive.py | 2026-11-04 — Danktuary Studios
+2026-11-04 23:15:56  INFO       upload_to_archive.py |   deadweight-2026-11-04-danktuary-studios: 0 file(s) already confirmed, uploading 10 file(s)...
+2026-11-04 23:15:56  INFO       upload_to_archive.py | 
+2026-11-04 23:15:57  INFO       upload_to_archive.py |  uploading 01_ How Sweet It Is.mp3:   0%|          | 0/15 [00:00<?, ?MiB/s]
+2026-11-04 23:15:57  INFO       upload_to_archive.py |  uploading 01_ How Sweet It Is.mp3:   7%|▋         | 1/15 [00:00<00:13,  1.05MiB/s]
+2026-11-04 23:15:58  INFO       upload_to_archive.py |  uploading 01_ How Sweet It Is.mp3:  20%|██        | 3/15 [00:01<00:04,  2.99MiB/s]
+2026-11-04 23:15:58  INFO       upload_to_archive.py |  uploading 01_ How Sweet It Is.mp3:  27%|██▋       | 4/15 [00:01<00:02,  3.81MiB/s]
+2026-11-04 23:15:58  INFO       upload_to_archive.py |  uploading 01_ How Sweet It Is.mp3:  33%|███▎      | 5/15 [00:01<00:02,  3.97MiB/s]
+2026-11-04 23:15:58  INFO       upload_to_archive.py |  uploading 01_ How Sweet It Is.mp3:  40%|████      | 6/15 [00:01<00:02,  3.71MiB/s]
+2026-11-04 23:15:59  INFO       upload_to_archive.py |  uploading 01_ How Sweet It Is.mp3:  47%|████▋     | 7/15 [00:02<00:02,  3.46MiB/s]
+2026-11-04 23:15:59  INFO       upload_to_archive.py |  uploading 01_ How Sweet It Is.mp3:  53%|█████▎    | 8/15 [00:02<00:02,  2.63MiB/s]
+2026-11-04 23:16:00  INFO       upload_to_archive.py |  uploading 01_ How Sweet It Is.mp3:  60%|██████    | 9/15 [00:03<00:02,  2.43MiB/s]
+2026-11-04 23:16:00  INFO       upload_to_archive.py |  uploading 01_ How Sweet It Is.mp3:  67%|██████▋   | 10/15 [00:03<00:01,  2.59MiB/s]
+2026-11-04 23:16:00  INFO       upload_to_archive.py |  uploading 01_ How Sweet It Is.mp3:  73%|███████▎  | 11/15 [00:03<00:01,  2.71MiB/s]
+2026-11-04 23:16:01  INFO       upload_to_archive.py |  uploading 01_ How Sweet It Is.mp3:  80%|████████  | 12/15 [00:04<00:01,  2.79MiB/s]
+2026-11-04 23:16:01  INFO       upload_to_archive.py |  uploading 01_ How Sweet It Is.mp3:  87%|████████▋ | 13/15 [00:04<00:00,  2.91MiB/s]
+2026-11-04 23:16:01  INFO       upload_to_archive.py |  uploading 01_ How Sweet It Is.mp3:  93%|█████████▎| 14/15 [00:04<00:00,  2.96MiB/s]
+2026-11-04 23:16:01  INFO       upload_to_archive.py |  uploading 01_ How Sweet It Is.mp3: 100%|██████████| 15/15 [00:05<00:00,  3.19MiB/s]
+2026-11-04 23:16:01  INFO       upload_to_archive.py |  uploading 01_ How Sweet It Is.mp3: 100%|██████████| 15/15 [00:05<00:00,  2.92MiB/s]
+2026-11-04 23:16:18  INFO       upload_to_archive.py | 
+2026-11-04 23:16:18  INFO       upload_to_archive.py |  uploading 02_ One More Saturday Night.mp3:   0%|          | 0/10 [00:00<?, ?MiB/s]
+2026-11-04 23:16:19  INFO       upload_to_archive.py |  uploading 02_ One More Saturday Night.mp3:  10%|█         | 1/10 [00:00<00:07,  1.15MiB/s]
+2026-11-04 23:16:19  INFO       upload_to_archive.py |  uploading 02_ One More Saturday Night.mp3:  40%|████      | 4/10 [00:01<00:01,  4.28MiB/s]
+2026-11-04 23:16:19  INFO       upload_to_archive.py |  uploading 02_ One More Saturday Night.mp3:  50%|█████     | 5/10 [00:01<00:01,  3.81MiB/s]
+2026-11-04 23:16:20  INFO       upload_to_archive.py |  uploading 02_ One More Saturday Night.mp3:  60%|██████    | 6/10 [00:01<00:01,  3.80MiB/s]
+2026-11-04 23:16:20  INFO       upload_to_archive.py |  uploading 02_ One More Saturday Night.mp3:  70%|███████   | 7/10 [00:02<00:00,  3.58MiB/s]
+2026-11-04 23:16:21  INFO       upload_to_archive.py |  uploading 02_ One More Saturday Night.mp3:  80%|████████  | 8/10 [00:02<00:00,  3.29MiB/s]
+2026-11-04 23:16:21  INFO       upload_to_archive.py |  uploading 02_ One More Saturday Night.mp3:  90%|█████████ | 9/10 [00:03<00:00,  2.46MiB/s]
+2026-11-04 23:16:21  INFO       upload_to_archive.py |  uploading 02_ One More Saturday Night.mp3: 100%|██████████| 10/10 [00:03<00:00,  3.09MiB/s]
+2026-11-04 23:16:21  INFO       upload_to_archive.py |  uploading 02_ One More Saturday Night.mp3: 100%|██████████| 10/10 [00:03<00:00,  3.13MiB/s]
+2026-11-04 23:16:22  INFO       upload_to_archive.py | 
+2026-11-04 23:16:23  INFO       upload_to_archive.py |  uploading 03_ The Shape I'm In.mp3:   0%|          | 0/6 [00:00<?, ?MiB/s]
+2026-11-04 23:16:23  INFO       upload_to_archive.py |  uploading 03_ The Shape I'm In.mp3:  17%|█▋        | 1/6 [00:00<00:03,  1.26MiB/s]
+2026-11-04 23:16:24  INFO       upload_to_archive.py |  uploading 03_ The Shape I'm In.mp3:  33%|███▎      | 2/6 [00:01<00:02,  1.99MiB/s]
+2026-11-04 23:16:26  INFO       upload_to_archive.py |  uploading 03_ The Shape I'm In.mp3:  50%|█████     | 3/6 [00:01<00:01,  2.47MiB/s]
+2026-11-04 23:16:27  INFO       upload_to_archive.py |  uploading 03_ The Shape I'm In.mp3:  67%|██████▋   | 4/6 [00:03<00:02,  1.27s/MiB]
+2026-11-04 23:16:27  INFO       upload_to_archive.py |  uploading 03_ The Shape I'm In.mp3:  83%|████████▎ | 5/6 [00:04<00:00,  1.04MiB/s]
+2026-11-04 23:16:27  INFO       upload_to_archive.py |  uploading 03_ The Shape I'm In.mp3: 100%|██████████| 6/6 [00:04<00:00,  1.36MiB/s]
+2026-11-04 23:16:28  INFO       upload_to_archive.py | 
+2026-11-04 23:16:29  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song _ Truckin.mp3:   0%|          | 0/46 [00:00<?, ?MiB/s]
+2026-11-04 23:16:29  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song _ Truckin.mp3:   2%|▏         | 1/46 [00:00<00:40,  1.12MiB/s]
+2026-11-04 23:16:30  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song _ Truckin.mp3:   4%|▍         | 2/46 [00:01<00:24,  1.82MiB/s]
+2026-11-04 23:16:30  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song _ Truckin.mp3:   7%|▋         | 3/46 [00:01<00:19,  2.26MiB/s]
+2026-11-04 23:16:31  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song _ Truckin.mp3:   9%|▊         | 4/46 [00:01<00:17,  2.35MiB/s]
+2026-11-04 23:16:32  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song _ Truckin.mp3:  11%|█         | 5/46 [00:02<00:19,  2.07MiB/s]
+2026-11-04 23:16:33  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song _ Truckin.mp3:  13%|█▎        | 6/46 [00:03<00:23,  1.68MiB/s]
+2026-11-04 23:16:34  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song _ Truckin.mp3:  15%|█▌        | 7/46 [00:04<00:32,  1.19MiB/s]
+2026-11-04 23:16:36  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song _ Truckin.mp3:  17%|█▋        | 8/46 [00:06<00:40,  1.08s/MiB]
+2026-11-04 23:16:37  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song _ Truckin.mp3:  20%|█▉        | 9/46 [00:07<00:41,  1.13s/MiB]
+2026-11-04 23:16:40  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song _ Truckin.mp3:  22%|██▏       | 10/46 [00:08<00:44,  1.22s/MiB]
+2026-11-04 23:16:42  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song _ Truckin.mp3:  24%|██▍       | 11/46 [00:11<00:58,  1.67s/MiB]
+2026-11-04 23:16:43  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song _ Truckin.mp3:  26%|██▌       | 12/46 [00:13<01:02,  1.85s/MiB]
+2026-11-04 23:16:45  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song _ Truckin.mp3:  28%|██▊       | 13/46 [00:15<00:55,  1.69s/MiB]
+2026-11-04 23:16:46  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song _ Truckin.mp3:  30%|███       | 14/46 [00:16<00:49,  1.54s/MiB]
+2026-11-04 23:16:47  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song _ Truckin.mp3:  33%|███▎      | 15/46 [00:17<00:43,  1.40s/MiB]
+2026-11-04 23:16:48  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song _ Truckin.mp3:  35%|███▍      | 16/46 [00:18<00:38,  1.28s/MiB]
+2026-11-04 23:16:48  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song _ Truckin.mp3:  37%|███▋      | 17/46 [00:19<00:33,  1.15s/MiB]
+2026-11-04 23:16:49  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song _ Truckin.mp3:  39%|███▉      | 18/46 [00:20<00:28,  1.03s/MiB]
+2026-11-04 23:16:50  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song _ Truckin.mp3:  41%|████▏     | 19/46 [00:20<00:25,  1.05MiB/s]
+2026-11-04 23:16:50  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song _ Truckin.mp3:  43%|████▎     | 20/46 [00:21<00:21,  1.19MiB/s]
+2026-11-04 23:16:51  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song _ Truckin.mp3:  46%|████▌     | 21/46 [00:22<00:19,  1.26MiB/s]
+2026-11-04 23:16:52  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song _ Truckin.mp3:  48%|████▊     | 22/46 [00:22<00:18,  1.29MiB/s]
+2026-11-04 23:16:52  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song _ Truckin.mp3:  50%|█████     | 23/46 [00:23<00:16,  1.36MiB/s]
+2026-11-04 23:16:53  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song _ Truckin.mp3:  52%|█████▏    | 24/46 [00:24<00:16,  1.34MiB/s]
+2026-11-04 23:16:54  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song _ Truckin.mp3:  54%|█████▍    | 25/46 [00:25<00:16,  1.29MiB/s]
+2026-11-04 23:16:55  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song _ Truckin.mp3:  57%|█████▋    | 26/46 [00:25<00:15,  1.32MiB/s]
+2026-11-04 23:16:56  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song _ Truckin.mp3:  59%|█████▊    | 27/46 [00:26<00:14,  1.33MiB/s]
+2026-11-04 23:16:56  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song _ Truckin.mp3:  61%|██████    | 28/46 [00:27<00:13,  1.30MiB/s]
+2026-11-04 23:16:58  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song _ Truckin.mp3:  63%|██████▎   | 29/46 [00:28<00:13,  1.25MiB/s]
+2026-11-04 23:16:59  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song _ Truckin.mp3:  65%|██████▌   | 30/46 [00:29<00:14,  1.10MiB/s]
+2026-11-04 23:17:00  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song _ Truckin.mp3:  67%|██████▋   | 31/46 [00:30<00:14,  1.06MiB/s]
+2026-11-04 23:17:00  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song _ Truckin.mp3:  70%|██████▉   | 32/46 [00:31<00:12,  1.08MiB/s]
+2026-11-04 23:17:01  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song _ Truckin.mp3:  72%|███████▏  | 33/46 [00:32<00:11,  1.10MiB/s]
+2026-11-04 23:17:04  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song _ Truckin.mp3:  74%|███████▍  | 34/46 [00:33<00:11,  1.04MiB/s]
+2026-11-04 23:17:05  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song _ Truckin.mp3:  76%|███████▌  | 35/46 [00:35<00:14,  1.31s/MiB]
+2026-11-04 23:17:07  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song _ Truckin.mp3:  78%|███████▊  | 36/46 [00:36<00:14,  1.40s/MiB]
+2026-11-04 23:17:10  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song _ Truckin.mp3:  80%|████████  | 37/46 [00:39<00:14,  1.61s/MiB]
+2026-11-04 23:17:11  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song _ Truckin.mp3:  83%|████████▎ | 38/46 [00:41<00:14,  1.82s/MiB]
+2026-11-04 23:17:12  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song _ Truckin.mp3:  85%|████████▍ | 39/46 [00:42<00:11,  1.70s/MiB]
+2026-11-04 23:17:13  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song _ Truckin.mp3:  87%|████████▋ | 40/46 [00:43<00:08,  1.48s/MiB]
+2026-11-04 23:17:14  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song _ Truckin.mp3:  89%|████████▉ | 41/46 [00:44<00:06,  1.31s/MiB]
+2026-11-04 23:17:15  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song _ Truckin.mp3:  91%|█████████▏| 42/46 [00:45<00:04,  1.23s/MiB]
+2026-11-04 23:17:16  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song _ Truckin.mp3:  93%|█████████▎| 43/46 [00:46<00:03,  1.15s/MiB]
+2026-11-04 23:17:17  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song _ Truckin.mp3:  96%|█████████▌| 44/46 [00:47<00:02,  1.08s/MiB]
+2026-11-04 23:17:17  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song _ Truckin.mp3:  98%|█████████▊| 45/46 [00:48<00:01,  1.01s/MiB]
+2026-11-04 23:17:17  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song _ Truckin.mp3: 100%|██████████| 46/46 [00:48<00:00,  1.17MiB/s]
+2026-11-04 23:17:17  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song _ Truckin.mp3: 100%|██████████| 46/46 [00:48<00:00,  1.06s/MiB]
+2026-11-04 23:17:19  INFO       upload_to_archive.py | 
+2026-11-04 23:17:21  INFO       upload_to_archive.py |  uploading 05_ Brown Eyed Women.mp3:   0%|          | 0/10 [00:00<?, ?MiB/s]
+2026-11-04 23:17:23  INFO       upload_to_archive.py |  uploading 05_ Brown Eyed Women.mp3:  10%|█         | 1/10 [00:01<00:14,  1.58s/MiB]
+2026-11-04 23:17:25  INFO       upload_to_archive.py |  uploading 05_ Brown Eyed Women.mp3:  20%|██        | 2/10 [00:03<00:14,  1.75s/MiB]
+2026-11-04 23:17:27  INFO       upload_to_archive.py |  uploading 05_ Brown Eyed Women.mp3:  30%|███       | 3/10 [00:05<00:14,  2.02s/MiB]
+2026-11-04 23:17:28  INFO       upload_to_archive.py |  uploading 05_ Brown Eyed Women.mp3:  40%|████      | 4/10 [00:08<00:12,  2.16s/MiB]
+2026-11-04 23:17:30  INFO       upload_to_archive.py |  uploading 05_ Brown Eyed Women.mp3:  50%|█████     | 5/10 [00:09<00:09,  1.83s/MiB]
+2026-11-04 23:17:31  INFO       upload_to_archive.py |  uploading 05_ Brown Eyed Women.mp3:  60%|██████    | 6/10 [00:10<00:06,  1.62s/MiB]
+2026-11-04 23:17:34  INFO       upload_to_archive.py |  uploading 05_ Brown Eyed Women.mp3:  70%|███████   | 7/10 [00:12<00:04,  1.60s/MiB]
+2026-11-04 23:17:37  INFO       upload_to_archive.py |  uploading 05_ Brown Eyed Women.mp3:  80%|████████  | 8/10 [00:14<00:03,  1.85s/MiB]
+2026-11-04 23:17:38  INFO       upload_to_archive.py |  uploading 05_ Brown Eyed Women.mp3:  90%|█████████ | 9/10 [00:17<00:02,  2.30s/MiB]
+2026-11-04 23:17:38  INFO       upload_to_archive.py |  uploading 05_ Brown Eyed Women.mp3: 100%|██████████| 10/10 [00:18<00:00,  1.83s/MiB]
+2026-11-04 23:17:38  INFO       upload_to_archive.py |  uploading 05_ Brown Eyed Women.mp3: 100%|██████████| 10/10 [00:18<00:00,  1.86s/MiB]
+2026-11-04 23:17:44  INFO       upload_to_archive.py | 
+2026-11-04 23:17:44  INFO       upload_to_archive.py |  uploading 06_ Ramble On Rose.mp3:   0%|          | 0/12 [00:00<?, ?MiB/s]
+2026-11-04 23:17:45  INFO       upload_to_archive.py |  uploading 06_ Ramble On Rose.mp3:   8%|▊         | 1/12 [00:00<00:08,  1.31MiB/s]
+2026-11-04 23:17:45  INFO       upload_to_archive.py |  uploading 06_ Ramble On Rose.mp3:  25%|██▌       | 3/12 [00:00<00:02,  4.23MiB/s]
+2026-11-04 23:17:45  INFO       upload_to_archive.py |  uploading 06_ Ramble On Rose.mp3:  50%|█████     | 6/12 [00:01<00:00,  8.08MiB/s]
+2026-11-04 23:17:46  INFO       upload_to_archive.py |  uploading 06_ Ramble On Rose.mp3:  67%|██████▋   | 8/12 [00:01<00:00,  7.22MiB/s]
+2026-11-04 23:17:47  INFO       upload_to_archive.py |  uploading 06_ Ramble On Rose.mp3:  83%|████████▎ | 10/12 [00:02<00:00,  2.88MiB/s]
+2026-11-04 23:17:47  INFO       upload_to_archive.py |  uploading 06_ Ramble On Rose.mp3:  92%|█████████▏| 11/12 [00:03<00:00,  3.04MiB/s]
+2026-11-04 23:17:47  INFO       upload_to_archive.py |  uploading 06_ Ramble On Rose.mp3: 100%|██████████| 12/12 [00:03<00:00,  3.78MiB/s]
+2026-11-04 23:17:50  INFO       upload_to_archive.py | 
+2026-11-04 23:17:51  INFO       upload_to_archive.py |  uploading 07_ The Shape I'm In.mp3:   0%|          | 0/8 [00:00<?, ?MiB/s]
+2026-11-04 23:17:51  INFO       upload_to_archive.py |  uploading 07_ The Shape I'm In.mp3:  12%|█▎        | 1/8 [00:00<00:05,  1.37MiB/s]
+2026-11-04 23:17:51  INFO       upload_to_archive.py |  uploading 07_ The Shape I'm In.mp3:  38%|███▊      | 3/8 [00:00<00:01,  4.33MiB/s]
+2026-11-04 23:17:52  INFO       upload_to_archive.py |  uploading 07_ The Shape I'm In.mp3:  62%|██████▎   | 5/8 [00:01<00:00,  5.04MiB/s]
+2026-11-04 23:17:52  INFO       upload_to_archive.py |  uploading 07_ The Shape I'm In.mp3:  75%|███████▌  | 6/8 [00:01<00:00,  4.99MiB/s]
+2026-11-04 23:17:52  INFO       upload_to_archive.py |  uploading 07_ The Shape I'm In.mp3:  88%|████████▊ | 7/8 [00:01<00:00,  5.17MiB/s]
+2026-11-04 23:17:52  INFO       upload_to_archive.py |  uploading 07_ The Shape I'm In.mp3: 100%|██████████| 8/8 [00:01<00:00,  5.13MiB/s]
+2026-11-04 23:17:57  INFO       upload_to_archive.py | 
+2026-11-04 23:17:58  INFO       upload_to_archive.py |  uploading 08_ Sugaree.mp3:   0%|          | 0/23 [00:00<?, ?MiB/s]
+2026-11-04 23:17:58  INFO       upload_to_archive.py |  uploading 08_ Sugaree.mp3:   4%|▍         | 1/23 [00:00<00:17,  1.24MiB/s]
+2026-11-04 23:17:58  INFO       upload_to_archive.py |  uploading 08_ Sugaree.mp3:  13%|█▎        | 3/23 [00:00<00:05,  3.91MiB/s]
+2026-11-04 23:17:58  INFO       upload_to_archive.py |  uploading 08_ Sugaree.mp3:  22%|██▏       | 5/23 [00:01<00:02,  6.64MiB/s]
+2026-11-04 23:17:58  INFO       upload_to_archive.py |  uploading 08_ Sugaree.mp3:  35%|███▍      | 8/23 [00:01<00:01,  8.42MiB/s]
+2026-11-04 23:17:59  INFO       upload_to_archive.py |  uploading 08_ Sugaree.mp3:  43%|████▎     | 10/23 [00:01<00:01,  7.58MiB/s]
+2026-11-04 23:17:59  INFO       upload_to_archive.py |  uploading 08_ Sugaree.mp3:  52%|█████▏    | 12/23 [00:01<00:01,  7.39MiB/s]
+2026-11-04 23:17:59  INFO       upload_to_archive.py |  uploading 08_ Sugaree.mp3:  57%|█████▋    | 13/23 [00:02<00:01,  6.12MiB/s]
+2026-11-04 23:17:59  INFO       upload_to_archive.py |  uploading 08_ Sugaree.mp3:  61%|██████    | 14/23 [00:02<00:01,  5.58MiB/s]
+2026-11-04 23:18:00  INFO       upload_to_archive.py |  uploading 08_ Sugaree.mp3:  65%|██████▌   | 15/23 [00:02<00:01,  5.09MiB/s]
+2026-11-04 23:18:00  INFO       upload_to_archive.py |  uploading 08_ Sugaree.mp3:  70%|██████▉   | 16/23 [00:02<00:01,  4.74MiB/s]
+2026-11-04 23:18:00  INFO       upload_to_archive.py |  uploading 08_ Sugaree.mp3:  74%|███████▍  | 17/23 [00:03<00:01,  4.34MiB/s]
+2026-11-04 23:18:01  INFO       upload_to_archive.py |  uploading 08_ Sugaree.mp3:  78%|███████▊  | 18/23 [00:03<00:01,  3.68MiB/s]
+2026-11-04 23:18:01  INFO       upload_to_archive.py |  uploading 08_ Sugaree.mp3:  83%|████████▎ | 19/23 [00:04<00:01,  3.16MiB/s]
+2026-11-04 23:18:02  INFO       upload_to_archive.py |  uploading 08_ Sugaree.mp3:  87%|████████▋ | 20/23 [00:04<00:01,  2.91MiB/s]
+2026-11-04 23:18:02  INFO       upload_to_archive.py |  uploading 08_ Sugaree.mp3:  91%|█████████▏| 21/23 [00:05<00:00,  2.41MiB/s]
+2026-11-04 23:18:03  INFO       upload_to_archive.py |  uploading 08_ Sugaree.mp3:  96%|█████████▌| 22/23 [00:05<00:00,  2.12MiB/s]
+2026-11-04 23:18:03  INFO       upload_to_archive.py |  uploading 08_ Sugaree.mp3: 100%|██████████| 23/23 [00:06<00:00,  2.27MiB/s]
+2026-11-04 23:18:03  INFO       upload_to_archive.py |  uploading 08_ Sugaree.mp3: 100%|██████████| 23/23 [00:06<00:00,  3.82MiB/s]
+2026-11-04 23:18:16  INFO       upload_to_archive.py | 
+2026-11-04 23:18:17  INFO       upload_to_archive.py |  uploading 09_ Ship Of Fools _ Eyes Of The World.mp3:   0%|          | 0/22 [00:00<?, ?MiB/s]
+2026-11-04 23:18:17  INFO       upload_to_archive.py |  uploading 09_ Ship Of Fools _ Eyes Of The World.mp3:   5%|▍         | 1/22 [00:00<00:18,  1.15MiB/s]
+2026-11-04 23:18:17  INFO       upload_to_archive.py |  uploading 09_ Ship Of Fools _ Eyes Of The World.mp3:  14%|█▎        | 3/22 [00:00<00:05,  3.69MiB/s]
+2026-11-04 23:18:17  INFO       upload_to_archive.py |  uploading 09_ Ship Of Fools _ Eyes Of The World.mp3:  23%|██▎       | 5/22 [00:01<00:03,  5.30MiB/s]
+2026-11-04 23:18:17  INFO       upload_to_archive.py |  uploading 09_ Ship Of Fools _ Eyes Of The World.mp3:  32%|███▏      | 7/22 [00:01<00:02,  5.90MiB/s]
+2026-11-04 23:18:18  INFO       upload_to_archive.py |  uploading 09_ Ship Of Fools _ Eyes Of The World.mp3:  36%|███▋      | 8/22 [00:01<00:02,  5.74MiB/s]
+2026-11-04 23:18:18  INFO       upload_to_archive.py |  uploading 09_ Ship Of Fools _ Eyes Of The World.mp3:  41%|████      | 9/22 [00:01<00:02,  5.18MiB/s]
+2026-11-04 23:18:18  INFO       upload_to_archive.py |  uploading 09_ Ship Of Fools _ Eyes Of The World.mp3:  45%|████▌     | 10/22 [00:02<00:02,  5.13MiB/s]
+2026-11-04 23:18:18  INFO       upload_to_archive.py |  uploading 09_ Ship Of Fools _ Eyes Of The World.mp3:  50%|█████     | 11/22 [00:02<00:02,  5.06MiB/s]
+2026-11-04 23:18:18  INFO       upload_to_archive.py |  uploading 09_ Ship Of Fools _ Eyes Of The World.mp3:  55%|█████▍    | 12/22 [00:02<00:01,  5.01MiB/s]
+2026-11-04 23:18:19  INFO       upload_to_archive.py |  uploading 09_ Ship Of Fools _ Eyes Of The World.mp3:  59%|█████▉    | 13/22 [00:02<00:01,  4.96MiB/s]
+2026-11-04 23:18:19  INFO       upload_to_archive.py |  uploading 09_ Ship Of Fools _ Eyes Of The World.mp3:  64%|██████▎   | 14/22 [00:02<00:01,  4.70MiB/s]
+2026-11-04 23:18:19  INFO       upload_to_archive.py |  uploading 09_ Ship Of Fools _ Eyes Of The World.mp3:  68%|██████▊   | 15/22 [00:03<00:01,  3.74MiB/s]
+2026-11-04 23:18:20  INFO       upload_to_archive.py |  uploading 09_ Ship Of Fools _ Eyes Of The World.mp3:  73%|███████▎  | 16/22 [00:03<00:01,  3.17MiB/s]
+2026-11-04 23:18:20  INFO       upload_to_archive.py |  uploading 09_ Ship Of Fools _ Eyes Of The World.mp3:  77%|███████▋  | 17/22 [00:04<00:01,  2.94MiB/s]
+2026-11-04 23:18:21  INFO       upload_to_archive.py |  uploading 09_ Ship Of Fools _ Eyes Of The World.mp3:  82%|████████▏ | 18/22 [00:04<00:01,  2.80MiB/s]
+2026-11-04 23:18:21  INFO       upload_to_archive.py |  uploading 09_ Ship Of Fools _ Eyes Of The World.mp3:  86%|████████▋ | 19/22 [00:04<00:01,  2.78MiB/s]
+2026-11-04 23:18:22  INFO       upload_to_archive.py |  uploading 09_ Ship Of Fools _ Eyes Of The World.mp3:  91%|█████████ | 20/22 [00:05<00:00,  2.36MiB/s]
+2026-11-04 23:18:23  INFO       upload_to_archive.py |  uploading 09_ Ship Of Fools _ Eyes Of The World.mp3:  95%|█████████▌| 21/22 [00:06<00:00,  1.95MiB/s]
+2026-11-04 23:18:23  INFO       upload_to_archive.py |  uploading 09_ Ship Of Fools _ Eyes Of The World.mp3: 100%|██████████| 22/22 [00:07<00:00,  1.51MiB/s]
+2026-11-04 23:18:23  INFO       upload_to_archive.py |  uploading 09_ Ship Of Fools _ Eyes Of The World.mp3: 100%|██████████| 22/22 [00:07<00:00,  3.01MiB/s]
+2026-11-04 23:18:26  INFO       upload_to_archive.py | 
+2026-11-04 23:18:27  INFO       upload_to_archive.py |  uploading 10_ Midnight Moonlight.mp3:   0%|          | 0/8 [00:00<?, ?MiB/s]
+2026-11-04 23:18:27  INFO       upload_to_archive.py |  uploading 10_ Midnight Moonlight.mp3:  12%|█▎        | 1/8 [00:00<00:05,  1.34MiB/s]
+2026-11-04 23:18:27  INFO       upload_to_archive.py |  uploading 10_ Midnight Moonlight.mp3:  50%|█████     | 4/8 [00:00<00:00,  5.30MiB/s]
+2026-11-04 23:18:27  INFO       upload_to_archive.py |  uploading 10_ Midnight Moonlight.mp3: 100%|██████████| 8/8 [00:01<00:00, 10.43MiB/s]
+2026-11-04 23:18:27  INFO       upload_to_archive.py |  uploading 10_ Midnight Moonlight.mp3: 100%|██████████| 8/8 [00:01<00:00,  7.51MiB/s]
+2026-11-04 23:19:29  INFO       upload_to_archive.py | Done. band_archive.csv updated with IA URLs.
+2026-11-04 23:19:29  INFO     [4/9] Analyze data...
+2026-11-04 23:19:33  INFO       analyze.py | song_stats.csv created!
+2026-11-04 23:19:33  INFO     [5/9] Build metadata...
+2026-11-04 23:19:34  INFO       build_metadata.py | song_metadata.csv updated!
+2026-11-04 23:19:34  INFO     [6/9] Fill missing artists...
+2026-11-04 23:19:34  INFO     No missing artists.
+2026-11-04 23:19:34  INFO     [7/9] Generate share links...
+2026-11-04 23:19:41  INFO       generate_share_links.py | Found 1 folders to generate share links for.
+2026-11-04 23:19:41  INFO       generate_share_links.py |   Processing: LoveDeep/Audio Recordings/Jam Session Recordings 2021-/2026/2026-11-04 _ Jam Session
+2026-11-04 23:19:41  INFO       generate_share_links.py |     ✓ https://1drv.ms/f/c/436f797b4dd480a3/IgA4ueprnyzKTLMeyR5Sw7FGAVLir_ZJzJaCVy9irSca2OU
+2026-11-04 23:19:41  INFO       generate_share_links.py | 
+2026-11-04 23:19:41  INFO       generate_share_links.py | Done. 1 share links written to band_archive.csv.
+2026-11-04 23:19:41  INFO     [8/9] Final check before push...
+2026-11-04 23:19:41  INFO     Check passed (0 warning(s)).
+2026-11-04 23:19:41  INFO     [9/9] Commit and push...
+2026-11-04 23:19:42  INFO     Changes detected. Committing...
+2026-11-04 23:19:43  INFO     Pushing to GitHub...
+2026-11-04 23:19:47  INFO     Done! Streamlit Cloud will redeploy automatically in a minute or two.
+2026-11-04 23:19:47  INFO     Pipeline finished successfully.
+2026-11-04 23:19:47  INFO       Scan: 14 new track row(s) from 10 file(s)
+2026-11-04 23:19:47  INFO       Shows touched: 2026-11-04 — Danktuary Studios
+2026-11-04 23:19:47  INFO       Uploaded 10 file(s) from 1 show(s) to the Internet Archive.
+2026-11-04 23:19:47  INFO       Data check: passed with 0 warning(s).
+2026-11-04 23:19:47  INFO       Git: pushed commit 85a08b0
+2026-11-04 23:19:47  INFO       Took 4m 35s.

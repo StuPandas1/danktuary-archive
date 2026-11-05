@@ -1,1 +1,49 @@
-[]
+[
+  {
+    "identifier": "deadweight-2026-11-04-danktuary-studios",
+    "date": "2026-11-04",
+    "location": "Danktuary Studios",
+    "files": [
+      {
+        "filename": "01_ How Sweet It Is.mp3",
+        "title": "How Sweet It Is"
+      },
+      {
+        "filename": "02_ One More Saturday Night.mp3",
+        "title": "One More Saturday Night"
+      },
+      {
+        "filename": "03_ The Shape I'm In.mp3",
+        "title": "The Shape I'm In"
+      },
+      {
+        "filename": "04_ Truckin _ Stuck Inside Of Mobile _ Bird Song _ Truckin.mp3",
+        "title": "Truckin (2)"
+      },
+      {
+        "filename": "05_ Brown Eyed Women.mp3",
+        "title": "Brown Eyed Women"
+      },
+      {
+        "filename": "06_ Ramble On Rose.mp3",
+        "title": "Ramble On Rose"
+      },
+      {
+        "filename": "07_ The Shape I'm In.mp3",
+        "title": "The Shape I'm In (2)"
+      },
+      {
+        "filename": "08_ Sugaree.mp3",
+        "title": "Sugaree"
+      },
+      {
+        "filename": "09_ Ship Of Fools _ Eyes Of The World.mp3",
+        "title": "Eyes Of The World"
+      },
+      {
+        "filename": "10_ Midnight Moonlight.mp3",
+        "title": "Midnight Moonlight"
+      }
+    ]
+  }
+]

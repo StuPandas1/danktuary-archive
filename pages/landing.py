@@ -96,8 +96,8 @@ last_show_label = f"{last_show_date_str} — {last_show_location}"
 with st.container(key="hex_recent"):
     if st.button(f"{last_show_label}", key="most_recent_setlist_btn", width="stretch"):
         st.session_state["listen_mode"] = "Setlists"
-        st.session_state["pending_listen_show"] = last_show_label
-        st.switch_page("pages/listen.py")
+        st.session_state["pending_show"] = last_show_label
+        st.switch_page("pages/shows.py")
 
 # -------------------------
 # ON THIS DAY
@@ -119,13 +119,9 @@ if on_this_day_dates:
 
             with cols[i]:
                 if st.button(label, key=f"otd_{date_str}", width="stretch"):
-                    if label in playable:
-                        st.session_state["pending_listen_show"] = label
-                        st.switch_page("pages/listen.py")
-                    else:
-                        st.session_state.pending_show_selection = label
-                        st.session_state.active_tab = "Setlist Lookup"
-                        st.switch_page("pages/stats.py")
+                    st.session_state["pending_show"] = label
+                    st.switch_page("pages/shows.py")
+
 else:
     dank_hex(f"No recordings found on this day ({today_md})")
 

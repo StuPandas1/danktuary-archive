@@ -109,6 +109,7 @@ def show_index(_d, mtimes):
     out["Secs"] = out["Show_Label"].map(secs).fillna(0).astype(int)
     return out.sort_values("Date", ascending=False).reset_index(drop=True)
 
+
 @st.cache_data(show_spinner=False)
 def song_show_map(_d, mtimes):
     """(Title, Show_Label) pairs for every playable show, for Find by Song."""
@@ -121,6 +122,31 @@ def song_show_map(_d, mtimes):
     s = s.dropna(subset=["Date"])
     s["Show_Label"] = s["Date"].dt.strftime("%m/%d/%Y") + " — " + s["Location"]
     return s[["Title", "Show_Label"]].drop_duplicates()
+@st.cache_data(show_spinner=False)
+
+
+def show_index_all(_d, mtimes):
+    """One row per show (playable or not), newest first:
+    Show_Label, Date, Location, Type, Secs, Has_Audio."""
+    s = _d.copy()
+    s["Date"] = pd.to_datetime(s["Date"], errors="coerce")
+    s = s.dropna(subset=["Date", "Location"])
+    s["Show_Label"] = s["Date"].dt.strftime("%m/%d/%Y") + " — " + s["Location"]
+
+    s["_audio"] = s["File Path"].map(is_audio_path)
+    if "Status" in s.columns:
+        s.loc[s["Status"] == "missing", "_audio"] = False
+    has_audio = s.groupby("Show_Label")["_audio"].any()
+
+    # total time: Take 1 only, each segue chain counted once
+    t = s[pd.to_numeric(s["Take"], errors="coerce") == 1].sort_values(["Date", "Track Number"])
+    first = t["Duration"].ne(t.groupby("Show_Label")["Duration"].shift())
+    secs = t.loc[first, "Duration"].apply(parse_duration).groupby(t.loc[first, "Show_Label"]).sum()
+
+    out = s.drop_duplicates("Show_Label")[["Show_Label", "Date", "Location", "Type"]].copy()
+    out["Secs"] = out["Show_Label"].map(secs).fillna(0).astype(int)
+    out["Has_Audio"] = out["Show_Label"].map(has_audio).fillna(False)
+    return out.sort_values("Date", ascending=False).reset_index(drop=True)
 
 # -------------------------
 # LOGIN INFO
@@ -686,7 +712,8 @@ button[data-testid="stBaseButton-secondary"] p, button[kind="secondary"] p {
 
                    .dank-card-nowrap .dank-card-value,
 .dank-card-nowrap .dank-card-label {
-    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.dank-card-nowrap { container-type:inline-size;
 }
 /* =========================================================
    CALLOUT
@@ -883,7 +910,7 @@ div[class*="st-key-btnrow_"] .stButton > button p {
     --hip-a: 47% 63%;               /* leg_a pivot */
     --hip-b: 60% 60%;               /* leg_b pivot */
     --shoulder: 63% 32%;            /* hanging arm pivot */
-    --stride: 1s;                   /* one full step; set to 6s only to debug in slow motion */
+    --stride: 0.5s;                   /* one full step; set to 6s only to debug in slow motion */
 
     position:absolute; bottom:-2px; left:50%;
     height:80px; aspect-ratio:var(--dw-ar);
@@ -1146,7 +1173,7 @@ def dank_chart(chart):
         .configure_view(strokeWidth=0)
     )
 
-def dank_footer(text="Danktuary Archive Version: 3.0 | Believe it if you need it"):
+def dank_footer(text="Danktuary Archive Version: 3.1 | Believe it if you need it"):
     try:
         imgs = "".join(
             '<img class="dw-%s" src="data:image/png;base64,%s">' % (p, img_b64("walk_%s.png" % p))
@@ -1206,27 +1233,27 @@ def _dank_style(d):
             .map_index(lambda _: "background-color:#151412; color:#ffb81c; font-weight:800",
                        axis=1))
 
-def click_table(df, key, song_cols=(), show_cols=None, hide=(), goto=None):
-    """Tap a cell to jump somewhere, depending on which column it's in.
-
-    song_cols: columns whose cell opens that song in Song Lookup.
-               A tuple of names, or {shown column: column holding the title}.
-    show_cols: {shown column: location column}. The cell is a date and opens
-               that show in Setlist Lookup. Use None as the value when the
+def click_table(df, key, song_cols=(), show_cols=None, hide=(),
+                goto=None, song_goto=None, show_goto=None):
+    """Tap a cell to jump somewhere, depending on its column.
+    song_cols: tuple of columns, or {shown column: column holding the title}.
+    show_cols: {date column: location column}; None as the value means the
                cell already holds the full "date — venue" label.
-    hide:      extra columns to use for lookups but not display.
-    Tapping any other column does nothing."""
+    hide:      extra columns used for lookups but not displayed.
+    song_goto / show_goto: page to switch to after a tap (falls back to goto;
+               None means stay on this page and just rerun)."""
     song_map = song_cols if isinstance(song_cols, dict) else {c: c for c in song_cols}
     show_map = show_cols or {}
     hidden = set(hide) | {v for v in show_map.values() if v}
     shown = df.drop(columns=[c for c in hidden if c in df.columns])
 
     ver = st.session_state.get(f"{key}_ver", 0)
-    st.markdown('<div class="song-browse-hint">Tap a song or date to open stats</div>',
+    st.markdown('<div class="song-browse-hint">Tap a song or date to open it</div>',
                 unsafe_allow_html=True)
+    table_h = min(520, 35 * (len(shown) + 1) + 3)
     with st.container(key=f"clicktable_{key}"):
         ev = st.dataframe(_dank_style(shown), hide_index=True, width="stretch",
-                          height=520, on_select="rerun",
+                          height=table_h, on_select="rerun",
                           selection_mode="single-cell", key=f"{key}_{ver}")
 
     cells = ev.selection.cells
@@ -1236,32 +1263,43 @@ def click_table(df, key, song_cols=(), show_cols=None, hide=(), goto=None):
     row = df.iloc[r]
     st.session_state[f"{key}_ver"] = ver + 1        # fresh table, so the highlight clears
 
+    target = None
     if col in song_map:
-        st.session_state["t1_pending_song_selection"] = row[song_map[col]]
-        st.session_state["active_tab"] = "Song Lookup"
+        title = row[song_map[col]]
+        st.session_state["pending_song"] = title
+        target = song_goto or goto
+        if target and target.endswith("stats.py"):          # old page still uses old keys
+            st.session_state["t1_pending_song_selection"] = title
+            st.session_state["active_tab"] = "Song Lookup"
     elif col in show_map:
         loc = show_map[col]
-        st.session_state["pending_show_selection"] = (
-            f"{row[col]} — {row[loc]}" if loc else row[col]
-        )
-        st.session_state["active_tab"] = "Setlist Lookup"
-    # any other column: no navigation, just the rerun that clears the highlight
-    if goto:
-        st.switch_page(goto)      # e.g. "pages/stats.py"
+        label = f"{row[col]} — {row[loc]}" if loc else row[col]
+        if loc and not str(row[loc]).strip():
+            label = None                                    # no previous show to open
+        if label:
+            st.session_state["pending_show"] = label
+            target = show_goto or goto
+            if target and target.endswith("stats.py"):
+                st.session_state["pending_show_selection"] = label
+                st.session_state["active_tab"] = "Setlist Lookup"
+    if target:
+        st.switch_page(target)
     st.rerun()
-    
+
 def card_html(value, label, accent=False, nowrap=False):
     value_class = "dank-card-value dank-card-accent" if accent else "dank-card-value"
-    # size by visible text length (ignoring any HTML tags in the value)
     n = len(re.sub(r"<[^>]+>", "", str(value)))
     size = 26 if n <= 10 else 22 if n <= 16 else 18 if n <= 26 else 15
     card_class = "dank-card"
     if nowrap:
-        size = min(size, 22)          # keep short values like dates inside the card
         card_class += " dank-card-nowrap"
+        # largest size that fits the card width: ~0.62em per character
+        font = f"min({size}px, {100 / (max(n, 1) * 0.58):.1f}cqw)"
+    else:
+        font = f"{size}px"
     return (
         f'<div class="{card_class}">'
-        f'<div class="{value_class}" style="font-size:{size}px">{value}</div>'
+        f'<div class="{value_class}" style="font-size:{font}">{value}</div>'
         f'<div class="dank-card-label">{label}</div></div>'
     )
 
@@ -1643,19 +1681,19 @@ def suppress_selectbox_keyboard():
 # -------------------------
 
 def page_menu():
+    items = [
+        ("Dashboard", "pages/landing.py"),
+        ("Shows", "pages/shows.py"),
+        ("Songs", "pages/songs.py"),
+        ("Stats", "pages/stats.py"),
+        ("Randomizer", "pages/randomizer.py"),
+        ("Playlists", "pages/playlists.py"), 
+        ("Watch", "pages/watch.py"),
+    ]
     with st.popover("☰ Menu"):
-        if st.button("Dashboard", width="stretch"):
-            st.switch_page("pages/landing.py")
-        if st.button("Listen", width="stretch"):
-            st.switch_page("pages/listen.py")
-        if st.button("Playlist Creator", width="stretch"):
-            st.switch_page("pages/playlist_creator.py")            
-        if st.button("Watch", width="stretch"):
-            st.switch_page("pages/watch.py")
-        if st.button("Useful Tools", width="stretch"):
-            st.switch_page("pages/tools.py")
-        if st.button("Heady Stats", width="stretch"):
-            st.switch_page("pages/stats.py")
+        for label, path in items:
+            if st.button(label, key=f"menu_{path}", width="stretch"):
+                st.switch_page(path)
 
 # -------------------------
 # FORCE HORIZ ROW/PLAYLIST FORMATTING
@@ -1905,8 +1943,9 @@ def slug_to_show(q):
 def sync_url(**params):
     """Make the address bar match the selection. None removes a param.
     A 'show' value can be the full label; it's shortened automatically."""
-    if params.get("show"):
-        params["show"] = show_to_slug(params["show"])
+    for k in ("show", "date"):
+        if params.get(k):
+            params[k] = show_to_slug(params[k])
     current = st.query_params.to_dict()
     new = dict(current)
     written = st.session_state.setdefault("_url_written", {})

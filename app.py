@@ -5,13 +5,14 @@ st.set_page_config(page_title="DankApp", layout="wide", initial_sidebar_state="c
 pg = st.navigation(
     [
         st.Page("pages/landing.py", title="Dashboard", icon="💀", default=True),
-        st.Page("pages/tools.py", title="Useful Tools", icon="🛠️"),
-        st.Page("pages/stats.py", title="Heady Stats", icon="📊"),
+        st.Page("pages/shows.py", title="Shows", icon="🎤"),
+        st.Page("pages/songs.py", title="Songs", icon="🎵"),
+        st.Page("pages/stats.py", title="Stats", icon="📊"),
+        st.Page("pages/randomizer.py", title="Randomizer", icon="🎲"),
         st.Page("pages/watch.py", title="Watch", icon="🎬"),
-        st.Page("pages/listen.py", title="Listen", icon="🎧"),
-        st.Page("pages/playlist_creator.py", title="Playlist Creator", icon="🎶")
+        st.Page("pages/playlists.py", title="Playlists", icon="🎧"),
     ],
-    position="hidden"
+    position="hidden",
 )
 
 pg.run()
