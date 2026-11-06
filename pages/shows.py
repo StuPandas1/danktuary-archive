@@ -41,7 +41,7 @@ with st.container(key="top_row"):
         else:
             st.button("Log in with Google", on_click=st.login)
 
-dank_header(subtitle="Every show, every song")
+dank_header(subtitle="Stream Dank Tunes")
 
 # -------------------------
 # HELPERS
@@ -408,7 +408,7 @@ with player_slot:
 
 detail = show_detail(df, sel, MT)
 
-with st.expander("📊 Show Stats Dashboard", True):
+with st.expander("📊 Setlist Stats - Dashboard", True):
     if detail is None:
         dank_hex("No setlist on file for this show")
     else:
@@ -438,7 +438,7 @@ with st.expander("📊 Show Stats Dashboard", True):
                     hide=("_song",), song_goto=SONG_PAGE)
 
 if detail is not None:
-    with st.expander("🏟️ Venue Stats Dashboard", False):
+    with st.expander("🏟️ Venue Stats - Dashboard", False):
         vd = venue_detail(df, row["Location"], MT)
         n_sets = detail["sets"]
         if len(detail["tied"]) > 1:

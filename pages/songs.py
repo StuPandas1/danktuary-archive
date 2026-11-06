@@ -71,7 +71,7 @@ with st.container(key="top_row"):
         else:
             st.button("Log in with Google", on_click=st.login)
 
-dank_header(subtitle="Every song we've played")
+dank_header(subtitle="Look up dank songs")
 
 # -------------------------
 # FILTERS + TITLE LIST
