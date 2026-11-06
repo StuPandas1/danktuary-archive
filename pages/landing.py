@@ -20,8 +20,8 @@ def landing_stats(d_all, d):
     longest_secs = int(d["Duration"].apply(parse_duration).max())
 
     return {
-        "total_shows": d["Date"].nunique(),
-        "gig_count": d[d["Type"] == "live"]["Date"].nunique(),
+        "total_shows": d.drop_duplicates(["Date", "Location"]).shape[0],
+        "gig_count": d[d["Type"] == "live"].drop_duplicates(["Date", "Location"]).shape[0],
         "last_show": d["Date"].max(),
         "total_secs": total_secs,
         "songs_played": len(d_all),
@@ -192,6 +192,8 @@ cards = [
 ]
 st.markdown(f'<div class="dank-grid">{"".join(cards)}</div>', unsafe_allow_html=True)
 
+if st.button("Click for More Stats", key="landing_to_stats", width="stretch", type="primary"):
+    st.switch_page("pages/stats.py")
 # -------------------------
 # FOOTER 
 # -------------------------

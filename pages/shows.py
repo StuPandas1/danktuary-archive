@@ -318,7 +318,7 @@ def pick_random(labels):
         pick_show(random.choice(labels))
 
 def render_show_buttons(frame, sel):
-    st.markdown(f'<div class="song-browse-hint"> Select from {len(frame)} shows</div>',
+    st.markdown(f'<div class="song-browse-hint"> Select from {len(frame)} sets</div>',
                 unsafe_allow_html=True)
     with st.container(height=320, key="shows_scroll"):
         for i, r in enumerate(frame.itertuples()):
@@ -431,7 +431,7 @@ with st.expander("📊 Setlist Stats - Dashboard", True):
             img=None,
         )
 
-        dank_hex("Setlist")
+        dank_hex("Track by Track Breakdown")
         click_table(detail["table"], key="tbl_show",
                     song_cols={"Title": "_song"},
                     show_cols={"Previous Play": "Previous Location"},
@@ -456,7 +456,7 @@ if detail is not None:
         if vd:
             cards += [
                 card_html(vd["first"].strftime("%m/%d/%y"), "First Set", nowrap=True),
-                card_html(vd["last"].strftime("%m/%d/%y"), "Last Set", nowrap=True),
+                card_html(vd["last"].strftime("%m/%d/%y"), "Latest Set", nowrap=True),
             ]
         st.markdown(f'<div class="dank-grid">{"".join(cards)}</div>', unsafe_allow_html=True)
 
