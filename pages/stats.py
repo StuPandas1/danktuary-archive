@@ -131,7 +131,7 @@ def longest_gaps(d):
     return out.sort_values("Longest Gap (Sets)", ascending=False).reset_index(drop=True)
 
 @st.cache_data(show_spinner=False)
-def long_jams(d, min_secs=1080):
+def long_jams(d, min_secs=1500):
     d = d.sort_values(["Date", "Track Number"])
     new_chain = d["Date"].ne(d["Date"].shift()) | d["Duration"].ne(d["Duration"].shift())
     jams = (

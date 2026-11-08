@@ -404,7 +404,7 @@ with player_slot:
         else:
             dank_hex("No playable tracks found for this show")
     else:
-        dank_hex("No recording of this one", "Setlist only")
+        dank_hex("No recording available", "Setlist stats only")
 
 detail = show_detail(df, sel, MT)
 
@@ -461,11 +461,6 @@ if detail is not None:
         st.markdown(f'<div class="dank-grid">{"".join(cards)}</div>', unsafe_allow_html=True)
 
         if vd:
-            diff = vd["avg"] - vd["overall_avg"]
-            if abs(diff) >= 30:
-                st.caption(f"Sets here run about {abs(diff) / 60:.0f} min "
-                           f"{'longer' if diff > 0 else 'shorter'} than the average across all venues.")
-
             tab_top, tab_sets = st.tabs(["Top 10 Songs", "All Sets"])
             with tab_top:
                 click_table(vd["top"], key="tbl_venue_top", song_cols=("Title",), song_goto=SONG_PAGE)
