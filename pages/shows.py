@@ -430,7 +430,7 @@ with st.expander("📊 Setlist Stats - Dashboard", True):
             bust_line,
             img=None,
         )
-
+        st.divider()
         dank_hex("Track by Track Breakdown")
         click_table(detail["table"], key="tbl_show",
                     song_cols={"Title": "_song"},
