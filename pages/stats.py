@@ -219,23 +219,27 @@ def ranked(table):
 # -------------------------
 
 def stat_most_played(t_df, t_stats):
-    click_table(most_played_table(t_stats, t_df), key="tbl_mp", song_cols=("Title",),
-                show_cols={"First Played": "First Location", "Last Played": "Last Location"},
-                song_goto=SONG_PAGE, show_goto=SHOW_PAGE)
-
-def stat_by_year(t_df, t_stats):
     years = sorted(t_df["Date"].dt.year.unique().tolist())
-    if st.session_state.get("stats_year_pick") not in years:
-        st.session_state["stats_year_pick"] = years[-1]          # newest year by default
-    year = st.select_slider("Year", options=years, key="stats_year_pick") if len(years) > 1 else years[0]
-    table = most_played_in_year(t_df, year)
-    if table.empty:
-        dank_hex(f"No recordings in {year}")
+    options = ["All Time"] + years
+    if st.session_state.get("stats_year_pick") not in options:
+        st.session_state["stats_year_pick"] = "All Time"
+    pick = st.select_slider("Year", options=options, key="stats_year_pick")
+
+    if pick == "All Time":
+        click_table(most_played_table(t_stats, t_df), key="tbl_mp", song_cols=("Title",),
+                    show_cols={"First Played": "First Location", "Last Played": "Last Location"},
+                    song_goto=SONG_PAGE, show_goto=SHOW_PAGE)
         return
-    n = t_df.loc[t_df["Date"].dt.year == year, "Date"].nunique()
-    dank_hex(f"**{year}**", f"{n} recording{'' if n == 1 else 's'}")
+
+    table = most_played_in_year(t_df, pick)
+    if table.empty:
+        dank_hex(f"No recordings in {pick}")
+        return
+    n = t_df.loc[t_df["Date"].dt.year == pick, "Date"].nunique()
+    dank_hex(f"**{pick}**", f"{n} recording{'' if n == 1 else 's'}")
     click_table(ranked(table), key="tbl_year", song_cols=("Title",),
-                show_cols={"Last Played": "Last Location"}, song_goto=SONG_PAGE, show_goto=SHOW_PAGE)
+                show_cols={"Last Played": "Last Location"},
+                song_goto=SONG_PAGE, show_goto=SHOW_PAGE)
 
 def stat_recent(t_df, t_stats):
     sort = st.radio("Sort by:", ["Date", "Title"], horizontal=True, key="stats_recent_sort")
@@ -398,7 +402,6 @@ def stat_set_length(t_df, t_stats):
 GROUPS = ["Songs", "Setlists"]
 STATS = {
     "most-played":     ("Songs", "Most Played", "Most Played Songs", stat_most_played, "global"),
-    "by-year":         ("Songs", "Most Played by Year", "Most Played by Year", stat_by_year, "global"),
     "recently-played": ("Songs", "Recently Played", "Most Recently Played", stat_recent, "global"),
     "bustout":         ("Songs", "Bustout Tracker", "Most Overdue Songs", stat_bustout, "own"),
     "longest-gaps":    ("Songs", "Longest Gaps", "Longest Historical Gap Between Plays", stat_gaps, "global"),
@@ -440,6 +443,9 @@ incoming = url_from_browser("stat")                  # shared link, back/forward
 if incoming in STATS:
     st.session_state["stats_pick"] = incoming
     st.session_state["stats_group"] = STATS[incoming][0]
+
+if incoming == "by-year":          # merged into Most Played
+    incoming = "most-played"
 
 st.session_state.setdefault("stats_pick", "most-played")
 if st.session_state["stats_pick"] not in STATS:

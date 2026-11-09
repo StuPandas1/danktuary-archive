@@ -5,6 +5,7 @@ st.set_page_config(page_title="DankApp", layout="wide", initial_sidebar_state="c
 pg = st.navigation(
     [
         st.Page("pages/landing.py", title="Dashboard", icon="💀", default=True),
+        st.Page("pages/listen.py", title="Listen (old)"),
         st.Page("pages/shows.py", title="Shows", icon="🎤"),
         st.Page("pages/songs.py", title="Songs", icon="🎵"),
         st.Page("pages/stats.py", title="Stats", icon="📊"),

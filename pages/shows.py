@@ -407,7 +407,7 @@ with player_slot:
         dank_hex("No recording available", "Setlist stats only")
 
 detail = show_detail(df, sel, MT)
-
+st.divider()
 with st.expander("📊 Setlist Stats - Dashboard", True):
     if detail is None:
         dank_hex("No setlist on file for this show")
