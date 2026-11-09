@@ -131,18 +131,22 @@ def longest_gaps(d):
     return out.sort_values("Longest Gap (Sets)", ascending=False).reset_index(drop=True)
 
 @st.cache_data(show_spinner=False)
-def long_jams(d, min_secs=1500):
+def long_jams(d, min_secs=1080, single_only=False):
     d = d.sort_values(["Date", "Track Number"])
     new_chain = d["Date"].ne(d["Date"].shift()) | d["Duration"].ne(d["Duration"].shift())
     jams = (
         d.assign(_g=new_chain.cumsum()).groupby("_g")
         .agg(Date=("Date", "first"), Location=("Location", "first"),
-             Songs=("Title", " -> ".join), Duration=("Duration", "first"))
+             Songs=("Title", " -> ".join), Duration=("Duration", "first"),
+             n=("Title", "size"))
     )
+    if single_only:
+        jams = jams[jams["n"] == 1]
     jams["secs"] = jams["Duration"].apply(parse_duration)
     jams = jams[jams["secs"] >= min_secs].sort_values("secs", ascending=False)
     jams["Date"] = jams["Date"].dt.strftime("%m/%d/%Y")
-    return jams.rename(columns={"Songs": "Song(s)"}).drop(columns="secs").reset_index(drop=True)
+    return (jams.rename(columns={"Songs": "Song(s)"})
+                .drop(columns=["secs", "n"]).reset_index(drop=True))
 
 @st.cache_data(show_spinner=False)
 def active_streaks(d):
@@ -276,9 +280,10 @@ def stat_gaps(t_df, t_stats):
                 song_goto=SONG_PAGE, show_goto=SHOW_PAGE)
 
 def stat_jams(t_df, t_stats):
-    jams_df = long_jams(t_df)
+    single = st.checkbox("Single tracks only (no segues)", key="stats_jams_single")
+    jams_df = long_jams(t_df, single_only=single)
     if jams_df.empty:
-        dank_hex("No jams over 18 minutes")
+        dank_hex("No single-track jams over 18 minutes" if single else "No jams over 18 minutes")
         return
     click_table(ranked(jams_df), key="tbl_jams", show_cols={"Date": "Location"}, show_goto=SHOW_PAGE)
 
