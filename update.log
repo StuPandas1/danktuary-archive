@@ -1636,3 +1636,213 @@
 2026-11-04 23:19:47  INFO       Data check: passed with 0 warning(s).
 2026-11-04 23:19:47  INFO       Git: pushed commit 85a08b0
 2026-11-04 23:19:47  INFO       Took 4m 35s.
+2026-11-11 23:22:50  INFO     ==================================================
+2026-11-11 23:22:50  INFO       DankApp Database Update
+2026-11-11 23:22:50  INFO     ==================================================
+2026-11-11 23:22:50  INFO     Working directory: C:\Users\Administrator\OneDrive\LoveDeep\danktuary-archive-clean
+2026-11-11 23:22:50  INFO     [1/9] Scan files...
+2026-11-11 23:23:00  INFO       scanner.py | Let's a-gooooo!
+2026-11-11 23:23:00  INFO       scanner.py | Loaded 6593 existing row(s); 5094 file(s) already catalogued and will be skipped.
+2026-11-11 23:23:00  INFO       scanner.py | Found extra column(s) in band_archive.csv added by another script: ['OneDrive Share URL']. Preserving them.
+2026-11-11 23:23:00  INFO       scanner.py | New folder detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-11-11 _ Jam Session'
+2026-11-11 23:23:00  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-11-11 _ Jam Session\01_ Fire And Brimstone _ Big River.mp3'
+2026-11-11 23:23:00  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-11-11 _ Jam Session\02_ Gerudo Valley Jam.mp3'
+2026-11-11 23:23:00  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-11-11 _ Jam Session\03_ The Shape I'm In.mp3'
+2026-11-11 23:23:00  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-11-11 _ Jam Session\04_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3'
+2026-11-11 23:23:00  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-11-11 _ Jam Session\05_ Brown Eyed Women.mp3'
+2026-11-11 23:23:00  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-11-11 _ Jam Session\06_ Wolfman's Brother _ Magnificent Sanctuary Band.mp3'
+2026-11-11 23:23:00  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-11-11 _ Jam Session\07_ Funky Bitch _ Rock And Roll _ One More Saturday Night _ Roses Are Free.mp3'
+2026-11-11 23:23:00  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-11-11 _ Jam Session\08_ Loose Lucy.mp3'
+2026-11-11 23:23:00  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-11-11 _ Jam Session\09_ Lawn Boy.mp3'
+2026-11-11 23:23:00  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-11-11 _ Jam Session\10_ Moonage Daydream.mp3'
+2026-11-11 23:23:00  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-11-11 _ Jam Session\11_ Dire Wolf.mp3'
+2026-11-11 23:23:16  INFO       scanner.py | Added 18 new row(s) from 11 file(s); updated 0 placeholder(s) in place. CSV now has 6611 total row(s).
+2026-11-11 23:23:16  INFO     [2/9] Check the scan result...
+2026-11-11 23:23:16  INFO     Check passed (0 warning(s)).
+2026-11-11 23:23:16  INFO     [3/9] Upload to Internet Archive...
+2026-11-11 23:23:16  INFO     Checking what needs uploading to the Internet Archive...
+2026-11-11 23:23:22  INFO       upload_to_archive.py | Wrote upload plan: 1 show(s), 11 file(s) to upload.
+2026-11-11 23:23:22  INFO     11 file(s) across 1 show(s) are ready to upload.
+2026-11-11 23:23:39  INFO     Uploading...
+2026-11-11 23:23:44  INFO       upload_to_archive.py | 2026-11-11 — Danktuary Studios
+2026-11-11 23:23:44  INFO       upload_to_archive.py |   deadweight-2026-11-11-danktuary-studios: 0 file(s) already confirmed, uploading 11 file(s)...
+2026-11-11 23:23:44  INFO       upload_to_archive.py | 
+2026-11-11 23:23:45  INFO       upload_to_archive.py |  uploading 01_ Fire And Brimstone _ Big River.mp3:   0%|          | 0/16 [00:00<?, ?MiB/s]
+2026-11-11 23:23:45  INFO       upload_to_archive.py |  uploading 01_ Fire And Brimstone _ Big River.mp3:   6%|▋         | 1/16 [00:00<00:13,  1.09MiB/s]
+2026-11-11 23:23:45  INFO       upload_to_archive.py |  uploading 01_ Fire And Brimstone _ Big River.mp3:  12%|█▎        | 2/16 [00:01<00:06,  2.26MiB/s]
+2026-11-11 23:23:46  INFO       upload_to_archive.py |  uploading 01_ Fire And Brimstone _ Big River.mp3:  44%|████▍     | 7/16 [00:01<00:00,  9.03MiB/s]
+2026-11-11 23:23:48  INFO       upload_to_archive.py |  uploading 01_ Fire And Brimstone _ Big River.mp3:  56%|█████▋    | 9/16 [00:01<00:00,  9.93MiB/s]
+2026-11-11 23:23:49  INFO       upload_to_archive.py |  uploading 01_ Fire And Brimstone _ Big River.mp3:  69%|██████▉   | 11/16 [00:04<00:02,  1.92MiB/s]
+2026-11-11 23:23:49  INFO       upload_to_archive.py |  uploading 01_ Fire And Brimstone _ Big River.mp3:  81%|████████▏ | 13/16 [00:04<00:01,  2.39MiB/s]
+2026-11-11 23:23:50  INFO       upload_to_archive.py |  uploading 01_ Fire And Brimstone _ Big River.mp3:  88%|████████▊ | 14/16 [00:04<00:00,  2.47MiB/s]
+2026-11-11 23:23:50  INFO       upload_to_archive.py |  uploading 01_ Fire And Brimstone _ Big River.mp3:  94%|█████████▍| 15/16 [00:05<00:00,  2.58MiB/s]
+2026-11-11 23:23:50  INFO       upload_to_archive.py |  uploading 01_ Fire And Brimstone _ Big River.mp3: 100%|██████████| 16/16 [00:05<00:00,  2.75MiB/s]
+2026-11-11 23:23:50  INFO       upload_to_archive.py |  uploading 01_ Fire And Brimstone _ Big River.mp3: 100%|██████████| 16/16 [00:05<00:00,  2.87MiB/s]
+2026-11-11 23:24:08  INFO       upload_to_archive.py | 
+2026-11-11 23:24:09  INFO       upload_to_archive.py |  uploading 02_ Gerudo Valley Jam.mp3:   0%|          | 0/12 [00:00<?, ?MiB/s]
+2026-11-11 23:24:09  INFO       upload_to_archive.py |  uploading 02_ Gerudo Valley Jam.mp3:   8%|▊         | 1/12 [00:00<00:08,  1.30MiB/s]
+2026-11-11 23:24:09  INFO       upload_to_archive.py |  uploading 02_ Gerudo Valley Jam.mp3:  25%|██▌       | 3/12 [00:00<00:02,  4.16MiB/s]
+2026-11-11 23:24:10  INFO       upload_to_archive.py |  uploading 02_ Gerudo Valley Jam.mp3:  42%|████▏     | 5/12 [00:01<00:01,  5.52MiB/s]
+2026-11-11 23:24:10  INFO       upload_to_archive.py |  uploading 02_ Gerudo Valley Jam.mp3:  50%|█████     | 6/12 [00:01<00:01,  4.93MiB/s]
+2026-11-11 23:24:10  INFO       upload_to_archive.py |  uploading 02_ Gerudo Valley Jam.mp3:  58%|█████▊    | 7/12 [00:01<00:01,  4.71MiB/s]
+2026-11-11 23:24:11  INFO       upload_to_archive.py |  uploading 02_ Gerudo Valley Jam.mp3:  67%|██████▋   | 8/12 [00:01<00:01,  3.99MiB/s]
+2026-11-11 23:24:11  INFO       upload_to_archive.py |  uploading 02_ Gerudo Valley Jam.mp3:  75%|███████▌  | 9/12 [00:02<00:00,  3.36MiB/s]
+2026-11-11 23:24:11  INFO       upload_to_archive.py |  uploading 02_ Gerudo Valley Jam.mp3:  83%|████████▎ | 10/12 [00:02<00:00,  3.12MiB/s]
+2026-11-11 23:24:12  INFO       upload_to_archive.py |  uploading 02_ Gerudo Valley Jam.mp3:  92%|█████████▏| 11/12 [00:03<00:00,  2.79MiB/s]
+2026-11-11 23:24:12  INFO       upload_to_archive.py |  uploading 02_ Gerudo Valley Jam.mp3: 100%|██████████| 12/12 [00:03<00:00,  3.50MiB/s]
+2026-11-11 23:24:12  INFO       upload_to_archive.py |  uploading 02_ Gerudo Valley Jam.mp3: 100%|██████████| 12/12 [00:03<00:00,  3.60MiB/s]
+2026-11-11 23:24:14  INFO       upload_to_archive.py | 
+2026-11-11 23:24:15  INFO       upload_to_archive.py |  uploading 03_ The Shape I'm In.mp3:   0%|          | 0/5 [00:00<?, ?MiB/s]
+2026-11-11 23:24:15  INFO       upload_to_archive.py |  uploading 03_ The Shape I'm In.mp3:  20%|██        | 1/5 [00:00<00:03,  1.33MiB/s]
+2026-11-11 23:24:15  INFO       upload_to_archive.py |  uploading 03_ The Shape I'm In.mp3:  80%|████████  | 4/5 [00:00<00:00,  5.52MiB/s]
+2026-11-11 23:24:15  INFO       upload_to_archive.py |  uploading 03_ The Shape I'm In.mp3: 100%|██████████| 5/5 [00:00<00:00,  5.58MiB/s]
+2026-11-11 23:24:19  INFO       upload_to_archive.py | 
+2026-11-11 23:24:19  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:   0%|          | 0/34 [00:00<?, ?MiB/s]
+2026-11-11 23:24:20  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:   3%|▎         | 1/34 [00:00<00:24,  1.36MiB/s]
+2026-11-11 23:24:20  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:   9%|▉         | 3/34 [00:00<00:07,  4.33MiB/s]
+2026-11-11 23:24:20  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  21%|██        | 7/34 [00:01<00:02,  9.39MiB/s]
+2026-11-11 23:24:20  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  29%|██▉       | 10/34 [00:01<00:02, 10.75MiB/s]
+2026-11-11 23:24:20  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  35%|███▌      | 12/34 [00:01<00:01, 11.22MiB/s]
+2026-11-11 23:24:23  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  41%|████      | 14/34 [00:01<00:01, 10.40MiB/s]
+2026-11-11 23:24:23  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  47%|████▋     | 16/34 [00:03<00:07,  2.44MiB/s]
+2026-11-11 23:24:23  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  50%|█████     | 17/34 [00:04<00:06,  2.71MiB/s]
+2026-11-11 23:24:23  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  53%|█████▎    | 18/34 [00:04<00:05,  3.07MiB/s]
+2026-11-11 23:24:24  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  56%|█████▌    | 19/34 [00:04<00:04,  3.17MiB/s]
+2026-11-11 23:24:24  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  59%|█████▉    | 20/34 [00:05<00:04,  2.92MiB/s]
+2026-11-11 23:24:25  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  62%|██████▏   | 21/34 [00:05<00:04,  2.74MiB/s]
+2026-11-11 23:24:25  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  65%|██████▍   | 22/34 [00:05<00:04,  2.62MiB/s]
+2026-11-11 23:24:25  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  68%|██████▊   | 23/34 [00:06<00:04,  2.56MiB/s]
+2026-11-11 23:24:26  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  71%|███████   | 24/34 [00:06<00:03,  2.54MiB/s]
+2026-11-11 23:24:26  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  74%|███████▎  | 25/34 [00:07<00:03,  2.40MiB/s]
+2026-11-11 23:24:27  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  76%|███████▋  | 26/34 [00:07<00:03,  2.18MiB/s]
+2026-11-11 23:24:27  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  79%|███████▉  | 27/34 [00:08<00:03,  2.09MiB/s]
+2026-11-11 23:24:28  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  82%|████████▏ | 28/34 [00:08<00:02,  2.05MiB/s]
+2026-11-11 23:24:28  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  85%|████████▌ | 29/34 [00:09<00:02,  2.06MiB/s]
+2026-11-11 23:24:29  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  88%|████████▊ | 30/34 [00:09<00:01,  2.07MiB/s]
+2026-11-11 23:24:29  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  91%|█████████ | 31/34 [00:10<00:01,  2.12MiB/s]
+2026-11-11 23:24:30  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  94%|█████████▍| 32/34 [00:10<00:00,  2.15MiB/s]
+2026-11-11 23:24:30  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3:  97%|█████████▋| 33/34 [00:11<00:00,  2.18MiB/s]
+2026-11-11 23:24:30  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3: 100%|██████████| 34/34 [00:11<00:00,  2.17MiB/s]
+2026-11-11 23:24:30  INFO       upload_to_archive.py |  uploading 04_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3: 100%|██████████| 34/34 [00:11<00:00,  2.95MiB/s]
+2026-11-11 23:24:34  INFO       upload_to_archive.py | 
+2026-11-11 23:24:35  INFO       upload_to_archive.py |  uploading 05_ Brown Eyed Women.mp3:   0%|          | 0/9 [00:00<?, ?MiB/s]
+2026-11-11 23:24:36  INFO       upload_to_archive.py |  uploading 05_ Brown Eyed Women.mp3:  11%|█         | 1/9 [00:01<00:12,  1.57s/MiB]
+2026-11-11 23:24:37  INFO       upload_to_archive.py |  uploading 05_ Brown Eyed Women.mp3:  22%|██▏       | 2/9 [00:02<00:08,  1.24s/MiB]
+2026-11-11 23:24:39  INFO       upload_to_archive.py |  uploading 05_ Brown Eyed Women.mp3:  33%|███▎      | 3/9 [00:03<00:07,  1.25s/MiB]
+2026-11-11 23:24:40  INFO       upload_to_archive.py |  uploading 05_ Brown Eyed Women.mp3:  44%|████▍     | 4/9 [00:04<00:06,  1.20s/MiB]
+2026-11-11 23:24:41  INFO       upload_to_archive.py |  uploading 05_ Brown Eyed Women.mp3:  56%|█████▌    | 5/9 [00:05<00:04,  1.14s/MiB]
+2026-11-11 23:24:42  INFO       upload_to_archive.py |  uploading 05_ Brown Eyed Women.mp3:  67%|██████▋   | 6/9 [00:07<00:03,  1.14s/MiB]
+2026-11-11 23:24:43  INFO       upload_to_archive.py |  uploading 05_ Brown Eyed Women.mp3:  78%|███████▊  | 7/9 [00:08<00:02,  1.13s/MiB]
+2026-11-11 23:24:44  INFO       upload_to_archive.py |  uploading 05_ Brown Eyed Women.mp3:  89%|████████▉ | 8/9 [00:09<00:01,  1.15s/MiB]
+2026-11-11 23:24:44  INFO       upload_to_archive.py |  uploading 05_ Brown Eyed Women.mp3: 100%|██████████| 9/9 [00:10<00:00,  1.06s/MiB]
+2026-11-11 23:24:44  INFO       upload_to_archive.py |  uploading 05_ Brown Eyed Women.mp3: 100%|██████████| 9/9 [00:10<00:00,  1.14s/MiB]
+2026-11-11 23:24:45  INFO       upload_to_archive.py | 
+2026-11-11 23:24:46  INFO       upload_to_archive.py |  uploading 06_ Wolfman's Brother _ Magnificent Sanctuary Band.mp3:   0%|          | 0/14 [00:00<?, ?MiB/s]
+2026-11-11 23:24:46  INFO       upload_to_archive.py |  uploading 06_ Wolfman's Brother _ Magnificent Sanctuary Band.mp3:   7%|▋         | 1/14 [00:00<00:10,  1.28MiB/s]
+2026-11-11 23:24:47  INFO       upload_to_archive.py |  uploading 06_ Wolfman's Brother _ Magnificent Sanctuary Band.mp3:  21%|██▏       | 3/14 [00:00<00:02,  4.10MiB/s]
+2026-11-11 23:24:47  INFO       upload_to_archive.py |  uploading 06_ Wolfman's Brother _ Magnificent Sanctuary Band.mp3:  36%|███▌      | 5/14 [00:01<00:01,  5.83MiB/s]
+2026-11-11 23:24:47  INFO       upload_to_archive.py |  uploading 06_ Wolfman's Brother _ Magnificent Sanctuary Band.mp3:  50%|█████     | 7/14 [00:01<00:01,  5.57MiB/s]
+2026-11-11 23:24:47  INFO       upload_to_archive.py |  uploading 06_ Wolfman's Brother _ Magnificent Sanctuary Band.mp3:  57%|█████▋    | 8/14 [00:01<00:01,  5.27MiB/s]
+2026-11-11 23:24:48  INFO       upload_to_archive.py |  uploading 06_ Wolfman's Brother _ Magnificent Sanctuary Band.mp3:  64%|██████▍   | 9/14 [00:01<00:01,  4.95MiB/s]
+2026-11-11 23:24:48  INFO       upload_to_archive.py |  uploading 06_ Wolfman's Brother _ Magnificent Sanctuary Band.mp3:  71%|███████▏  | 10/14 [00:02<00:00,  4.22MiB/s]
+2026-11-11 23:24:48  INFO       upload_to_archive.py |  uploading 06_ Wolfman's Brother _ Magnificent Sanctuary Band.mp3:  79%|███████▊  | 11/14 [00:02<00:00,  3.93MiB/s]
+2026-11-11 23:24:49  INFO       upload_to_archive.py |  uploading 06_ Wolfman's Brother _ Magnificent Sanctuary Band.mp3:  86%|████████▌ | 12/14 [00:02<00:00,  3.75MiB/s]
+2026-11-11 23:24:49  INFO       upload_to_archive.py |  uploading 06_ Wolfman's Brother _ Magnificent Sanctuary Band.mp3:  93%|█████████▎| 13/14 [00:03<00:00,  3.13MiB/s]
+2026-11-11 23:24:49  INFO       upload_to_archive.py |  uploading 06_ Wolfman's Brother _ Magnificent Sanctuary Band.mp3: 100%|██████████| 14/14 [00:03<00:00,  4.16MiB/s]
+2026-11-11 23:24:51  INFO       upload_to_archive.py | 
+2026-11-11 23:24:52  INFO       upload_to_archive.py |  uploading 07_ Funky Bitch _ Rock And Roll _ One More Saturday Night _ Roses Are Free.mp3:   0%|          | 0/33 [00:00<?, ?MiB/s]
+2026-11-11 23:24:52  INFO       upload_to_archive.py |  uploading 07_ Funky Bitch _ Rock And Roll _ One More Saturday Night _ Roses Are Free.mp3:   3%|▎         | 1/33 [00:00<00:27,  1.16MiB/s]
+2026-11-11 23:24:53  INFO       upload_to_archive.py |  uploading 07_ Funky Bitch _ Rock And Roll _ One More Saturday Night _ Roses Are Free.mp3:   6%|▌         | 2/33 [00:01<00:18,  1.70MiB/s]
+2026-11-11 23:24:53  INFO       upload_to_archive.py |  uploading 07_ Funky Bitch _ Rock And Roll _ One More Saturday Night _ Roses Are Free.mp3:   9%|▉         | 3/33 [00:01<00:15,  1.99MiB/s]
+2026-11-11 23:24:54  INFO       upload_to_archive.py |  uploading 07_ Funky Bitch _ Rock And Roll _ One More Saturday Night _ Roses Are Free.mp3:  12%|█▏        | 4/33 [00:02<00:14,  2.06MiB/s]
+2026-11-11 23:24:54  INFO       upload_to_archive.py |  uploading 07_ Funky Bitch _ Rock And Roll _ One More Saturday Night _ Roses Are Free.mp3:  15%|█▌        | 5/33 [00:02<00:12,  2.20MiB/s]
+2026-11-11 23:24:54  INFO       upload_to_archive.py |  uploading 07_ Funky Bitch _ Rock And Roll _ One More Saturday Night _ Roses Are Free.mp3:  18%|█▊        | 6/33 [00:02<00:11,  2.32MiB/s]
+2026-11-11 23:24:55  INFO       upload_to_archive.py |  uploading 07_ Funky Bitch _ Rock And Roll _ One More Saturday Night _ Roses Are Free.mp3:  21%|██        | 7/33 [00:03<00:10,  2.38MiB/s]
+2026-11-11 23:24:55  INFO       upload_to_archive.py |  uploading 07_ Funky Bitch _ Rock And Roll _ One More Saturday Night _ Roses Are Free.mp3:  24%|██▍       | 8/33 [00:03<00:10,  2.42MiB/s]
+2026-11-11 23:24:56  INFO       upload_to_archive.py |  uploading 07_ Funky Bitch _ Rock And Roll _ One More Saturday Night _ Roses Are Free.mp3:  27%|██▋       | 9/33 [00:04<00:10,  2.28MiB/s]
+2026-11-11 23:24:56  INFO       upload_to_archive.py |  uploading 07_ Funky Bitch _ Rock And Roll _ One More Saturday Night _ Roses Are Free.mp3:  30%|███       | 10/33 [00:04<00:10,  2.17MiB/s]
+2026-11-11 23:24:57  INFO       upload_to_archive.py |  uploading 07_ Funky Bitch _ Rock And Roll _ One More Saturday Night _ Roses Are Free.mp3:  33%|███▎      | 11/33 [00:05<00:10,  2.10MiB/s]
+2026-11-11 23:24:57  INFO       upload_to_archive.py |  uploading 07_ Funky Bitch _ Rock And Roll _ One More Saturday Night _ Roses Are Free.mp3:  36%|███▋      | 12/33 [00:05<00:09,  2.12MiB/s]
+2026-11-11 23:24:58  INFO       upload_to_archive.py |  uploading 07_ Funky Bitch _ Rock And Roll _ One More Saturday Night _ Roses Are Free.mp3:  39%|███▉      | 13/33 [00:06<00:09,  2.09MiB/s]
+2026-11-11 23:24:58  INFO       upload_to_archive.py |  uploading 07_ Funky Bitch _ Rock And Roll _ One More Saturday Night _ Roses Are Free.mp3:  42%|████▏     | 14/33 [00:06<00:08,  2.11MiB/s]
+2026-11-11 23:24:58  INFO       upload_to_archive.py |  uploading 07_ Funky Bitch _ Rock And Roll _ One More Saturday Night _ Roses Are Free.mp3:  45%|████▌     | 15/33 [00:07<00:08,  2.15MiB/s]
+2026-11-11 23:24:59  INFO       upload_to_archive.py |  uploading 07_ Funky Bitch _ Rock And Roll _ One More Saturday Night _ Roses Are Free.mp3:  48%|████▊     | 16/33 [00:07<00:07,  2.22MiB/s]
+2026-11-11 23:24:59  INFO       upload_to_archive.py |  uploading 07_ Funky Bitch _ Rock And Roll _ One More Saturday Night _ Roses Are Free.mp3:  52%|█████▏    | 17/33 [00:07<00:07,  2.25MiB/s]
+2026-11-11 23:25:00  INFO       upload_to_archive.py |  uploading 07_ Funky Bitch _ Rock And Roll _ One More Saturday Night _ Roses Are Free.mp3:  55%|█████▍    | 18/33 [00:08<00:06,  2.25MiB/s]
+2026-11-11 23:25:00  INFO       upload_to_archive.py |  uploading 07_ Funky Bitch _ Rock And Roll _ One More Saturday Night _ Roses Are Free.mp3:  58%|█████▊    | 19/33 [00:08<00:06,  2.32MiB/s]
+2026-11-11 23:25:01  INFO       upload_to_archive.py |  uploading 07_ Funky Bitch _ Rock And Roll _ One More Saturday Night _ Roses Are Free.mp3:  61%|██████    | 20/33 [00:09<00:05,  2.37MiB/s]
+2026-11-11 23:25:01  INFO       upload_to_archive.py |  uploading 07_ Funky Bitch _ Rock And Roll _ One More Saturday Night _ Roses Are Free.mp3:  64%|██████▎   | 21/33 [00:09<00:05,  2.36MiB/s]
+2026-11-11 23:25:01  INFO       upload_to_archive.py |  uploading 07_ Funky Bitch _ Rock And Roll _ One More Saturday Night _ Roses Are Free.mp3:  67%|██████▋   | 22/33 [00:09<00:04,  2.42MiB/s]
+2026-11-11 23:25:02  INFO       upload_to_archive.py |  uploading 07_ Funky Bitch _ Rock And Roll _ One More Saturday Night _ Roses Are Free.mp3:  70%|██████▉   | 23/33 [00:10<00:04,  2.49MiB/s]
+2026-11-11 23:25:02  INFO       upload_to_archive.py |  uploading 07_ Funky Bitch _ Rock And Roll _ One More Saturday Night _ Roses Are Free.mp3:  73%|███████▎  | 24/33 [00:10<00:03,  2.56MiB/s]
+2026-11-11 23:25:03  INFO       upload_to_archive.py |  uploading 07_ Funky Bitch _ Rock And Roll _ One More Saturday Night _ Roses Are Free.mp3:  76%|███████▌  | 25/33 [00:11<00:03,  2.30MiB/s]
+2026-11-11 23:25:04  INFO       upload_to_archive.py |  uploading 07_ Funky Bitch _ Rock And Roll _ One More Saturday Night _ Roses Are Free.mp3:  79%|███████▉  | 26/33 [00:11<00:03,  1.92MiB/s]
+2026-11-11 23:25:04  INFO       upload_to_archive.py |  uploading 07_ Funky Bitch _ Rock And Roll _ One More Saturday Night _ Roses Are Free.mp3:  82%|████████▏ | 27/33 [00:12<00:03,  1.70MiB/s]
+2026-11-11 23:25:05  INFO       upload_to_archive.py |  uploading 07_ Funky Bitch _ Rock And Roll _ One More Saturday Night _ Roses Are Free.mp3:  85%|████████▍ | 28/33 [00:13<00:03,  1.64MiB/s]
+2026-11-11 23:25:06  INFO       upload_to_archive.py |  uploading 07_ Funky Bitch _ Rock And Roll _ One More Saturday Night _ Roses Are Free.mp3:  88%|████████▊ | 29/33 [00:14<00:02,  1.49MiB/s]
+2026-11-11 23:25:07  INFO       upload_to_archive.py |  uploading 07_ Funky Bitch _ Rock And Roll _ One More Saturday Night _ Roses Are Free.mp3:  91%|█████████ | 30/33 [00:15<00:02,  1.39MiB/s]
+2026-11-11 23:25:08  INFO       upload_to_archive.py |  uploading 07_ Funky Bitch _ Rock And Roll _ One More Saturday Night _ Roses Are Free.mp3:  94%|█████████▍| 31/33 [00:15<00:01,  1.34MiB/s]
+2026-11-11 23:25:08  INFO       upload_to_archive.py |  uploading 07_ Funky Bitch _ Rock And Roll _ One More Saturday Night _ Roses Are Free.mp3:  97%|█████████▋| 32/33 [00:16<00:00,  1.36MiB/s]
+2026-11-11 23:25:08  INFO       upload_to_archive.py |  uploading 07_ Funky Bitch _ Rock And Roll _ One More Saturday Night _ Roses Are Free.mp3: 100%|██████████| 33/33 [00:16<00:00,  1.63MiB/s]
+2026-11-11 23:25:08  INFO       upload_to_archive.py |  uploading 07_ Funky Bitch _ Rock And Roll _ One More Saturday Night _ Roses Are Free.mp3: 100%|██████████| 33/33 [00:16<00:00,  1.95MiB/s]
+2026-11-11 23:25:09  INFO       upload_to_archive.py | 
+2026-11-11 23:25:10  INFO       upload_to_archive.py |  uploading 08_ Loose Lucy.mp3:   0%|          | 0/6 [00:00<?, ?MiB/s]
+2026-11-11 23:25:10  INFO       upload_to_archive.py |  uploading 08_ Loose Lucy.mp3:  17%|█▋        | 1/6 [00:00<00:03,  1.30MiB/s]
+2026-11-11 23:25:10  INFO       upload_to_archive.py |  uploading 08_ Loose Lucy.mp3:  33%|███▎      | 2/6 [00:00<00:01,  2.63MiB/s]
+2026-11-11 23:25:11  INFO       upload_to_archive.py |  uploading 08_ Loose Lucy.mp3:  67%|██████▋   | 4/6 [00:01<00:00,  4.97MiB/s]
+2026-11-11 23:25:11  INFO       upload_to_archive.py |  uploading 08_ Loose Lucy.mp3:  83%|████████▎ | 5/6 [00:01<00:00,  4.81MiB/s]
+2026-11-11 23:25:11  INFO       upload_to_archive.py |  uploading 08_ Loose Lucy.mp3: 100%|██████████| 6/6 [00:01<00:00,  4.33MiB/s]
+2026-11-11 23:25:14  INFO       upload_to_archive.py | 
+2026-11-11 23:25:15  INFO       upload_to_archive.py |  uploading 09_ Lawn Boy.mp3:   0%|          | 0/7 [00:00<?, ?MiB/s]
+2026-11-11 23:25:15  INFO       upload_to_archive.py |  uploading 09_ Lawn Boy.mp3:  14%|█▍        | 1/7 [00:00<00:05,  1.18MiB/s]
+2026-11-11 23:25:16  INFO       upload_to_archive.py |  uploading 09_ Lawn Boy.mp3:  29%|██▊       | 2/7 [00:01<00:02,  1.90MiB/s]
+2026-11-11 23:25:16  INFO       upload_to_archive.py |  uploading 09_ Lawn Boy.mp3:  43%|████▎     | 3/7 [00:01<00:01,  2.41MiB/s]
+2026-11-11 23:25:16  INFO       upload_to_archive.py |  uploading 09_ Lawn Boy.mp3:  57%|█████▋    | 4/7 [00:01<00:01,  2.56MiB/s]
+2026-11-11 23:25:17  INFO       upload_to_archive.py |  uploading 09_ Lawn Boy.mp3:  71%|███████▏  | 5/7 [00:02<00:00,  2.58MiB/s]
+2026-11-11 23:25:17  INFO       upload_to_archive.py |  uploading 09_ Lawn Boy.mp3:  86%|████████▌ | 6/7 [00:02<00:00,  2.48MiB/s]
+2026-11-11 23:25:17  INFO       upload_to_archive.py |  uploading 09_ Lawn Boy.mp3: 100%|██████████| 7/7 [00:02<00:00,  3.10MiB/s]
+2026-11-11 23:25:17  INFO       upload_to_archive.py |  uploading 09_ Lawn Boy.mp3: 100%|██████████| 7/7 [00:02<00:00,  2.54MiB/s]
+2026-11-11 23:25:18  INFO       upload_to_archive.py | 
+2026-11-11 23:25:19  INFO       upload_to_archive.py |  uploading 10_ Moonage Daydream.mp3:   0%|          | 0/11 [00:00<?, ?MiB/s]
+2026-11-11 23:25:19  INFO       upload_to_archive.py |  uploading 10_ Moonage Daydream.mp3:   9%|▉         | 1/11 [00:00<00:07,  1.31MiB/s]
+2026-11-11 23:25:19  INFO       upload_to_archive.py |  uploading 10_ Moonage Daydream.mp3:  18%|█▊        | 2/11 [00:00<00:03,  2.66MiB/s]
+2026-11-11 23:25:19  INFO       upload_to_archive.py |  uploading 10_ Moonage Daydream.mp3:  45%|████▌     | 5/11 [00:00<00:00,  7.29MiB/s]
+2026-11-11 23:25:20  INFO       upload_to_archive.py |  uploading 10_ Moonage Daydream.mp3:  73%|███████▎  | 8/11 [00:01<00:00, 10.28MiB/s]
+2026-11-11 23:25:20  INFO       upload_to_archive.py |  uploading 10_ Moonage Daydream.mp3:  91%|█████████ | 10/11 [00:02<00:00,  4.69MiB/s]
+2026-11-11 23:25:20  INFO       upload_to_archive.py |  uploading 10_ Moonage Daydream.mp3: 100%|██████████| 11/11 [00:02<00:00,  5.29MiB/s]
+2026-11-11 23:25:25  INFO       upload_to_archive.py | 
+2026-11-11 23:25:26  INFO       upload_to_archive.py |  uploading 11_ Dire Wolf.mp3:   0%|          | 0/7 [00:00<?, ?MiB/s]
+2026-11-11 23:25:26  INFO       upload_to_archive.py |  uploading 11_ Dire Wolf.mp3:  14%|█▍        | 1/7 [00:00<00:04,  1.31MiB/s]
+2026-11-11 23:25:26  INFO       upload_to_archive.py |  uploading 11_ Dire Wolf.mp3:  43%|████▎     | 3/7 [00:00<00:00,  4.17MiB/s]
+2026-11-11 23:25:26  INFO       upload_to_archive.py |  uploading 11_ Dire Wolf.mp3:  71%|███████▏  | 5/7 [00:01<00:00,  5.63MiB/s]
+2026-11-11 23:25:26  INFO       upload_to_archive.py |  uploading 11_ Dire Wolf.mp3:  86%|████████▌ | 6/7 [00:01<00:00,  5.65MiB/s]
+2026-11-11 23:25:26  INFO       upload_to_archive.py |  uploading 11_ Dire Wolf.mp3: 100%|██████████| 7/7 [00:01<00:00,  5.36MiB/s]
+2026-11-11 23:26:47  INFO       upload_to_archive.py | Done. band_archive.csv updated with IA URLs.
+2026-11-11 23:26:47  INFO     [4/9] Analyze data...
+2026-11-11 23:26:49  INFO       analyze.py | song_stats.csv created!
+2026-11-11 23:26:49  INFO     [5/9] Build metadata...
+2026-11-11 23:26:50  INFO       build_metadata.py | Added 4 new song(s) to metadata: ['Fire And Brimstone', 'Funky Bitch', 'Gerudo Valley', 'Loose Lucy']
+2026-11-11 23:26:50  INFO       build_metadata.py | song_metadata.csv updated!
+2026-11-11 23:26:50  INFO     [6/9] Fill missing artists...
+2026-11-11 23:26:50  INFO     4 song(s) have no artist on file.
+2026-11-11 23:27:21  INFO     Filled in 4 of 4 artist name(s).
+2026-11-11 23:27:21  INFO     [7/9] Generate share links...
+2026-11-11 23:27:28  INFO       generate_share_links.py | Found 1 folders to generate share links for.
+2026-11-11 23:27:28  INFO       generate_share_links.py |   Processing: LoveDeep/Audio Recordings/Jam Session Recordings 2021-/2026/2026-11-11 _ Jam Session
+2026-11-11 23:27:28  INFO       generate_share_links.py |     ✓ https://1drv.ms/f/c/436f797b4dd480a3/IgBYfwDG7mXQT5vyuFaKa7YjATqNhE9rVYHA9cG7IOxSiJA
+2026-11-11 23:27:28  INFO       generate_share_links.py | 
+2026-11-11 23:27:28  INFO       generate_share_links.py | Done. 1 share links written to band_archive.csv.
+2026-11-11 23:27:28  INFO     [8/9] Final check before push...
+2026-11-11 23:27:29  INFO     Check passed (0 warning(s)).
+2026-11-11 23:27:29  INFO     [9/9] Commit and push...
+2026-11-11 23:27:29  INFO     Changes detected. Committing...
+2026-11-11 23:27:30  INFO     Pushing to GitHub...
+2026-11-11 23:27:33  INFO     Done! Streamlit Cloud will redeploy automatically in a minute or two.
+2026-11-11 23:27:33  INFO     Pipeline finished successfully.
+2026-11-11 23:27:33  INFO       Scan: 18 new track row(s) from 11 file(s)
+2026-11-11 23:27:33  INFO       Shows touched: 2026-11-11 — Danktuary Studios
+2026-11-11 23:27:33  INFO       Uploaded 11 file(s) from 1 show(s) to the Internet Archive.
+2026-11-11 23:27:33  INFO       Artist names filled in: 4
+2026-11-11 23:27:33  INFO       Data check: passed with 0 warning(s).
+2026-11-11 23:27:33  INFO       Git: pushed commit 2030836
+2026-11-11 23:27:33  INFO       Took 4m 43s.
