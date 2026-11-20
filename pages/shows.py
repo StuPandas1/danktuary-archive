@@ -108,18 +108,15 @@ def show_detail(_d, label, mtimes):
     shortest = chains.loc[chains["s"].idxmin()]
 
     table, bustout = [], None
-    for num, title, dur, seg in zip(rows["Track Number"], rows["Title"], rows["Duration"], seg_next):
+    for title in rows["Title"]:
         plays = idx.get(_norm(title), [])
         prior = [p for p in plays if p[0] < show_date]
         last = max(prior, key=lambda p: p[0]) if prior else None
         table.append({
-            "#": str(num),
-            "Title": title + (" →" if seg else ""),
-            "Duration": "--" if seg else str(dur),
+            "Title": title,
             "Total Plays": str(len(plays)) if plays else "First time!",
             "Previous Play": last[0].strftime("%m/%d/%Y") if last else "First time!",
             "Previous Location": last[1] if last else "",
-            "_song": title,
         })
         if last:
             days = (show_date - last[0]).days
@@ -169,8 +166,22 @@ def venue_detail(_d, loc, mtimes):
         "top": top, "sets": sets,
     }
 
+def track_extremes(tracks):
+    """(longest, shortest) as ((label, secs), (label, secs)) from a track list, or None."""
+    timed = []
+    for t in tracks:
+        try:
+            s = parse_duration(t.get("duration", "")) or 0
+        except Exception:
+            s = 0
+        if s:
+            timed.append((t["label"], int(s)))
+    if not timed:
+        return None
+    return max(timed, key=lambda x: x[1]), min(timed, key=lambda x: x[1])
+
 # -------------------------
-# NOTES
+# NOTES HELPERS
 # -------------------------
 # NOTE ON SCHEMA: replies rely on a nullable "parent_id" column on show_notes.
 
@@ -418,8 +429,8 @@ with st.expander("📊 Setlist Stats - Dashboard", True):
         ]
         st.markdown(f'<div class="dank-grid">{"".join(cards)}</div>', unsafe_allow_html=True)
 
-        lt, ls = detail["longest"]
-        st_, ss = detail["shortest"]
+        extremes = track_extremes(playlist) if playlist else None
+        (lt, ls), (st_, ss) = extremes if extremes else (detail["longest"], detail["shortest"])
         if detail["bustout"]:
             bust_line = f"🎺 Biggest Bustout: **{detail['bustout'][0]}** ({detail['bustout'][1]:,} days)"
         else:
@@ -433,9 +444,9 @@ with st.expander("📊 Setlist Stats - Dashboard", True):
         st.divider()
         dank_hex("Track by Track Breakdown")
         click_table(detail["table"], key="tbl_show",
-                    song_cols={"Title": "_song"},
+                    song_cols=("Title",),
                     show_cols={"Previous Play": "Previous Location"},
-                    hide=("_song",), song_goto=SONG_PAGE)
+                    song_goto=SONG_PAGE)
 
 if detail is not None:
     with st.expander("🏟️ Venue Stats - Dashboard", False):

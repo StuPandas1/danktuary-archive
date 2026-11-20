@@ -1,52 +1,56 @@
 [
   {
-    "identifier": "deadweight-2026-11-11-danktuary-studios",
-    "date": "2026-11-11",
+    "identifier": "deadweight-2026-11-18-danktuary-studios",
+    "date": "2026-11-18",
     "location": "Danktuary Studios",
     "files": [
       {
-        "filename": "01_ Fire And Brimstone _ Big River.mp3",
-        "title": "Big River"
+        "filename": "01_ Shakedown Street _ Takin' Care of Business.mp3",
+        "title": "Takin' Care Of Business"
       },
       {
-        "filename": "02_ Gerudo Valley Jam.mp3",
-        "title": "Gerudo Valley"
+        "filename": "02_ Jack Straw.mp3",
+        "title": "Jack Straw"
       },
       {
         "filename": "03_ The Shape I'm In.mp3",
         "title": "The Shape I'm In"
       },
       {
-        "filename": "04_ Truckin _ Stuck Inside Of Mobile _ Bird Song.mp3",
+        "filename": "04_ The Shape I'm In (2).mp3",
+        "title": "The Shape I'm In (2)"
+      },
+      {
+        "filename": "05_ Truckin.mp3",
+        "title": "Truckin"
+      },
+      {
+        "filename": "06_ Truckin _ Stuck Inside of Mobile _ Bird Song.mp3",
         "title": "Bird Song"
       },
       {
-        "filename": "05_ Brown Eyed Women.mp3",
+        "filename": "07_ Brown Eyed Women.mp3",
         "title": "Brown Eyed Women"
       },
       {
-        "filename": "06_ Wolfman's Brother _ Magnificent Sanctuary Band.mp3",
-        "title": "Magnificent Sanctuary Band"
+        "filename": "08_ Dixie Chicken.mp3",
+        "title": "Dixie Chicken"
       },
       {
-        "filename": "07_ Funky Bitch _ Rock And Roll _ One More Saturday Night _ Roses Are Free.mp3",
-        "title": "Roses Are Free"
+        "filename": "09_ Candyman.mp3",
+        "title": "Candyman"
       },
       {
-        "filename": "08_ Loose Lucy.mp3",
-        "title": "Loose Lucy"
+        "filename": "10_ Lovelight _ Franklin's Tower.mp3",
+        "title": "Franklin's Tower"
       },
       {
-        "filename": "09_ Lawn Boy.mp3",
-        "title": "Lawn Boy"
+        "filename": "11_ Brizel Song.mp3",
+        "title": "Brizel Song"
       },
       {
-        "filename": "10_ Moonage Daydream.mp3",
-        "title": "Moonage Daydream"
-      },
-      {
-        "filename": "11_ Dire Wolf.mp3",
-        "title": "Dire Wolf"
+        "filename": "12_ Midnight Moonlight.mp3",
+        "title": "Midnight Moonlight"
       }
     ]
   }

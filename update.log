@@ -1846,3 +1846,329 @@
 2026-11-11 23:27:33  INFO       Data check: passed with 0 warning(s).
 2026-11-11 23:27:33  INFO       Git: pushed commit 2030836
 2026-11-11 23:27:33  INFO       Took 4m 43s.
+2026-11-18 23:24:03  INFO     ==================================================
+2026-11-18 23:24:03  INFO       DankApp Database Update
+2026-11-18 23:24:03  INFO     ==================================================
+2026-11-18 23:24:03  INFO     Working directory: C:\Users\Administrator\OneDrive\LoveDeep\danktuary-archive-clean
+2026-11-18 23:24:03  INFO     [1/9] Scan files...
+2026-11-18 23:24:12  INFO       scanner.py | Let's a-gooooo!
+2026-11-18 23:24:12  INFO       scanner.py | Loaded 6611 existing row(s); 5105 file(s) already catalogued and will be skipped.
+2026-11-18 23:24:12  INFO       scanner.py | Found extra column(s) in band_archive.csv added by another script: ['OneDrive Share URL']. Preserving them.
+2026-11-18 23:24:12  INFO       scanner.py | New folder detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-11-18 _ Jam Session'
+2026-11-18 23:24:12  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-11-18 _ Jam Session\01_ Shakedown Street _ Takin' Care of Business.mp3'
+2026-11-18 23:24:12  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-11-18 _ Jam Session\02_ Jack Straw.mp3'
+2026-11-18 23:24:12  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-11-18 _ Jam Session\03_ The Shape I'm In.mp3'
+2026-11-18 23:24:12  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-11-18 _ Jam Session\04_ The Shape I'm In (2).mp3'
+2026-11-18 23:24:12  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-11-18 _ Jam Session\05_ Truckin.mp3'
+2026-11-18 23:24:12  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-11-18 _ Jam Session\06_ Truckin _ Stuck Inside of Mobile _ Bird Song.mp3'
+2026-11-18 23:24:12  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-11-18 _ Jam Session\07_ Brown Eyed Women.mp3'
+2026-11-18 23:24:12  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-11-18 _ Jam Session\08_ Dixie Chicken.mp3'
+2026-11-18 23:24:12  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-11-18 _ Jam Session\09_ Candyman.mp3'
+2026-11-18 23:24:12  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-11-18 _ Jam Session\10_ Lovelight _ Franklin's Tower.mp3'
+2026-11-18 23:24:12  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-11-18 _ Jam Session\11_ Brizel Song.mp3'
+2026-11-18 23:24:12  INFO       scanner.py | New file detected: 'C:\Users\Administrator\OneDrive\LoveDeep\Audio Recordings\Jam Session Recordings 2021-\2026\2026-11-18 _ Jam Session\12_ Midnight Moonlight.mp3'
+2026-11-18 23:24:23  INFO       scanner.py | Added 16 new row(s) from 12 file(s); updated 0 placeholder(s) in place. CSV now has 6627 total row(s).
+2026-11-18 23:24:23  INFO     [2/9] Check the scan result...
+2026-11-18 23:24:23  INFO     Check passed (0 warning(s)).
+2026-11-18 23:24:23  INFO     [3/9] Upload to Internet Archive...
+2026-11-18 23:24:23  INFO     Checking what needs uploading to the Internet Archive...
+2026-11-18 23:24:27  INFO       upload_to_archive.py | Wrote upload plan: 1 show(s), 12 file(s) to upload.
+2026-11-18 23:24:27  INFO     12 file(s) across 1 show(s) are ready to upload.
+2026-11-18 23:24:38  INFO     Uploading...
+2026-11-18 23:24:43  INFO       upload_to_archive.py | 2026-11-18 — Danktuary Studios
+2026-11-18 23:24:43  INFO       upload_to_archive.py |   deadweight-2026-11-18-danktuary-studios: 0 file(s) already confirmed, uploading 12 file(s)...
+2026-11-18 23:24:43  INFO       upload_to_archive.py | 
+2026-11-18 23:24:43  INFO       upload_to_archive.py |  uploading 01_ Shakedown Street _ Takin' Care of Business.mp3:   0%|          | 0/23 [00:00<?, ?MiB/s]
+2026-11-18 23:24:44  INFO       upload_to_archive.py |  uploading 01_ Shakedown Street _ Takin' Care of Business.mp3:   4%|▍         | 1/23 [00:00<00:19,  1.15MiB/s]
+2026-11-18 23:24:44  INFO       upload_to_archive.py |  uploading 01_ Shakedown Street _ Takin' Care of Business.mp3:  13%|█▎        | 3/23 [00:01<00:06,  3.32MiB/s]
+2026-11-18 23:24:44  INFO       upload_to_archive.py |  uploading 01_ Shakedown Street _ Takin' Care of Business.mp3:  22%|██▏       | 5/23 [00:01<00:04,  4.24MiB/s]
+2026-11-18 23:24:45  INFO       upload_to_archive.py |  uploading 01_ Shakedown Street _ Takin' Care of Business.mp3:  26%|██▌       | 6/23 [00:01<00:04,  3.95MiB/s]
+2026-11-18 23:24:45  INFO       upload_to_archive.py |  uploading 01_ Shakedown Street _ Takin' Care of Business.mp3:  30%|███       | 7/23 [00:02<00:04,  3.23MiB/s]
+2026-11-18 23:24:46  INFO       upload_to_archive.py |  uploading 01_ Shakedown Street _ Takin' Care of Business.mp3:  35%|███▍      | 8/23 [00:02<00:05,  2.74MiB/s]
+2026-11-18 23:24:46  INFO       upload_to_archive.py |  uploading 01_ Shakedown Street _ Takin' Care of Business.mp3:  39%|███▉      | 9/23 [00:03<00:05,  2.49MiB/s]
+2026-11-18 23:24:46  INFO       upload_to_archive.py |  uploading 01_ Shakedown Street _ Takin' Care of Business.mp3:  43%|████▎     | 10/23 [00:03<00:04,  2.65MiB/s]
+2026-11-18 23:24:47  INFO       upload_to_archive.py |  uploading 01_ Shakedown Street _ Takin' Care of Business.mp3:  48%|████▊     | 11/23 [00:03<00:04,  2.82MiB/s]
+2026-11-18 23:24:47  INFO       upload_to_archive.py |  uploading 01_ Shakedown Street _ Takin' Care of Business.mp3:  52%|█████▏    | 12/23 [00:04<00:03,  2.91MiB/s]
+2026-11-18 23:24:47  INFO       upload_to_archive.py |  uploading 01_ Shakedown Street _ Takin' Care of Business.mp3:  57%|█████▋    | 13/23 [00:04<00:03,  3.02MiB/s]
+2026-11-18 23:24:48  INFO       upload_to_archive.py |  uploading 01_ Shakedown Street _ Takin' Care of Business.mp3:  61%|██████    | 14/23 [00:04<00:02,  3.10MiB/s]
+2026-11-18 23:24:48  INFO       upload_to_archive.py |  uploading 01_ Shakedown Street _ Takin' Care of Business.mp3:  65%|██████▌   | 15/23 [00:05<00:02,  3.22MiB/s]
+2026-11-18 23:24:48  INFO       upload_to_archive.py |  uploading 01_ Shakedown Street _ Takin' Care of Business.mp3:  70%|██████▉   | 16/23 [00:05<00:02,  3.25MiB/s]
+2026-11-18 23:24:48  INFO       upload_to_archive.py |  uploading 01_ Shakedown Street _ Takin' Care of Business.mp3:  74%|███████▍  | 17/23 [00:05<00:01,  3.32MiB/s]
+2026-11-18 23:24:49  INFO       upload_to_archive.py |  uploading 01_ Shakedown Street _ Takin' Care of Business.mp3:  78%|███████▊  | 18/23 [00:05<00:01,  3.35MiB/s]
+2026-11-18 23:24:49  INFO       upload_to_archive.py |  uploading 01_ Shakedown Street _ Takin' Care of Business.mp3:  83%|████████▎ | 19/23 [00:06<00:01,  3.37MiB/s]
+2026-11-18 23:24:49  INFO       upload_to_archive.py |  uploading 01_ Shakedown Street _ Takin' Care of Business.mp3:  87%|████████▋ | 20/23 [00:06<00:00,  3.40MiB/s]
+2026-11-18 23:24:50  INFO       upload_to_archive.py |  uploading 01_ Shakedown Street _ Takin' Care of Business.mp3:  91%|█████████▏| 21/23 [00:06<00:00,  3.44MiB/s]
+2026-11-18 23:24:50  INFO       upload_to_archive.py |  uploading 01_ Shakedown Street _ Takin' Care of Business.mp3:  96%|█████████▌| 22/23 [00:07<00:00,  3.51MiB/s]
+2026-11-18 23:24:50  INFO       upload_to_archive.py |  uploading 01_ Shakedown Street _ Takin' Care of Business.mp3: 100%|██████████| 23/23 [00:07<00:00,  4.13MiB/s]
+2026-11-18 23:24:50  INFO       upload_to_archive.py |  uploading 01_ Shakedown Street _ Takin' Care of Business.mp3: 100%|██████████| 23/23 [00:07<00:00,  3.21MiB/s]
+2026-11-18 23:25:05  INFO       upload_to_archive.py | 
+2026-11-18 23:25:05  INFO       upload_to_archive.py |  uploading 02_ Jack Straw.mp3:   0%|          | 0/13 [00:00<?, ?MiB/s]
+2026-11-18 23:25:06  INFO       upload_to_archive.py |  uploading 02_ Jack Straw.mp3:   8%|▊         | 1/13 [00:00<00:09,  1.21MiB/s]
+2026-11-18 23:25:06  INFO       upload_to_archive.py |  uploading 02_ Jack Straw.mp3:  23%|██▎       | 3/13 [00:01<00:02,  3.56MiB/s]
+2026-11-18 23:25:06  INFO       upload_to_archive.py |  uploading 02_ Jack Straw.mp3:  31%|███       | 4/13 [00:01<00:02,  4.03MiB/s]
+2026-11-18 23:25:06  INFO       upload_to_archive.py |  uploading 02_ Jack Straw.mp3:  38%|███▊      | 5/13 [00:01<00:01,  4.27MiB/s]
+2026-11-18 23:25:06  INFO       upload_to_archive.py |  uploading 02_ Jack Straw.mp3:  46%|████▌     | 6/13 [00:01<00:01,  4.44MiB/s]
+2026-11-18 23:25:07  INFO       upload_to_archive.py |  uploading 02_ Jack Straw.mp3:  54%|█████▍    | 7/13 [00:01<00:01,  4.10MiB/s]
+2026-11-18 23:25:07  INFO       upload_to_archive.py |  uploading 02_ Jack Straw.mp3:  62%|██████▏   | 8/13 [00:02<00:01,  3.62MiB/s]
+2026-11-18 23:25:07  INFO       upload_to_archive.py |  uploading 02_ Jack Straw.mp3:  69%|██████▉   | 9/13 [00:02<00:01,  3.40MiB/s]
+2026-11-18 23:25:08  INFO       upload_to_archive.py |  uploading 02_ Jack Straw.mp3:  77%|███████▋  | 10/13 [00:02<00:00,  3.26MiB/s]
+2026-11-18 23:25:08  INFO       upload_to_archive.py |  uploading 02_ Jack Straw.mp3:  85%|████████▍ | 11/13 [00:03<00:00,  3.13MiB/s]
+2026-11-18 23:25:08  INFO       upload_to_archive.py |  uploading 02_ Jack Straw.mp3:  92%|█████████▏| 12/13 [00:03<00:00,  3.04MiB/s]
+2026-11-18 23:25:08  INFO       upload_to_archive.py |  uploading 02_ Jack Straw.mp3: 100%|██████████| 13/13 [00:03<00:00,  3.57MiB/s]
+2026-11-18 23:25:09  INFO       upload_to_archive.py | 
+2026-11-18 23:25:10  INFO       upload_to_archive.py |  uploading 03_ The Shape I'm In.mp3:   0%|          | 0/6 [00:00<?, ?MiB/s]
+2026-11-18 23:25:10  INFO       upload_to_archive.py |  uploading 03_ The Shape I'm In.mp3:  17%|█▋        | 1/6 [00:00<00:03,  1.39MiB/s]
+2026-11-18 23:25:11  INFO       upload_to_archive.py |  uploading 03_ The Shape I'm In.mp3:  50%|█████     | 3/6 [00:00<00:00,  3.98MiB/s]
+2026-11-18 23:25:11  INFO       upload_to_archive.py |  uploading 03_ The Shape I'm In.mp3:  83%|████████▎ | 5/6 [00:01<00:00,  4.82MiB/s]
+2026-11-18 23:25:11  INFO       upload_to_archive.py |  uploading 03_ The Shape I'm In.mp3: 100%|██████████| 6/6 [00:01<00:00,  5.39MiB/s]
+2026-11-18 23:25:11  INFO       upload_to_archive.py |  uploading 03_ The Shape I'm In.mp3: 100%|██████████| 6/6 [00:01<00:00,  4.44MiB/s]
+2026-11-18 23:25:30  INFO       upload_to_archive.py | 
+2026-11-18 23:25:31  INFO       upload_to_archive.py |  uploading 04_ The Shape I'm In (2).mp3:   0%|          | 0/3 [00:00<?, ?MiB/s]
+2026-11-18 23:25:31  INFO       upload_to_archive.py |  uploading 04_ The Shape I'm In (2).mp3:  33%|███▎      | 1/3 [00:00<00:01,  1.23MiB/s]
+2026-11-18 23:25:31  INFO       upload_to_archive.py |  uploading 04_ The Shape I'm In (2).mp3:  67%|██████▋   | 2/3 [00:00<00:00,  2.46MiB/s]
+2026-11-18 23:25:31  INFO       upload_to_archive.py |  uploading 04_ The Shape I'm In (2).mp3: 100%|██████████| 3/3 [00:00<00:00,  3.21MiB/s]
+2026-11-18 23:25:34  INFO       upload_to_archive.py | 
+2026-11-18 23:25:34  INFO       upload_to_archive.py |  uploading 05_ Truckin.mp3:   0%|          | 0/10 [00:00<?, ?MiB/s]
+2026-11-18 23:25:35  INFO       upload_to_archive.py |  uploading 05_ Truckin.mp3:  10%|█         | 1/10 [00:00<00:06,  1.36MiB/s]
+2026-11-18 23:25:35  INFO       upload_to_archive.py |  uploading 05_ Truckin.mp3:  30%|███       | 3/10 [00:00<00:01,  3.84MiB/s]
+2026-11-18 23:25:35  INFO       upload_to_archive.py |  uploading 05_ Truckin.mp3:  50%|█████     | 5/10 [00:01<00:00,  5.11MiB/s]
+2026-11-18 23:25:35  INFO       upload_to_archive.py |  uploading 05_ Truckin.mp3:  60%|██████    | 6/10 [00:01<00:00,  4.55MiB/s]
+2026-11-18 23:25:36  INFO       upload_to_archive.py |  uploading 05_ Truckin.mp3:  70%|███████   | 7/10 [00:01<00:00,  3.91MiB/s]
+2026-11-18 23:25:36  INFO       upload_to_archive.py |  uploading 05_ Truckin.mp3:  80%|████████  | 8/10 [00:02<00:00,  3.72MiB/s]
+2026-11-18 23:25:36  INFO       upload_to_archive.py |  uploading 05_ Truckin.mp3:  90%|█████████ | 9/10 [00:02<00:00,  3.59MiB/s]
+2026-11-18 23:25:36  INFO       upload_to_archive.py |  uploading 05_ Truckin.mp3: 100%|██████████| 10/10 [00:02<00:00,  4.11MiB/s]
+2026-11-18 23:25:36  INFO       upload_to_archive.py |  uploading 05_ Truckin.mp3: 100%|██████████| 10/10 [00:02<00:00,  3.87MiB/s]
+2026-11-18 23:25:38  INFO       upload_to_archive.py | 
+2026-11-18 23:25:38  INFO       upload_to_archive.py |  uploading 06_ Truckin _ Stuck Inside of Mobile _ Bird Song.mp3:   0%|          | 0/39 [00:00<?, ?MiB/s]
+2026-11-18 23:25:39  INFO       upload_to_archive.py |  uploading 06_ Truckin _ Stuck Inside of Mobile _ Bird Song.mp3:   3%|▎         | 1/39 [00:00<00:27,  1.36MiB/s]
+2026-11-18 23:25:39  INFO       upload_to_archive.py |  uploading 06_ Truckin _ Stuck Inside of Mobile _ Bird Song.mp3:   8%|▊         | 3/39 [00:01<00:10,  3.38MiB/s]
+2026-11-18 23:25:39  INFO       upload_to_archive.py |  uploading 06_ Truckin _ Stuck Inside of Mobile _ Bird Song.mp3:  10%|█         | 4/39 [00:01<00:10,  3.36MiB/s]
+2026-11-18 23:25:40  INFO       upload_to_archive.py |  uploading 06_ Truckin _ Stuck Inside of Mobile _ Bird Song.mp3:  13%|█▎        | 5/39 [00:01<00:09,  3.47MiB/s]
+2026-11-18 23:25:40  INFO       upload_to_archive.py |  uploading 06_ Truckin _ Stuck Inside of Mobile _ Bird Song.mp3:  15%|█▌        | 6/39 [00:01<00:09,  3.49MiB/s]
+2026-11-18 23:25:40  INFO       upload_to_archive.py |  uploading 06_ Truckin _ Stuck Inside of Mobile _ Bird Song.mp3:  18%|█▊        | 7/39 [00:02<00:09,  3.50MiB/s]
+2026-11-18 23:25:40  INFO       upload_to_archive.py |  uploading 06_ Truckin _ Stuck Inside of Mobile _ Bird Song.mp3:  21%|██        | 8/39 [00:02<00:08,  3.50MiB/s]
+2026-11-18 23:25:41  INFO       upload_to_archive.py |  uploading 06_ Truckin _ Stuck Inside of Mobile _ Bird Song.mp3:  23%|██▎       | 9/39 [00:02<00:08,  3.61MiB/s]
+2026-11-18 23:25:41  INFO       upload_to_archive.py |  uploading 06_ Truckin _ Stuck Inside of Mobile _ Bird Song.mp3:  26%|██▌       | 10/39 [00:02<00:07,  3.67MiB/s]
+2026-11-18 23:25:41  INFO       upload_to_archive.py |  uploading 06_ Truckin _ Stuck Inside of Mobile _ Bird Song.mp3:  28%|██▊       | 11/39 [00:03<00:07,  3.68MiB/s]
+2026-11-18 23:25:41  INFO       upload_to_archive.py |  uploading 06_ Truckin _ Stuck Inside of Mobile _ Bird Song.mp3:  31%|███       | 12/39 [00:03<00:07,  3.75MiB/s]
+2026-11-18 23:25:42  INFO       upload_to_archive.py |  uploading 06_ Truckin _ Stuck Inside of Mobile _ Bird Song.mp3:  33%|███▎      | 13/39 [00:03<00:06,  3.81MiB/s]
+2026-11-18 23:25:42  INFO       upload_to_archive.py |  uploading 06_ Truckin _ Stuck Inside of Mobile _ Bird Song.mp3:  36%|███▌      | 14/39 [00:03<00:06,  3.92MiB/s]
+2026-11-18 23:25:42  INFO       upload_to_archive.py |  uploading 06_ Truckin _ Stuck Inside of Mobile _ Bird Song.mp3:  38%|███▊      | 15/39 [00:04<00:06,  3.92MiB/s]
+2026-11-18 23:25:42  INFO       upload_to_archive.py |  uploading 06_ Truckin _ Stuck Inside of Mobile _ Bird Song.mp3:  41%|████      | 16/39 [00:04<00:05,  3.93MiB/s]
+2026-11-18 23:25:43  INFO       upload_to_archive.py |  uploading 06_ Truckin _ Stuck Inside of Mobile _ Bird Song.mp3:  44%|████▎     | 17/39 [00:04<00:05,  4.01MiB/s]
+2026-11-18 23:25:43  INFO       upload_to_archive.py |  uploading 06_ Truckin _ Stuck Inside of Mobile _ Bird Song.mp3:  46%|████▌     | 18/39 [00:04<00:05,  4.07MiB/s]
+2026-11-18 23:25:43  INFO       upload_to_archive.py |  uploading 06_ Truckin _ Stuck Inside of Mobile _ Bird Song.mp3:  49%|████▊     | 19/39 [00:05<00:04,  4.09MiB/s]
+2026-11-18 23:25:43  INFO       upload_to_archive.py |  uploading 06_ Truckin _ Stuck Inside of Mobile _ Bird Song.mp3:  51%|█████▏    | 20/39 [00:05<00:04,  4.15MiB/s]
+2026-11-18 23:25:44  INFO       upload_to_archive.py |  uploading 06_ Truckin _ Stuck Inside of Mobile _ Bird Song.mp3:  54%|█████▍    | 21/39 [00:05<00:04,  4.17MiB/s]
+2026-11-18 23:25:44  INFO       upload_to_archive.py |  uploading 06_ Truckin _ Stuck Inside of Mobile _ Bird Song.mp3:  56%|█████▋    | 22/39 [00:05<00:04,  4.02MiB/s]
+2026-11-18 23:25:44  INFO       upload_to_archive.py |  uploading 06_ Truckin _ Stuck Inside of Mobile _ Bird Song.mp3:  59%|█████▉    | 23/39 [00:06<00:03,  4.07MiB/s]
+2026-11-18 23:25:44  INFO       upload_to_archive.py |  uploading 06_ Truckin _ Stuck Inside of Mobile _ Bird Song.mp3:  62%|██████▏   | 24/39 [00:06<00:03,  4.18MiB/s]
+2026-11-18 23:25:45  INFO       upload_to_archive.py |  uploading 06_ Truckin _ Stuck Inside of Mobile _ Bird Song.mp3:  64%|██████▍   | 25/39 [00:06<00:03,  4.12MiB/s]
+2026-11-18 23:25:45  INFO       upload_to_archive.py |  uploading 06_ Truckin _ Stuck Inside of Mobile _ Bird Song.mp3:  67%|██████▋   | 26/39 [00:06<00:03,  4.23MiB/s]
+2026-11-18 23:25:45  INFO       upload_to_archive.py |  uploading 06_ Truckin _ Stuck Inside of Mobile _ Bird Song.mp3:  69%|██████▉   | 27/39 [00:07<00:02,  4.22MiB/s]
+2026-11-18 23:25:45  INFO       upload_to_archive.py |  uploading 06_ Truckin _ Stuck Inside of Mobile _ Bird Song.mp3:  72%|███████▏  | 28/39 [00:07<00:02,  4.21MiB/s]
+2026-11-18 23:25:46  INFO       upload_to_archive.py |  uploading 06_ Truckin _ Stuck Inside of Mobile _ Bird Song.mp3:  74%|███████▍  | 29/39 [00:07<00:02,  4.29MiB/s]
+2026-11-18 23:25:46  INFO       upload_to_archive.py |  uploading 06_ Truckin _ Stuck Inside of Mobile _ Bird Song.mp3:  77%|███████▋  | 30/39 [00:07<00:02,  4.32MiB/s]
+2026-11-18 23:25:46  INFO       upload_to_archive.py |  uploading 06_ Truckin _ Stuck Inside of Mobile _ Bird Song.mp3:  79%|███████▉  | 31/39 [00:08<00:01,  4.24MiB/s]
+2026-11-18 23:25:47  INFO       upload_to_archive.py |  uploading 06_ Truckin _ Stuck Inside of Mobile _ Bird Song.mp3:  82%|████████▏ | 32/39 [00:08<00:01,  4.15MiB/s]
+2026-11-18 23:25:47  INFO       upload_to_archive.py |  uploading 06_ Truckin _ Stuck Inside of Mobile _ Bird Song.mp3:  85%|████████▍ | 33/39 [00:08<00:01,  3.11MiB/s]
+2026-11-18 23:25:47  INFO       upload_to_archive.py |  uploading 06_ Truckin _ Stuck Inside of Mobile _ Bird Song.mp3:  87%|████████▋ | 34/39 [00:09<00:01,  2.83MiB/s]
+2026-11-18 23:25:48  INFO       upload_to_archive.py |  uploading 06_ Truckin _ Stuck Inside of Mobile _ Bird Song.mp3:  90%|████████▉ | 35/39 [00:09<00:01,  2.58MiB/s]
+2026-11-18 23:25:48  INFO       upload_to_archive.py |  uploading 06_ Truckin _ Stuck Inside of Mobile _ Bird Song.mp3:  92%|█████████▏| 36/39 [00:10<00:01,  2.43MiB/s]
+2026-11-18 23:25:49  INFO       upload_to_archive.py |  uploading 06_ Truckin _ Stuck Inside of Mobile _ Bird Song.mp3:  95%|█████████▍| 37/39 [00:10<00:00,  2.48MiB/s]
+2026-11-18 23:25:49  INFO       upload_to_archive.py |  uploading 06_ Truckin _ Stuck Inside of Mobile _ Bird Song.mp3:  97%|█████████▋| 38/39 [00:10<00:00,  2.47MiB/s]
+2026-11-18 23:25:49  INFO       upload_to_archive.py |  uploading 06_ Truckin _ Stuck Inside of Mobile _ Bird Song.mp3: 100%|██████████| 39/39 [00:11<00:00,  2.59MiB/s]
+2026-11-18 23:25:49  INFO       upload_to_archive.py |  uploading 06_ Truckin _ Stuck Inside of Mobile _ Bird Song.mp3: 100%|██████████| 39/39 [00:11<00:00,  3.45MiB/s]
+2026-11-18 23:25:50  INFO       upload_to_archive.py | 
+2026-11-18 23:25:51  INFO       upload_to_archive.py |  uploading 07_ Brown Eyed Women.mp3:   0%|          | 0/10 [00:00<?, ?MiB/s]
+2026-11-18 23:25:51  INFO       upload_to_archive.py |  uploading 07_ Brown Eyed Women.mp3:  10%|█         | 1/10 [00:00<00:07,  1.28MiB/s]
+2026-11-18 23:25:52  INFO       upload_to_archive.py |  uploading 07_ Brown Eyed Women.mp3:  20%|██        | 2/10 [00:00<00:03,  2.26MiB/s]
+2026-11-18 23:25:52  INFO       upload_to_archive.py |  uploading 07_ Brown Eyed Women.mp3:  30%|███       | 3/10 [00:01<00:02,  2.80MiB/s]
+2026-11-18 23:25:52  INFO       upload_to_archive.py |  uploading 07_ Brown Eyed Women.mp3:  40%|████      | 4/10 [00:01<00:02,  2.98MiB/s]
+2026-11-18 23:25:52  INFO       upload_to_archive.py |  uploading 07_ Brown Eyed Women.mp3:  50%|█████     | 5/10 [00:01<00:01,  3.27MiB/s]
+2026-11-18 23:25:53  INFO       upload_to_archive.py |  uploading 07_ Brown Eyed Women.mp3:  60%|██████    | 6/10 [00:02<00:01,  3.46MiB/s]
+2026-11-18 23:25:53  INFO       upload_to_archive.py |  uploading 07_ Brown Eyed Women.mp3:  70%|███████   | 7/10 [00:02<00:00,  3.68MiB/s]
+2026-11-18 23:25:53  INFO       upload_to_archive.py |  uploading 07_ Brown Eyed Women.mp3:  80%|████████  | 8/10 [00:02<00:00,  3.83MiB/s]
+2026-11-18 23:25:53  INFO       upload_to_archive.py |  uploading 07_ Brown Eyed Women.mp3:  90%|█████████ | 9/10 [00:02<00:00,  3.94MiB/s]
+2026-11-18 23:25:53  INFO       upload_to_archive.py |  uploading 07_ Brown Eyed Women.mp3: 100%|██████████| 10/10 [00:02<00:00,  3.57MiB/s]
+2026-11-18 23:26:12  INFO       upload_to_archive.py | 
+2026-11-18 23:26:13  INFO       upload_to_archive.py |  uploading 08_ Dixie Chicken.mp3:   0%|          | 0/10 [00:00<?, ?MiB/s]
+2026-11-18 23:26:13  INFO       upload_to_archive.py |  uploading 08_ Dixie Chicken.mp3:  10%|█         | 1/10 [00:00<00:06,  1.36MiB/s]
+2026-11-18 23:26:13  INFO       upload_to_archive.py |  uploading 08_ Dixie Chicken.mp3:  20%|██        | 2/10 [00:00<00:02,  2.72MiB/s]
+2026-11-18 23:26:13  INFO       upload_to_archive.py |  uploading 08_ Dixie Chicken.mp3:  40%|████      | 4/10 [00:00<00:01,  5.81MiB/s]
+2026-11-18 23:26:13  INFO       upload_to_archive.py |  uploading 08_ Dixie Chicken.mp3:  80%|████████  | 8/10 [00:01<00:00,  9.53MiB/s]
+2026-11-18 23:26:13  INFO       upload_to_archive.py |  uploading 08_ Dixie Chicken.mp3: 100%|██████████| 10/10 [00:01<00:00,  8.75MiB/s]
+2026-11-18 23:26:13  INFO       upload_to_archive.py |  uploading 08_ Dixie Chicken.mp3: 100%|██████████| 10/10 [00:01<00:00,  6.69MiB/s]
+2026-11-18 23:26:15  INFO       upload_to_archive.py | 
+2026-11-18 23:26:16  INFO       upload_to_archive.py |  uploading 09_ Candyman.mp3:   0%|          | 0/9 [00:00<?, ?MiB/s]
+2026-11-18 23:26:16  INFO       upload_to_archive.py |  uploading 09_ Candyman.mp3:  11%|█         | 1/9 [00:00<00:06,  1.28MiB/s]
+2026-11-18 23:26:16  INFO       upload_to_archive.py |  uploading 09_ Candyman.mp3:  22%|██▏       | 2/9 [00:00<00:02,  2.53MiB/s]
+2026-11-18 23:26:16  INFO       upload_to_archive.py |  uploading 09_ Candyman.mp3:  44%|████▍     | 4/9 [00:01<00:01,  4.78MiB/s]
+2026-11-18 23:26:17  INFO       upload_to_archive.py |  uploading 09_ Candyman.mp3:  56%|█████▌    | 5/9 [00:01<00:00,  4.51MiB/s]
+2026-11-18 23:26:17  INFO       upload_to_archive.py |  uploading 09_ Candyman.mp3:  67%|██████▋   | 6/9 [00:01<00:00,  3.91MiB/s]
+2026-11-18 23:26:18  INFO       upload_to_archive.py |  uploading 09_ Candyman.mp3:  78%|███████▊  | 7/9 [00:02<00:00,  2.59MiB/s]
+2026-11-18 23:26:18  INFO       upload_to_archive.py |  uploading 09_ Candyman.mp3:  89%|████████▉ | 8/9 [00:03<00:00,  2.10MiB/s]
+2026-11-18 23:26:18  INFO       upload_to_archive.py |  uploading 09_ Candyman.mp3: 100%|██████████| 9/9 [00:03<00:00,  2.37MiB/s]
+2026-11-18 23:26:18  INFO       upload_to_archive.py |  uploading 09_ Candyman.mp3: 100%|██████████| 9/9 [00:03<00:00,  2.69MiB/s]
+2026-11-18 23:26:20  INFO       upload_to_archive.py | 
+2026-11-18 23:26:21  INFO       upload_to_archive.py |  uploading 10_ Lovelight _ Franklin's Tower.mp3:   0%|          | 0/20 [00:00<?, ?MiB/s]
+2026-11-18 23:26:21  INFO       upload_to_archive.py |  uploading 10_ Lovelight _ Franklin's Tower.mp3:   5%|▌         | 1/20 [00:00<00:14,  1.33MiB/s]
+2026-11-18 23:26:21  INFO       upload_to_archive.py |  uploading 10_ Lovelight _ Franklin's Tower.mp3:  10%|█         | 2/20 [00:00<00:06,  2.67MiB/s]
+2026-11-18 23:26:21  INFO       upload_to_archive.py |  uploading 10_ Lovelight _ Franklin's Tower.mp3:  20%|██        | 4/20 [00:01<00:03,  5.02MiB/s]
+2026-11-18 23:26:22  INFO       upload_to_archive.py |  uploading 10_ Lovelight _ Franklin's Tower.mp3:  25%|██▌       | 5/20 [00:01<00:02,  5.09MiB/s]
+2026-11-18 23:26:22  INFO       upload_to_archive.py |  uploading 10_ Lovelight _ Franklin's Tower.mp3:  30%|███       | 6/20 [00:01<00:02,  4.89MiB/s]
+2026-11-18 23:26:22  INFO       upload_to_archive.py |  uploading 10_ Lovelight _ Franklin's Tower.mp3:  35%|███▌      | 7/20 [00:01<00:03,  3.87MiB/s]
+2026-11-18 23:26:23  INFO       upload_to_archive.py |  uploading 10_ Lovelight _ Franklin's Tower.mp3:  40%|████      | 8/20 [00:02<00:03,  3.28MiB/s]
+2026-11-18 23:26:23  INFO       upload_to_archive.py |  uploading 10_ Lovelight _ Franklin's Tower.mp3:  45%|████▌     | 9/20 [00:02<00:03,  3.01MiB/s]
+2026-11-18 23:26:24  INFO       upload_to_archive.py |  uploading 10_ Lovelight _ Franklin's Tower.mp3:  50%|█████     | 10/20 [00:03<00:03,  2.92MiB/s]
+2026-11-18 23:26:24  INFO       upload_to_archive.py |  uploading 10_ Lovelight _ Franklin's Tower.mp3:  55%|█████▌    | 11/20 [00:03<00:03,  2.79MiB/s]
+2026-11-18 23:26:24  INFO       upload_to_archive.py |  uploading 10_ Lovelight _ Franklin's Tower.mp3:  60%|██████    | 12/20 [00:03<00:02,  2.78MiB/s]
+2026-11-18 23:26:25  INFO       upload_to_archive.py |  uploading 10_ Lovelight _ Franklin's Tower.mp3:  65%|██████▌   | 13/20 [00:04<00:02,  2.77MiB/s]
+2026-11-18 23:26:25  INFO       upload_to_archive.py |  uploading 10_ Lovelight _ Franklin's Tower.mp3:  70%|███████   | 14/20 [00:04<00:02,  2.83MiB/s]
+2026-11-18 23:26:25  INFO       upload_to_archive.py |  uploading 10_ Lovelight _ Franklin's Tower.mp3:  75%|███████▌  | 15/20 [00:04<00:01,  2.84MiB/s]
+2026-11-18 23:26:26  INFO       upload_to_archive.py |  uploading 10_ Lovelight _ Franklin's Tower.mp3:  80%|████████  | 16/20 [00:05<00:01,  2.89MiB/s]
+2026-11-18 23:26:26  INFO       upload_to_archive.py |  uploading 10_ Lovelight _ Franklin's Tower.mp3:  85%|████████▌ | 17/20 [00:05<00:01,  2.89MiB/s]
+2026-11-18 23:26:26  INFO       upload_to_archive.py |  uploading 10_ Lovelight _ Franklin's Tower.mp3:  90%|█████████ | 18/20 [00:05<00:00,  2.96MiB/s]
+2026-11-18 23:26:26  INFO       upload_to_archive.py |  uploading 10_ Lovelight _ Franklin's Tower.mp3:  95%|█████████▌| 19/20 [00:06<00:00,  2.97MiB/s]
+2026-11-18 23:26:26  INFO       upload_to_archive.py |  uploading 10_ Lovelight _ Franklin's Tower.mp3: 100%|██████████| 20/20 [00:06<00:00,  3.72MiB/s]
+2026-11-18 23:26:26  INFO       upload_to_archive.py |  uploading 10_ Lovelight _ Franklin's Tower.mp3: 100%|██████████| 20/20 [00:06<00:00,  3.19MiB/s]
+2026-11-18 23:26:28  INFO       upload_to_archive.py | 
+2026-11-18 23:26:29  INFO       upload_to_archive.py |  uploading 11_ Brizel Song.mp3:   0%|          | 0/7 [00:00<?, ?MiB/s]
+2026-11-18 23:26:29  INFO       upload_to_archive.py |  uploading 11_ Brizel Song.mp3:  14%|█▍        | 1/7 [00:00<00:05,  1.06MiB/s]
+2026-11-18 23:26:29  INFO       upload_to_archive.py |  uploading 11_ Brizel Song.mp3:  29%|██▊       | 2/7 [00:01<00:02,  2.12MiB/s]
+2026-11-18 23:26:30  INFO       upload_to_archive.py |  uploading 11_ Brizel Song.mp3:  43%|████▎     | 3/7 [00:01<00:01,  2.97MiB/s]
+2026-11-18 23:26:30  INFO       upload_to_archive.py |  uploading 11_ Brizel Song.mp3:  57%|█████▋    | 4/7 [00:01<00:01,  2.83MiB/s]
+2026-11-18 23:26:30  INFO       upload_to_archive.py |  uploading 11_ Brizel Song.mp3:  71%|███████▏  | 5/7 [00:01<00:00,  2.94MiB/s]
+2026-11-18 23:26:30  INFO       upload_to_archive.py |  uploading 11_ Brizel Song.mp3:  86%|████████▌ | 6/7 [00:02<00:00,  3.06MiB/s]
+2026-11-18 23:26:30  INFO       upload_to_archive.py |  uploading 11_ Brizel Song.mp3: 100%|██████████| 7/7 [00:02<00:00,  3.54MiB/s]
+2026-11-18 23:26:30  INFO       upload_to_archive.py |  uploading 11_ Brizel Song.mp3: 100%|██████████| 7/7 [00:02<00:00,  2.86MiB/s]
+2026-11-18 23:26:32  INFO       upload_to_archive.py | 
+2026-11-18 23:26:33  INFO       upload_to_archive.py |  uploading 12_ Midnight Moonlight.mp3:   0%|          | 0/9 [00:00<?, ?MiB/s]
+2026-11-18 23:26:33  INFO       upload_to_archive.py |  uploading 12_ Midnight Moonlight.mp3:  11%|█         | 1/9 [00:00<00:06,  1.33MiB/s]
+2026-11-18 23:26:33  INFO       upload_to_archive.py |  uploading 12_ Midnight Moonlight.mp3:  44%|████▍     | 4/9 [00:00<00:01,  4.84MiB/s]
+2026-11-18 23:26:33  INFO       upload_to_archive.py |  uploading 12_ Midnight Moonlight.mp3:  56%|█████▌    | 5/9 [00:01<00:00,  5.17MiB/s]
+2026-11-18 23:26:34  INFO       upload_to_archive.py |  uploading 12_ Midnight Moonlight.mp3:  67%|██████▋   | 6/9 [00:01<00:00,  5.31MiB/s]
+2026-11-18 23:26:34  INFO       upload_to_archive.py |  uploading 12_ Midnight Moonlight.mp3:  78%|███████▊  | 7/9 [00:01<00:00,  4.35MiB/s]
+2026-11-18 23:26:34  INFO       upload_to_archive.py |  uploading 12_ Midnight Moonlight.mp3:  89%|████████▉ | 8/9 [00:01<00:00,  4.15MiB/s]
+2026-11-18 23:26:34  INFO       upload_to_archive.py |  uploading 12_ Midnight Moonlight.mp3: 100%|██████████| 9/9 [00:01<00:00,  4.60MiB/s]
+2026-11-18 23:28:34  INFO       upload_to_archive.py | Traceback (most recent call last):
+2026-11-18 23:28:34  INFO       upload_to_archive.py |   File "C:\Users\Administrator\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\urllib3\connectionpool.py", line 534, in _make_request
+2026-11-18 23:28:34  INFO       upload_to_archive.py |     response = conn.getresponse()
+2026-11-18 23:28:34  INFO       upload_to_archive.py |                ^^^^^^^^^^^^^^^^^^
+2026-11-18 23:28:34  INFO       upload_to_archive.py |   File "C:\Users\Administrator\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\urllib3\connection.py", line 571, in getresponse
+2026-11-18 23:28:34  INFO       upload_to_archive.py |     httplib_response = super().getresponse()
+2026-11-18 23:28:34  INFO       upload_to_archive.py |                        ^^^^^^^^^^^^^^^^^^^^^
+2026-11-18 23:28:34  INFO       upload_to_archive.py |   File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\http\client.py", line 1430, in getresponse
+2026-11-18 23:28:34  INFO       upload_to_archive.py |     response.begin()
+2026-11-18 23:28:34  INFO       upload_to_archive.py |   File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\http\client.py", line 331, in begin
+2026-11-18 23:28:34  INFO       upload_to_archive.py |     version, status, reason = self._read_status()
+2026-11-18 23:28:34  INFO       upload_to_archive.py |                               ^^^^^^^^^^^^^^^^^^^
+2026-11-18 23:28:34  INFO       upload_to_archive.py |   File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\http\client.py", line 292, in _read_status
+2026-11-18 23:28:34  INFO       upload_to_archive.py |     line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+2026-11-18 23:28:34  INFO       upload_to_archive.py |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-11-18 23:28:34  INFO       upload_to_archive.py |   File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\socket.py", line 720, in readinto
+2026-11-18 23:28:34  INFO       upload_to_archive.py |     return self._sock.recv_into(b)
+2026-11-18 23:28:34  INFO       upload_to_archive.py |            ^^^^^^^^^^^^^^^^^^^^^^^
+2026-11-18 23:28:34  INFO       upload_to_archive.py |   File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\ssl.py", line 1251, in recv_into
+2026-11-18 23:28:34  INFO       upload_to_archive.py |     return self.read(nbytes, buffer)
+2026-11-18 23:28:34  INFO       upload_to_archive.py |            ^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-11-18 23:28:34  INFO       upload_to_archive.py |   File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\ssl.py", line 1103, in read
+2026-11-18 23:28:34  INFO       upload_to_archive.py |     return self._sslobj.read(len, buffer)
+2026-11-18 23:28:34  INFO       upload_to_archive.py |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-11-18 23:28:34  INFO       upload_to_archive.py | TimeoutError: The read operation timed out
+2026-11-18 23:28:34  INFO       upload_to_archive.py | 
+2026-11-18 23:28:34  INFO       upload_to_archive.py | The above exception was the direct cause of the following exception:
+2026-11-18 23:28:34  INFO       upload_to_archive.py | 
+2026-11-18 23:28:34  INFO       upload_to_archive.py | Traceback (most recent call last):
+2026-11-18 23:28:34  INFO       upload_to_archive.py |   File "C:\Users\Administrator\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\requests\adapters.py", line 696, in send
+2026-11-18 23:28:34  INFO       upload_to_archive.py |     resp = conn.urlopen(
+2026-11-18 23:28:34  INFO       upload_to_archive.py |            ^^^^^^^^^^^^^
+2026-11-18 23:28:34  INFO       upload_to_archive.py |   File "C:\Users\Administrator\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\urllib3\connectionpool.py", line 842, in urlopen
+2026-11-18 23:28:34  INFO       upload_to_archive.py |     retries = retries.increment(
+2026-11-18 23:28:34  INFO       upload_to_archive.py |               ^^^^^^^^^^^^^^^^^^
+2026-11-18 23:28:34  INFO       upload_to_archive.py |   File "C:\Users\Administrator\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\urllib3\util\retry.py", line 498, in increment
+2026-11-18 23:28:34  INFO       upload_to_archive.py |     raise reraise(type(error), error, _stacktrace)
+2026-11-18 23:28:34  INFO       upload_to_archive.py |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-11-18 23:28:34  INFO       upload_to_archive.py |   File "C:\Users\Administrator\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\urllib3\util\util.py", line 39, in reraise
+2026-11-18 23:28:34  INFO       upload_to_archive.py |     raise value
+2026-11-18 23:28:34  INFO       upload_to_archive.py |   File "C:\Users\Administrator\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\urllib3\connectionpool.py", line 788, in urlopen
+2026-11-18 23:28:34  INFO       upload_to_archive.py |     response = self._make_request(
+2026-11-18 23:28:34  INFO       upload_to_archive.py |                ^^^^^^^^^^^^^^^^^^^
+2026-11-18 23:28:34  INFO       upload_to_archive.py |   File "C:\Users\Administrator\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\urllib3\connectionpool.py", line 536, in _make_request
+2026-11-18 23:28:34  INFO       upload_to_archive.py |     self._raise_timeout(err=e, url=url, timeout_value=read_timeout)
+2026-11-18 23:28:34  INFO       upload_to_archive.py |   File "C:\Users\Administrator\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\urllib3\connectionpool.py", line 367, in _raise_timeout
+2026-11-18 23:28:34  INFO       upload_to_archive.py |     raise ReadTimeoutError(
+2026-11-18 23:28:34  INFO       upload_to_archive.py | urllib3.exceptions.ReadTimeoutError: HTTPSConnectionPool(host='s3.us.archive.org', port=443): Read timed out. (read timeout=120)
+2026-11-18 23:28:34  INFO       upload_to_archive.py | 
+2026-11-18 23:28:34  INFO       upload_to_archive.py | During handling of the above exception, another exception occurred:
+2026-11-18 23:28:34  INFO       upload_to_archive.py | 
+2026-11-18 23:28:34  INFO       upload_to_archive.py | Traceback (most recent call last):
+2026-11-18 23:28:34  INFO       upload_to_archive.py |   File "C:\Users\Administrator\OneDrive\LoveDeep\danktuary-archive-clean\upload_to_archive.py", line 386, in <module>
+2026-11-18 23:28:34  INFO       upload_to_archive.py |     main()
+2026-11-18 23:28:34  INFO       upload_to_archive.py |   File "C:\Users\Administrator\OneDrive\LoveDeep\danktuary-archive-clean\upload_to_archive.py", line 353, in main
+2026-11-18 23:28:34  INFO       upload_to_archive.py |     confirmed_filenames, uploaded_something = upload_show(
+2026-11-18 23:28:34  INFO       upload_to_archive.py |                                               ^^^^^^^^^^^^
+2026-11-18 23:28:34  INFO       upload_to_archive.py |   File "C:\Users\Administrator\OneDrive\LoveDeep\danktuary-archive-clean\upload_to_archive.py", line 250, in upload_show
+2026-11-18 23:28:34  INFO       upload_to_archive.py |     item.upload(
+2026-11-18 23:28:34  INFO       upload_to_archive.py |   File "C:\Users\Administrator\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\internetarchive\item.py", line 1748, in upload
+2026-11-18 23:28:34  INFO       upload_to_archive.py |     resp = self.upload_file(
+2026-11-18 23:28:34  INFO       upload_to_archive.py |            ^^^^^^^^^^^^^^^^^
+2026-11-18 23:28:34  INFO       upload_to_archive.py |   File "C:\Users\Administrator\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\internetarchive\item.py", line 1481, in upload_file
+2026-11-18 23:28:34  INFO       upload_to_archive.py |     response = self.session.send(
+2026-11-18 23:28:34  INFO       upload_to_archive.py |                ^^^^^^^^^^^^^^^^^^
+2026-11-18 23:28:34  INFO       upload_to_archive.py |   File "C:\Users\Administrator\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\internetarchive\session.py", line 806, in send
+2026-11-18 23:28:34  INFO       upload_to_archive.py |     raise e
+2026-11-18 23:28:34  INFO       upload_to_archive.py |   File "C:\Users\Administrator\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\internetarchive\session.py", line 803, in send
+2026-11-18 23:28:34  INFO       upload_to_archive.py |     reraise_modify(e, e.request.url, prepend=False)  # type: ignore
+2026-11-18 23:28:34  INFO       upload_to_archive.py |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-11-18 23:28:34  INFO       upload_to_archive.py |   File "C:\Users\Administrator\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\internetarchive\session.py", line 800, in send
+2026-11-18 23:28:34  INFO       upload_to_archive.py |     r = super().send(request, **kwargs)
+2026-11-18 23:28:34  INFO       upload_to_archive.py |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-11-18 23:28:34  INFO       upload_to_archive.py |   File "C:\Users\Administrator\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\requests\sessions.py", line 784, in send
+2026-11-18 23:28:34  INFO       upload_to_archive.py |     r = adapter.send(request, **kwargs)
+2026-11-18 23:28:34  INFO       upload_to_archive.py |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-11-18 23:28:34  INFO       upload_to_archive.py |   File "C:\Users\Administrator\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\requests\adapters.py", line 742, in send
+2026-11-18 23:28:34  INFO       upload_to_archive.py |     raise ReadTimeout(e, request=request)
+2026-11-18 23:28:34  INFO       upload_to_archive.py | requests.exceptions.ReadTimeout: (ReadTimeoutError("HTTPSConnectionPool(host='s3.us.archive.org', port=443): Read timed out. (read timeout=120)"), 'https://s3.us.archive.org/deadweight-2026-11-18-danktuary-studios/12_%20Midnight%20Moonlight.mp3')
+2026-11-18 23:28:34  WARNING  upload_to_archive.py failed on attempt 1/3 (upload_to_archive.py exited with code 1). This could be Internet Archive's rate limiter, or something else -- the retry can't tell the difference, so if it's something else it'll just fail fast again next attempt.
+2026-11-18 23:28:34  INFO     Waiting 3600 seconds before retrying...
+2026-11-18 23:34:26  INFO     ==================================================
+2026-11-18 23:34:26  INFO       DankApp Database Update
+2026-11-18 23:34:26  INFO     ==================================================
+2026-11-18 23:34:26  INFO     Working directory: C:\Users\Administrator\OneDrive\LoveDeep\danktuary-archive-clean
+2026-11-18 23:34:26  INFO     [1/9] Scan files...
+2026-11-18 23:34:28  INFO       scanner.py | Let's a-gooooo!
+2026-11-18 23:34:28  INFO       scanner.py | Loaded 6627 existing row(s); 5117 file(s) already catalogued and will be skipped.
+2026-11-18 23:34:28  INFO       scanner.py | Found extra column(s) in band_archive.csv added by another script: ['OneDrive Share URL']. Preserving them.
+2026-11-18 23:34:28  INFO       scanner.py | No changes - the archive is already up to date.
+2026-11-18 23:34:28  INFO     [2/9] Check the scan result...
+2026-11-18 23:34:28  INFO     Check passed (0 warning(s)).
+2026-11-18 23:34:28  INFO     [3/9] Upload to Internet Archive...
+2026-11-18 23:34:28  INFO     Skipping the Internet Archive upload (as requested).
+2026-11-18 23:34:28  INFO     [4/9] Analyze data...
+2026-11-18 23:34:29  INFO       analyze.py | song_stats.csv created!
+2026-11-18 23:34:29  INFO     [5/9] Build metadata...
+2026-11-18 23:34:29  INFO       build_metadata.py | Added 1 new song(s) to metadata: ["Takin' Care Of Business"]
+2026-11-18 23:34:29  INFO       build_metadata.py | song_metadata.csv updated!
+2026-11-18 23:34:30  INFO     [6/9] Fill missing artists...
+2026-11-18 23:34:30  INFO     1 song(s) have no artist on file.
+2026-11-18 23:34:36  INFO     Filled in 1 of 1 artist name(s).
+2026-11-18 23:34:36  INFO     [7/9] Generate share links...
+2026-11-18 23:34:43  INFO       generate_share_links.py | Found 1 folders to generate share links for.
+2026-11-18 23:34:43  INFO       generate_share_links.py |   Processing: LoveDeep/Audio Recordings/Jam Session Recordings 2021-/2026/2026-11-18 _ Jam Session
+2026-11-18 23:34:43  INFO       generate_share_links.py |     ✓ https://1drv.ms/f/c/436f797b4dd480a3/IgBpFwG_sq0jSK_QnmElVj5VAR1sycYu5wP1u4rfmOiUbMU
+2026-11-18 23:34:43  INFO       generate_share_links.py | 
+2026-11-18 23:34:43  INFO       generate_share_links.py | Done. 1 share links written to band_archive.csv.
+2026-11-18 23:34:43  INFO     [8/9] Final check before push...
+2026-11-18 23:34:43  INFO     Check passed (0 warning(s)).
+2026-11-18 23:34:43  INFO     [9/9] Commit and push...
+2026-11-18 23:34:44  INFO     Changes detected. Committing...
+2026-11-18 23:34:45  INFO     Pushing to GitHub...
+2026-11-18 23:34:50  INFO     Done! Streamlit Cloud will redeploy automatically in a minute or two.
+2026-11-18 23:34:50  INFO     Pipeline finished successfully.
+2026-11-18 23:34:50  INFO       Scan: no changes
+2026-11-18 23:34:50  INFO       Upload: skipped
+2026-11-18 23:34:50  INFO       Artist names filled in: 1
+2026-11-18 23:34:50  INFO       Data check: passed with 0 warning(s).
+2026-11-18 23:34:50  INFO       Git: pushed commit ba9a579
+2026-11-18 23:34:50  INFO       Took 24s.
