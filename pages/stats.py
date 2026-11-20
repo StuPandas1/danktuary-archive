@@ -102,7 +102,7 @@ def bustout_table(stats, d, today):
         "Days Since": b["Days"].astype(int),
         "Last Played": b["Last_Played"].dt.strftime("%m/%d/%Y"),
         "Times Played": b["Times_Played"],
-        "Overdue Score": ((score / top) * 100).round(1) if top else 0.0,
+        "Overdue Score": round((score / top) * 100, 1) if top else 0.0,
         "Last Location": b["Title"].map(locs),
     })
 
