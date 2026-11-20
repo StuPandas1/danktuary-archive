@@ -156,7 +156,7 @@ def venue_detail(_d, loc, mtimes):
     top.insert(0, "#", range(1, len(top) + 1))
     sets = pd.DataFrame({
         "Date": v["Date"].dt.strftime("%m/%d/%Y"),
-        "Songs": v["Songs"].astype(str),
+        "Unique Songs": v["Songs"].astype(str),
         "Total Time": v["Secs"].map(_format_seconds),
         "Venue": loc,                      # hidden; lets a date tap open that show
     }).reset_index(drop=True)
@@ -442,7 +442,7 @@ with st.expander("📊 Setlist Stats - Dashboard", True):
             img=None,
         )
         st.divider()
-        dank_hex("Track by Track Breakdown")
+        dank_hex("Track History")
         click_table(detail["table"], key="tbl_show",
                     song_cols=("Title",),
                     show_cols={"Previous Play": "Previous Location"},
