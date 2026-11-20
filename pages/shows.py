@@ -156,7 +156,7 @@ def venue_detail(_d, loc, mtimes):
     top.insert(0, "#", range(1, len(top) + 1))
     sets = pd.DataFrame({
         "Date": v["Date"].dt.strftime("%m/%d/%Y"),
-        "Unique Songs": v["Songs"].astype(str),
+        "Songs": v["Songs"].astype(str),
         "Total Time": v["Secs"].map(_format_seconds),
         "Venue": loc,                      # hidden; lets a date tap open that show
     }).reset_index(drop=True)
@@ -424,7 +424,7 @@ with st.expander("📊 Setlist Stats - Dashboard", True):
         dank_hex("No setlist on file for this show")
     else:
         cards = [
-            card_html(detail["songs"], "Songs", accent=True),
+            card_html(detail["songs"], "Unique Songs", accent=True),
             card_html(_format_seconds(detail["total"]), "Total Time"),
         ]
         st.markdown(f'<div class="dank-grid">{"".join(cards)}</div>', unsafe_allow_html=True)
